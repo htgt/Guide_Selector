@@ -25,6 +25,7 @@ python --version
 ### Python Virtual Environment
 Requirements:
 
+- Ubuntu 18.X.X 
 - Python3.8+
 - Python-venv
 
