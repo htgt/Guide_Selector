@@ -20,7 +20,7 @@ def resolve_command(args):
 
 def main():
     parsed_input = ParsedInputArguments()
-    args = parsed_input.get_args()
+    args = parsed_input.arguments
 
     resolve_command(args)
 

@@ -7,17 +7,11 @@ class ParsedInputArguments:
 
         self.parse_arguments()
 
-    def get_command(self) -> str:
-        return self.command
-
     def set_args(self, values) -> None:
         self.arguments = values
         self.command = self.arguments['command']
 
-    def get_args(self) -> str:
-        return self.arguments
-
-    def parse_arguments(self):
+    def parse_arguments(self) -> dict:
         parser = argparse.ArgumentParser(description='Guide Selection CLI')
 
         parser.add_argument('command',
