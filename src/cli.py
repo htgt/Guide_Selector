@@ -6,6 +6,7 @@ from mutator.mutator import Mutator
 
 def resolve_command(args):
     command = args['command']
+    
 
 def main():
     parsed_input = InputArguments()
