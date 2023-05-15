@@ -47,8 +47,8 @@ deactivate
 Command Line
 
 ```sh
-python3 src/cli.py version
+python3 src/cli.py --version
 ```
 
 Available commands:
-- version
+- --version
