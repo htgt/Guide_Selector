@@ -1,6 +1,7 @@
 import argparse
 
-class ParsedInputArguments:
+
+class InputArguments:
     def __init__(self) -> None:
         self.arguments = []
         self.command = ''
@@ -12,17 +13,16 @@ class ParsedInputArguments:
         self.command = self.arguments['command']
 
     def parse_arguments(self) -> dict:
-        parser = argparse.ArgumentParser(description='Guide Selection CLI')
-
-        parser.add_argument('command',
-            help=(
-                'Command to run in Guide Selection CLI, available commands: '
-                'version, mutator'
-            ),
-            type=str,
-            default='version'
+        parser = argparse.ArgumentParser(
+            description='Guide Selection CLI',
+            prog='Guide Selection'
         )
-        parser = add_input_args(parser)
+
+        parser.add_argument(
+            '--version',
+            action='version',
+            version='%(prog)s 0.0.1'
+        )
 
         parser = add_input_args(parser)
 
@@ -30,4 +30,4 @@ class ParsedInputArguments:
 
 
 def add_input_args(parser):
-        return parser
+    return parser
