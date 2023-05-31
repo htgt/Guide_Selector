@@ -52,3 +52,16 @@ python3 src/cli.py --version
 
 Available commands:
 - --version
+
+
+### Run with Docker
+
+Build image 
+```
+docker build -t sge-guide-selection .
+```
+
+Run container with command (example `--version` command)
+```
+docker run sge-guide-selection --version
+```
