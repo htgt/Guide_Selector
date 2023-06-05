@@ -1,0 +1,2 @@
+class MutatorError(Exception):
+    pass
