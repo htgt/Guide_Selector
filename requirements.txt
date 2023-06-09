@@ -2,6 +2,5 @@ pip==21.2.4
 setuptools==67.7.2
 wheel==0.40.0
 pycodestyle==2.10.0
-pyfakefs==4.6.2
 pyranges==0.0.127
 pandas==2.0.1
