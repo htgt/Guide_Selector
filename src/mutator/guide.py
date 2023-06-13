@@ -26,7 +26,7 @@ class GuideSequence:
         self.window = self.define_window()
 
 
-    def _define_pam_pattern(self) -> re.Match:
+    def _define_pam_pattern(self) -> str:
         return PAM_POSITIVE_PATTERN if self.strand == "+" else PAM_NEGATIVE_PATTERN
 
 
