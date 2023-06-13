@@ -4,6 +4,7 @@ from dataclasses import dataclass
 PAM_POSITIVE_PATTERN = r'TGG'
 PAM_NEGATIVE_PATTERN = r'CCA'
 
+
 @dataclass
 class SequenceFragment:
     bases: str
@@ -25,12 +26,12 @@ class GuideSequence:
         self.window = self.define_window()
 
 
-    def find_pam(self) -> SequenceFragment:
-        if self.strand == "+":
-            pattern = PAM_POSITIVE_PATTERN
-        else:
-            pattern = PAM_NEGATIVE_PATTERN
+    def _define_pam_pattern(self) -> re.Match:
+        return PAM_POSITIVE_PATTERN if self.strand == "+" else PAM_NEGATIVE_PATTERN
 
+
+    def find_pam(self) -> SequenceFragment:
+        pattern = self._define_pam_pattern()
         pam = re.search(pattern, self.bases)
 
         return SequenceFragment(pam.group(0), pam.start(0), pam.end(0))
@@ -47,7 +48,6 @@ class GuideSequence:
         window_bases = self.bases[window_start:window_end]
 
         return SequenceFragment(window_bases, window_start, window_end)
-
 
 
 
