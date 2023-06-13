@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from mutator.guide import GuideSequence
+from mutator.guide import GuideSequence, SequenceFragment
 
 class TestGuideSequence(TestCase):
     def setUp(self):
@@ -10,6 +10,8 @@ class TestGuideSequence(TestCase):
         pam = "TGG"
         pam_start = 20
         pam_end = 23
+        self.pam_fragment_positive = SequenceFragment(pam, pam_start, pam_end)
+
         self.pam_position = {
             "start": pam_start,
             "end": pam_end
@@ -24,21 +26,19 @@ class TestGuideSequence(TestCase):
 
         test_pam = guide.find_pam()
 
-        self.assertEqual(test_pam, self.pam_position)
+        self.assertEqual(test_pam, self.pam_fragment_positive)
 
     def test_guide_find_pam_negative_strand(self):
+        pam = "CCA"
         pam_start =1
         pam_end = 4
-        pam_position = {
-            "start": pam_start,
-            "end": pam_end
-        }
+        pam_fragment = SequenceFragment(pam, pam_start, pam_end)
 
         guide = self.test_negative_guide
 
         test_pam = guide.find_pam()
 
-        self.assertEqual(test_pam, pam_position)
+        self.assertEqual(test_pam, pam_fragment)
 
 
     def test_define_window_positive_strand(self):
