@@ -21,6 +21,8 @@ class GuideSequence:
         self.strand = strand
         self.window_length = window_length
 
+        self.pam = self.find_pam()
+
 
     def find_pam(self) -> SequenceFragment:
         if self.strand == "+":
@@ -33,14 +35,12 @@ class GuideSequence:
         return SequenceFragment(pam.group(0), pam.start(0), pam.end(0))
 
 
-    def define_window_positive_strand(self, pam_position: dict) -> SequenceFragment:
-        window_start = pam_position["end"] - self.window_length
-        window_end = pam_position["end"]
+    def define_window_positive_strand(self) -> SequenceFragment:
+        window_start = self.pam.end - self.window_length
+        window_end = self.pam.end
+        window_bases = self.bases[window_start:window_end]
 
-        return {
-            "start": window_start,
-            "end": window_end,
-        }
+        return SequenceFragment(window_bases, window_start, window_end)
 
 
 
