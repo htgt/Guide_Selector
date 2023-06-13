@@ -33,7 +33,17 @@ class TestGuideSequence(TestCase):
 
         guide = self.test_positive_guide
 
-        test_window = guide.define_window_positive_strand()
+        test_window = guide.define_window()
+
+        self.assertEqual(test_window, window)
+
+
+    def test_define_window_negative_strand(self):
+        window = SequenceFragment("CCATTGTGGAGGAGT", 1, 16)
+
+        guide = self.test_negative_guide
+
+        test_window = guide.define_window()
 
         self.assertEqual(test_window, window)
 

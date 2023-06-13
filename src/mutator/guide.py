@@ -22,6 +22,7 @@ class GuideSequence:
         self.window_length = window_length
 
         self.pam = self.find_pam()
+        self.window = self.define_window()
 
 
     def find_pam(self) -> SequenceFragment:
@@ -35,12 +36,18 @@ class GuideSequence:
         return SequenceFragment(pam.group(0), pam.start(0), pam.end(0))
 
 
-    def define_window_positive_strand(self) -> SequenceFragment:
-        window_start = self.pam.end - self.window_length
-        window_end = self.pam.end
+    def define_window(self) -> SequenceFragment:
+        if self.strand == "+":
+            window_start = self.pam.end - self.window_length
+            window_end = self.pam.end
+        else:
+            window_start = self.pam.start
+            window_end = self.pam.end + self.window_length
+
         window_bases = self.bases[window_start:window_end]
 
         return SequenceFragment(window_bases, window_start, window_end)
+
 
 
 
