@@ -10,7 +10,7 @@ class InputArguments:
 
     def set_args(self, values) -> None:
         self.arguments = values
-        self.command = values['dest']
+        self.command = values['command']
 
     def parse_arguments(self) -> dict:
         parser = ArgumentParser(
@@ -30,12 +30,11 @@ class InputArguments:
         self.set_args(vars(parser.parse_args()))
 
     def _add_window_command_parser(self, parser) -> None:
-        subparsers = parser.add_subparsers()
+        subparsers = parser.add_subparsers(dest='command')
 
         parser_window = subparsers.add_parser('window',
             help='Window command help')
         parser_window.add_argument('--seq', type=str, help='Input sequence')
-        parser_window.set_defaults(dest='window')
 
 
 def add_input_args(parser) -> ArgumentParser:
