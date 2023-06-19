@@ -30,7 +30,7 @@ class GuideSequence:
         return PAM_POSITIVE_PATTERN if self.strand == "+" else PAM_NEGATIVE_PATTERN
 
     def _check_pam_position(self, match: re.Match) -> bool:
-        MAX_PAM_POSITION_FROM_SEQ_EDGE = 3
+        MAX_PAM_POSITION_FROM_SEQ_EDGE = 2
         is_pam = False
 
         if self.strand == "-":
