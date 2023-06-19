@@ -52,7 +52,13 @@ python3 src/cli.py --version
 
 Available commands:
 - --version
+- window 
 
+Window command returns window for mutation in the guide. 
+Example:
+```
+python3 src/cli.py window --seq GCCATTGTCCGGGAGTCAGAAACT --strand + --window_length 15
+```
 
 ### Run with Docker
 
@@ -65,3 +71,11 @@ Run container with command (example `--version` command)
 ```
 docker run sge-guide-selection --version
 ```
+
+### Run tests
+```
+source venv/bin/activate
+
+python -m unittest
+```
+
