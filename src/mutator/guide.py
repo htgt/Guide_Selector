@@ -1,8 +1,8 @@
 import re
 from dataclasses import dataclass
 
-PAM_POSITIVE_PATTERN = r'TGG'
-PAM_NEGATIVE_PATTERN = r'CCA'
+PAM_POSITIVE_PATTERN = r'.GG'
+PAM_NEGATIVE_PATTERN = r'CC.'
 
 
 @dataclass
@@ -14,7 +14,7 @@ class SequenceFragment:
 class GuideSequence:
     def __init__(self,
             bases: str,
-            strand: str,
+            strand: str = "+",
             window_length: int = 12
         ) -> None:
 
@@ -29,12 +29,30 @@ class GuideSequence:
     def _define_pam_pattern(self) -> str:
         return PAM_POSITIVE_PATTERN if self.strand == "+" else PAM_NEGATIVE_PATTERN
 
+    def _check_pam_position(self, match: re.Match) -> bool:
+        MAX_PAM_POSITION_FROM_SEQ_EDGE = 3
+        is_pam = False
+
+        if self.strand == "-":
+            is_pam = ( match.start() <= MAX_PAM_POSITION_FROM_SEQ_EDGE )
+        else:
+            is_pam = ( match.end() >= len(self.bases) - MAX_PAM_POSITION_FROM_SEQ_EDGE )
+
+        return is_pam
+
 
     def find_pam(self) -> SequenceFragment:
         pattern = self._define_pam_pattern()
-        pam = re.search(pattern, self.bases)
+        pam_matches = re.finditer(pattern, self.bases)
 
-        return SequenceFragment(pam.group(0), pam.start(0), pam.end(0))
+        for match in pam_matches:
+            if self._check_pam_position(match):
+                pam = match
+
+        if pam_matches:
+            return SequenceFragment(pam.group(0), pam.start(0), pam.end(0))
+        else:
+            raise Exception('No PAM found in the sequence')
 
 
     def define_window(self) -> SequenceFragment:

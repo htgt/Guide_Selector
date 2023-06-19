@@ -35,6 +35,8 @@ class InputArguments:
         parser_window = subparsers.add_parser('window',
             help='Window command help')
         parser_window.add_argument('--seq', type=str, help='Input sequence')
+        parser_window.add_argument('--strand', type=str, help='Guide strand')
+        parser_window.add_argument('--window_length', type=int, default=12, required=False, choices=range(12, 23), help='Length of mutatable window')
 
 
 def add_input_args(parser) -> ArgumentParser:
