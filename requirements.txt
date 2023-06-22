@@ -6,7 +6,6 @@ pandas==2.0.1
 pip==21.2.4
 pkg_resources==0.0.0
 pycodestyle==2.10.0
-pyfakefs==4.6.2
 pyranges==0.0.127
 python-dateutil==2.8.2
 pytz==2023.3
