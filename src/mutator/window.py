@@ -1,25 +1,38 @@
 from mutator.frame import get_frame, SequenceRegion
-
-def get_sequence_by_coords(cromosome, start, end) -> str:
-    return get_seq_from_ensembl_by_coords(cromosome, start, end)
+from mutator.base_sequence import BaseSequence
 
 def get_window_frame():
-    cds = SequenceRegion(True, 67626555, 67626715, 0)
-    window = SequenceRegion(True, 67626583, 67626594, 0)
+    cds = BaseSequence(
+        67626555,
+        67626715,
+        True,
+        '16',
+        0
+    )
+    window = EditWindow(
+        67626583,
+        67626594,
+        True,
+        '16',
+    )
 
     window.frame = get_frame(cds, window)
 
-    print(get_extended_window_coordinates(window))
+    print(window.get_extended_window_coordinates())
     print(window)
 
 
-def get_extended_window_coordinates(window):
-    start = window.start
-    end = window.end
+class EditWindow(BaseSequence):
 
-    if window.isPositiveStrand:
-        start = window.start - window.frame
-    else:
-        end = window.end + window.frame
+    def get_extended_window_coordinates(self):
+        start = self.start
+        end = self.end
 
-    return start, end
+        if self.isPositiveStrand:
+            start = self.start - self.frame
+        else:
+            end = self.end + self.frame
+
+        print(self._get_sequence_by_coords('16', start, end))
+
+        return start, end
