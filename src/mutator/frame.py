@@ -1,16 +1,6 @@
-from dataclasses import dataclass
+from mutator.base_sequence import BaseSequence
 
-from utils.get_data.ensembl import get_seq_from_ensembl_by_coords
-
-@dataclass
-class SequenceRegion:
-    isPositiveStrand: bool
-    start: int
-    end: int
-    frame: int
-
-
-def get_frame(coding_region: SequenceRegion, region: SequenceRegion) -> int:
+def get_frame(coding_region: BaseSequence, region: BaseSequence) -> int:
     if coding_region.isPositiveStrand:
         if region.start < coding_region.start:
             return coding_region.frame
