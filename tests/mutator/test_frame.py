@@ -2,7 +2,6 @@ import unittest
 from mutator.base_sequence import BaseSequence
 from mutator.frame import get_frame
 
-
 class TestGetFrame(unittest.TestCase):
     def test_positive_strand_cds_same_strand(self):
         coding_region = BaseSequence(10, 40, True, '16', 0)
