@@ -28,7 +28,7 @@ class MutationBuilder:
         self.cds = cds
         self.window = window
 
-        self.window_frame = self.calculate_window_frame()
+        self.window.frame = self.calculate_window_frame()
         print(self)
 
     def calculate_window_frame(self) -> int:
