@@ -3,7 +3,7 @@ import sys
 from utils.arguments_parser import InputArguments
 from mutator.mutator import Mutator
 from mutator.guide import GuideSequence
-from mutator.window import get_window_frame
+from mutator.mutation_builder import get_window_frame
 
 def resolve_command(command: str, args: dict) -> None:
     if command == "window":
