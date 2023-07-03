@@ -22,6 +22,15 @@ class TestParametrizedEditWindow(unittest.TestCase):
 
         self.assertEqual(result_coordinates, expected_coordinates, "Incorrect extended window coordinates")
 
+class TestEditWindowCodons(unittest.TestCase):
+        def test_split_window_into_codons(self):
+            bases = 'TATTGAGCAAGG'
+            codons = ['TAT', 'TGA', 'GCA', 'AGG']
+
+            window = EditWindow(1, 2, True, '16')
+            self.assertEqual(window.split_window_into_codons(bases), codons)
+
+
 if __name__ == '__main__':
     unittest.main()
 

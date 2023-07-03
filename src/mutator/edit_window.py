@@ -23,3 +23,6 @@ class EditWindow(BaseSequence):
         )
 
         return bases
+
+    def split_window_into_codons(self, bases):
+        return [bases[i:i+3] for i in range(0, len(bases), 3)]
