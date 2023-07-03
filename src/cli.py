@@ -17,7 +17,7 @@ def main() -> None:
     args = parsed_input.arguments
     command = parsed_input.command
 
-    get_window_frame()
+    get_window_frame(args["file"])
 
    # resolve_command(command, args)
 
