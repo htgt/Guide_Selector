@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from typing import List
+
 from mutator.frame import get_frame
 from mutator.base_sequence import BaseSequence
 
@@ -28,14 +29,17 @@ class EditWindow(BaseSequence):
         start = self.start
         end = self.end
 
+        if self.frame == 0:
+            return start, end
+
         if self.isPositiveStrand:
-            start = self.start - self.frame
+            start = self.start - 3 + self.frame
         else:
-            end = self.end + self.frame
+            end = self.end + 3 - self.frame
 
         return start, end
 
-    def get_extended_window_bases(self):
+    def get_extended_window_bases(self) -> str:
         extended_window = self._get_extended_window_coordinates()
         bases = self._get_sequence_by_coords(
             self.chromosome,
@@ -44,7 +48,6 @@ class EditWindow(BaseSequence):
         )
 
         return bases
-
 
     def split_window_into_codons(self, bases) -> List[WindowCodon]:
         codons = []
