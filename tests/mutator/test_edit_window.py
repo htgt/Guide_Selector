@@ -1,7 +1,9 @@
-from mutator.edit_window import EditWindow
+from mutator.edit_window import EditWindow, WindowCodon
 
 import unittest
 from parameterized import parameterized
+
+
 
 
 class TestParametrizedEditWindow(unittest.TestCase):
@@ -24,8 +26,13 @@ class TestParametrizedEditWindow(unittest.TestCase):
 
 class TestEditWindowCodons(unittest.TestCase):
         def test_split_window_into_codons(self):
-            bases = 'TATTGAGCAAGG'
-            codons = ['TAT', 'TGA', 'GCA', 'AGG']
+            bases = 'TATATTGAGCAAGG'
+            codons = [
+                WindowCodon('TAT', 'T'),
+                WindowCodon('ATT', 'A'),
+                WindowCodon('GAG', 'A'),
+                WindowCodon('CAA', 'G')
+            ]
 
             window = EditWindow(1, 2, True, '16')
             self.assertEqual(window.split_window_into_codons(bases), codons)
