@@ -20,5 +20,6 @@ def get_window_frame(cds : BaseSequence, window : EditWindow):
     print(window.get_extended_window_bases())
     print(window)
 
-    builder = MutationBuilder(cds, window) 
+    builder = MutationBuilder(cds, window)
 
+    return builder
