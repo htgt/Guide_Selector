@@ -1,17 +1,17 @@
 import sys
 
+from mutator.runner import Runner
 from utils.arguments_parser import InputArguments
-from mutator.mutator import Mutator
-from mutator.guide import GuideSequence
-from mutator.mutation_builder import get_window_frame
-from mutator.data_adapter import build_coding_region_objects
 from utils.file_system import read_csv_to_list_dict
 
-def resolve_command(command: str, args: dict) -> None:
-    if command == "window":
-        guide = GuideSequence(args["seq"], args["strand"], args["window_length"])
 
-        print(guide.window)
+def resolve_command(command: str, args: dict) -> None:
+    rows = []
+    if command == "window":
+        file_data = read_csv_to_list_dict(args['file'], "\t")
+        for row in (file_data):
+            runner = Runner()
+            rows.append(runner.window_frame(row))
 
 
 def main() -> None:

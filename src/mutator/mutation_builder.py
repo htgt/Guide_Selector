@@ -20,5 +20,4 @@ def get_window_frame(cds : BaseSequence, window : EditWindow):
 
     builder = MutationBuilder(cds, window)
 
-    return window.get_window_codons()
-
+    return builder
