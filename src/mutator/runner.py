@@ -23,15 +23,14 @@ class Runner:
         self.gene_name = None
 
 
-    def window_frame(self, row):
-        print(row)
+    def window_frame(self, row : dict) -> None:
         self.build_coding_region_objects(row)
         get_window_frame(self.cds, self.window)
 
         base = BaseWithPosition('A', 23, 1)
         self.codon = WindowCodon('TCA', base)
     
-    def build_coding_region_objects(self, data : dict):
+    def build_coding_region_objects(self, data : dict) -> None:
         self.cds = BaseSequence(
             int(data['cds_start']),
             int(data['cds_end']),
@@ -54,7 +53,7 @@ class Runner:
         )
         self.gene_name = data['gene_name']
 
-    def as_row(self):
+    def as_row(self) -> dict:
         return {
             'guide_id' : self.guide.guide_id,
             'chromosome' : self.cds.chromosome,
@@ -76,6 +75,6 @@ def _booleanise_strand(strand : str) -> bool:
 def _trim_chromosome(chr : str) -> str:
     return chr[3:]
 
-def mutator_to_dict_list(runners : List[Runner]):
+def mutator_to_dict_list(runners : List[Runner]) -> List[dict]:
     return [r.as_row() for r in runners]
 
