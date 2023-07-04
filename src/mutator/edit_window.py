@@ -5,7 +5,7 @@ from mutator.frame import get_frame
 from mutator.base_sequence import BaseSequence
 
 @dataclass
-class CodonThirdBase:
+class BaseWithPosition:
     base: str
     coordinate: int
     window_position: int
@@ -13,14 +13,17 @@ class CodonThirdBase:
 @dataclass
 class WindowCodon:
     bases: str
-    third: CodonThirdBase
-
-
+    third: BaseWithPosition
 
 
 class EditWindow(BaseSequence):
-    def __init__(self, ):
-        self.extended_coords = self._get_extended_window_coordinates()
+    extended_coords_start: int = 0
+    extended_coords_end: int = 0
+
+    def __post_init__(self):
+        extended_coords = self._get_extended_window_coordinates()
+        self.extended_coords_start = extended_coords[0]
+        self.extended_coords_end = extended_coords[1]
 
     def _get_extended_window_coordinates(self):
         start = self.start
@@ -43,11 +46,10 @@ class EditWindow(BaseSequence):
 
         return bases
 
-    def split_window_into_codons(self, bases) -> List[Codon]:
+    def split_window_into_codons(self, bases) -> List[WindowCodon]:
         codons = []
-        print(self.extended_coords)
 
-        for i in range(0, len(bases), 3):
+        for i in range(0, len(bases) - 2, 3):
             codon = WindowCodon(bases[i:i+3], bases[i+2])
             codons.append(codon)
 

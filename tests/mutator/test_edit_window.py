@@ -29,9 +29,21 @@ class TestEditWindowCodons(unittest.TestCase):
             bases = 'TATATTGAGCAAGG'
             codons = [
                 WindowCodon('TAT', 'T'),
-                WindowCodon('ATT', 'A'),
-                WindowCodon('GAG', 'A'),
-                WindowCodon('CAA', 'G')
+                WindowCodon('ATT', 'T'),
+                WindowCodon('GAG', 'G'),
+                WindowCodon('CAA', 'A')
+            ]
+
+            window = EditWindow(1, 2, True, '16')
+            self.assertEqual(window.split_window_into_codons(bases), codons)
+
+        def test_split_window_into_codons2(self):
+            bases = 'TATTGAGCAAGG'
+            codons = [
+                WindowCodon('TAT', 'T'),
+                WindowCodon('TGA', 'A'),
+                WindowCodon('GCA', 'A'),
+                WindowCodon('AGG', 'G')
             ]
 
             window = EditWindow(1, 2, True, '16')
