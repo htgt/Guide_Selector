@@ -16,7 +16,12 @@ class TestGetFrame(unittest.TestCase):
     ])
     def test_get_frame(self, coding_region, region, expected_frame):
         result_frame = get_frame(coding_region, region)
-        self.assertEqual(result_frame, expected_frame, f"Correct frame for test case {coding_region.isPositiveStrand, region.isPositiveStrand}")
+
+        self.assertEqual(
+            result_frame,
+            expected_frame,
+            f"Correct frame for test case {coding_region.isPositiveStrand, region.isPositiveStrand}"
+        )
 
 if __name__ == '__main__':
     unittest.main()
