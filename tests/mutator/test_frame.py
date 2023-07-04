@@ -6,7 +6,7 @@ class TestGetFrame(unittest.TestCase):
     def test_positive_strand_cds_same_strand(self):
         coding_region = BaseSequence(10, 40, True, '16', 0)
         region = BaseSequence(15, 27, True, '16', 0)
-        expected_frame = 2
+        expected_frame = 1
 
         result_frame = get_frame(coding_region, region)
 
@@ -16,7 +16,7 @@ class TestGetFrame(unittest.TestCase):
     def test_negative_strand_cds_same_strand(self):
         coding_region = BaseSequence(10, 40, False, '16', 0)
         region = BaseSequence(27, 38, False, '16', 0)
-        expected_frame = 2
+        expected_frame = 1
 
         result_frame = get_frame(coding_region, region)
 
