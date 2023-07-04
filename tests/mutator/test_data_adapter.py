@@ -2,7 +2,7 @@ import unittest
 
 from mutator.base_sequence import BaseSequence
 from mutator.edit_window import EditWindow
-from mutator.mutation_builder import build_coding_region_objects
+from mutator.data_adapter import build_coding_region_objects
 
 class CodingRegionObjectsTestCase(unittest.TestCase):
 
