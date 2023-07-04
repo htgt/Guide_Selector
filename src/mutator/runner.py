@@ -1,11 +1,11 @@
 from dataclasses import dataclass
 
-from mutator.mutator import Mutator
 from mutator.mutation_builder import get_window_frame
 from mutator.edit_window import WindowCodon, BaseWithPosition
 from mutator.base_sequence import BaseSequence
 from mutator.edit_window import EditWindow
 from mutator.guide import GuideSequenceLoci
+from utils.file_system import write_dict_list_to_tsv
 
 @dataclass
 class Runner:
@@ -58,7 +58,7 @@ class Runner:
         return {
             'guide_id' : self.guide.guide_id,
             'chromosome' : self.cds.chromosome,
-            'cds_strand' : self.cds.cds_strand,
+            'cds_strand' : self.cds.isPositiveStrand,
             'gene_name' : 'ACT',
             'guide_strand' : self.guide.isPositiveStrand,
             'guide_start' : self.guide.start,
@@ -75,3 +75,7 @@ def _booleanise_strand(strand : str) -> bool:
 
 def _trim_chromosome(chr : str) -> str:
     return chr[3:]
+
+def mutator_to_dict_list(runners : List[Runner]):
+    return [r.as_row() for r in runners]
+
