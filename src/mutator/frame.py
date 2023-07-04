@@ -10,7 +10,10 @@ def get_frame(coding_region: BaseSequence, region: BaseSequence) -> int:
             return coding_region.frame
         difference = coding_region.end - region.end
 
-    frames = (0, 1, 2)
+    frames = (0, 2, 1)
+
+    print((difference + int(frames.index(coding_region.frame))) % 3)
+    print(frames[(difference + int(frames.index(coding_region.frame))) % 3])
 
     return frames[(difference + int(frames.index(coding_region.frame))) % 3]
 
