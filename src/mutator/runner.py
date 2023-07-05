@@ -1,11 +1,11 @@
 from dataclasses import dataclass
+from typing import List
 
 from mutator.mutation_builder import get_window_frame
 from mutator.edit_window import WindowCodon, BaseWithPosition
 from mutator.base_sequence import BaseSequence
 from mutator.edit_window import EditWindow
 from mutator.guide import GuideSequenceLoci
-from utils.file_system import write_dict_list_to_tsv
 
 @dataclass
 class Runner:
