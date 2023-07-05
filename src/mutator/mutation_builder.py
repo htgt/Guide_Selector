@@ -3,7 +3,6 @@ from mutator.edit_window import EditWindow
 from mutator.frame import get_frame
 
 
-
 class MutationBuilder:
     def __init__(self, cds: BaseSequence, window: EditWindow) -> None:
         self.cds = cds
@@ -17,8 +16,9 @@ class MutationBuilder:
 
 
 def get_window_frame(cds : BaseSequence, window : EditWindow):
-    print(window.get_extended_window_bases())
     print(window)
 
-    builder = MutationBuilder(cds, window) 
+    builder = MutationBuilder(cds, window)
+
+    return window.get_window_codons()
 

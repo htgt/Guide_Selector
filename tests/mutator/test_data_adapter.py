@@ -20,7 +20,7 @@ class CodingRegionObjectsTestCase(unittest.TestCase):
         }
 
         # Expected output
-        expected_cds = BaseSequence(100, 200, True, '1', 0)         
+        expected_cds = BaseSequence(100, 200, True, '1', 0)
         expected_window = EditWindow(150, 250, False, '1')
 
         # Call the function
