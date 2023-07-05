@@ -1,5 +1,6 @@
 import re
 from dataclasses import dataclass
+from mutator.base_sequence import BaseSequence
 
 PAM_POSITIVE_PATTERN = r'.GG'
 PAM_NEGATIVE_PATTERN = r'CC.'
@@ -10,6 +11,10 @@ class SequenceFragment:
     bases: str
     start: int
     end: int
+
+@dataclass
+class GuideSequenceLoci(BaseSequence):
+    guide_id: int = 0
 
 class GuideSequence:
     def __init__(self,
