@@ -5,6 +5,7 @@ import pandas as pd
 
 from utils.file_system import read_csv_to_list_dict
 from utils.exceptions import MutatorError
+from mutator.codon import CodonEdit
 
 
 class Mutator:
@@ -92,3 +93,21 @@ class Mutator:
             'guide_frame',
         ]
         return coding_regions[required_cols].copy()
+
+    def add_codon_edit_data_to_df(df_with_ref_codons: pd.DataFrame) -> pd.DataFrame:
+        df_with_ref_codons[[
+            'alt',
+            'lost_amino_acids',
+            'permitted'
+        ]] = df_with_ref_codons.apply(Mutator.make_codon_edit, axis=1)
+
+    def make_codon_edit(row: pd.Series) -> pd.Series:
+        codon_edit = CodonEdit(row['ref_codon'])
+        lost_amino_acids = ','.join(codon_edit.lost_amino_acids)
+        if not lost_amino_acids:
+            lost_amino_acids = 'N/A'
+        return pd.Series([
+            codon_edit.edited_codon[2],
+            lost_amino_acids,
+            codon_edit.is_permitted,
+        ])
