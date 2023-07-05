@@ -1,7 +1,6 @@
 from os import path
 import csv
 from typing import List
-from mutator.runner import Runner
 
 
 # copied from targeton-designer- need to make a shared repo

@@ -3,10 +3,10 @@ from enum import Enum
 
 from utils.get_data.ensembl import get_seq_from_ensembl_by_coords
 
-class PositionInCodon(Enum):
-    FIRST = 0
-    SECOND = 1
-    THIRD = 2
+class FragmentFrameIndicator(Enum):
+    ZERO = 0
+    TWO = 2
+    ONE = 1
 
 
 @dataclass
@@ -15,7 +15,7 @@ class BaseSequence:
     end: int
     isPositiveStrand: bool
     chromosome: str
-    frame: PositionInCodon = 0
+    frame: FragmentFrameIndicator = 0
 
     def _get_sequence_by_coords(self, chromosome, start, end) -> str:
         return get_seq_from_ensembl_by_coords(chromosome, start, end)
