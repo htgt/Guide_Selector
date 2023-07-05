@@ -221,3 +221,19 @@ class TestMutator(TestCase):
 
         # assert
         pd.testing.assert_frame_equal(actual, expected, check_exact=True)
+
+    def test_add_codon_edit_data_to_df(self):
+        # arrange
+        test_df = pd.DataFrame({'ref_codon': ['CCT', 'TTG', 'GAT', 'GAT']})
+        expected = pd.DataFrame({
+            'ref_codon': ['CCT', 'TTG', 'GAT', 'GAT'],
+            'alt': ['C', 'A', 'C', 'C'],
+            'lost_amino_acids': ['N/A', 'M,W', 'N/A', 'N/A'],
+            'permitted': [True, True, True, True],
+        })
+
+        # act
+        Mutator.add_codon_edit_data_to_df(test_df)
+
+        # assert
+        pd.testing.assert_frame_equal(test_df, expected)
