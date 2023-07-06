@@ -8,7 +8,7 @@ from mutator.base_sequence import BaseSequence
 class BaseWithPosition:
     base: str
     coordinate: int
-    window_position: int
+    window_position: int = 0
 
 @dataclass
 class WindowCodon:
@@ -37,25 +37,30 @@ class EditWindow(BaseSequence):
             extended_window_start,
             extended_window_end,
         )
-        print(bases)
 
         return bases
 
-    def split_window_into_codons(self, bases: str) -> List[WindowCodon]:
+    def split_window_into_codons(self, bases: str, start: int) -> List[WindowCodon]:
         codons = []
 
         for i in range(0, len(bases) - 2, 3):
-            codon = WindowCodon(bases[i:i+3], bases[i+2])
+            third = BaseWithPosition(
+                bases[i+2],
+                self._get_third_base_coordinate(start, i+2)
+            )
+            codon = WindowCodon(bases[i:i+3], third)
+
             codons.append(codon)
 
         return codons
+
+    def _get_third_base_coordinate(self, start, base_position):
+        return start + base_position
 
     def get_window_codons(self) -> List[WindowCodon]:
         extended_coords = self._get_extended_window_coordinates()
 
         bases = self.get_extended_window_bases(extended_coords[0], extended_coords[1])
-        codons = self.split_window_into_codons(bases)
-
-        print(codons)
+        codons = self.split_window_into_codons(bases, extended_coords[0])
 
         return codons
