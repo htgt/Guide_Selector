@@ -9,15 +9,12 @@ class MutationBuilder:
         self.window = window
 
         self.window.frame = self.calculate_window_frame()
-        print(self)
 
     def calculate_window_frame(self) -> int:
         return get_frame(self.cds, self.window)
 
 
-def get_window_frame(cds : BaseSequence, window : EditWindow):
-    print(window)
-
+def get_window_frame_and_codons(cds : BaseSequence, window : EditWindow):
     builder = MutationBuilder(cds, window)
 
     return window.get_window_codons()

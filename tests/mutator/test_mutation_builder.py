@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from mutator.mutation_builder import get_window_frame
+from mutator.mutation_builder import get_window_frame_and_codons
 from mutator.base_sequence import BaseSequence
 from mutator.edit_window import EditWindow, WindowCodon, BaseWithPosition
 
@@ -18,7 +18,7 @@ class TestGuideSequence(TestCase):
             WindowCodon('CAA', BaseWithPosition('A', 67626592)),
         ]
 
-        codons = get_window_frame(cds, window)
+        codons = get_window_frame_and_codons(cds, window)
 
         self.assertEqual(codons, control_codons)
 
@@ -33,7 +33,7 @@ class TestGuideSequence(TestCase):
             WindowCodon('GAG', BaseWithPosition('G', 67610865)),
         ]
 
-        codons = get_window_frame(cds, window)
+        codons = get_window_frame_and_codons(cds, window)
 
         self.assertEqual(codons, control_codons)
 
@@ -48,6 +48,6 @@ class TestGuideSequence(TestCase):
             WindowCodon('GAT', BaseWithPosition('T', 77696647)),
         ]
 
-       # codons = get_window_frame(cds, window)
+        codons = get_window_frame_and_codons(cds, window)
 
        # self.assertEqual(codons, control_codons)

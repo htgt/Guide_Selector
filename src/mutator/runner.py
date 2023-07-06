@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import List
 
-from mutator.mutation_builder import get_window_frame
+from mutator.mutation_builder import get_window_frame_and_codons
 from mutator.edit_window import WindowCodon, BaseWithPosition
 from mutator.base_sequence import BaseSequence
 from mutator.edit_window import EditWindow
@@ -11,7 +11,7 @@ from mutator.guide import GuideSequenceLoci
 class Runner:
     cds: BaseSequence
     window: EditWindow
-    codon: WindowCodon
+    codons: List[WindowCodon]
     guide: GuideSequenceLoci
     gene_name: str
 
@@ -22,13 +22,13 @@ class Runner:
         self.guide = None
         self.gene_name = None
 
-
     def window_frame(self, row : dict) -> None:
         self.build_coding_region_objects(row)
-        get_window_frame(self.cds, self.window)
 
-        base = BaseWithPosition('A', 23, 1)
-        self.codon = WindowCodon('TCA', base)
+        codons = get_window_frame_and_codons(self.cds, self.window)
+        self.codons = codons
+
+        return codons
     
     def build_coding_region_objects(self, data : dict) -> None:
         self.cds = BaseSequence(
