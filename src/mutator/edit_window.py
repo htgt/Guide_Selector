@@ -37,6 +37,7 @@ class EditWindow(BaseSequence):
             extended_window_start,
             extended_window_end,
         )
+        print(bases)
 
         return bases
 
@@ -54,5 +55,7 @@ class EditWindow(BaseSequence):
 
         bases = self.get_extended_window_bases(extended_coords[0], extended_coords[1])
         codons = self.split_window_into_codons(bases)
+
+        print(codons)
 
         return codons
