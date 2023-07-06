@@ -1,4 +1,4 @@
-from mutator.edit_window import EditWindow, WindowCodon
+from mutator.edit_window import EditWindow, WindowCodon, BaseWithPosition
 
 import unittest
 from parameterized import parameterized
@@ -26,26 +26,28 @@ class TestEditWindowCodons(unittest.TestCase):
         def test_split_window_into_codons(self):
             bases = 'TATATTGAGCAAGG'
             codons = [
-                WindowCodon('TAT', 'T'),
-                WindowCodon('ATT', 'T'),
-                WindowCodon('GAG', 'G'),
-                WindowCodon('CAA', 'A')
+                WindowCodon('TAT', BaseWithPosition('T', 2)),
+                WindowCodon('ATT', BaseWithPosition('T', 5)),
+                WindowCodon('GAG', BaseWithPosition('G', 8)),
+                WindowCodon('CAA', BaseWithPosition('A', 11))
             ]
 
-            window = EditWindow(1, 2, True, '16')
-            self.assertEqual(window.split_window_into_codons(bases), codons)
+            window = EditWindow(0, 12, True, '16')
+
+            self.assertEqual(window.split_window_into_codons(bases, 0), codons)
 
         def test_split_window_into_codons2(self):
             bases = 'TATTGAGCAAGG'
             codons = [
-                WindowCodon('TAT', 'T'),
-                WindowCodon('TGA', 'A'),
-                WindowCodon('GCA', 'A'),
-                WindowCodon('AGG', 'G')
+                WindowCodon('TAT', BaseWithPosition('T', 2)),
+                WindowCodon('TGA', BaseWithPosition('A', 5)),
+                WindowCodon('GCA', BaseWithPosition('A', 8)),
+                WindowCodon('AGG', BaseWithPosition('G', 11))
             ]
 
-            window = EditWindow(1, 2, True, '16')
-            self.assertEqual(window.split_window_into_codons(bases), codons)
+            window = EditWindow(0, 12, True, '16')
+
+            self.assertEqual(window.split_window_into_codons(bases, 0), codons)
 
 
 if __name__ == '__main__':
