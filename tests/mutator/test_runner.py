@@ -1,11 +1,9 @@
 import unittest
 from mutator.runner import Runner
 from mutator.base_sequence import BaseSequence
-from mutator.edit_window import EditWindow
 from mutator.guide import GuideSequenceLoci
-from mutator.edit_window import WindowCodon
-from mutator.mutation_builder import get_window_frame
-from mutator.edit_window import BaseWithPosition
+from mutator.edit_window import EditWindow, WindowCodon, BaseWithPosition
+
 
 class RunnerTestCase(unittest.TestCase):
     def setUp(self):
@@ -31,7 +29,7 @@ class RunnerTestCase(unittest.TestCase):
 
         self.assertIsInstance(self.runner.cds, BaseSequence)
         self.assertIsInstance(self.runner.window, EditWindow)
-        self.assertIsInstance(self.runner.codon, WindowCodon)
+        self.assertIsInstance(self.runner.codons[0], WindowCodon)
 
     def test_build_coding_region_objects(self):
         data = {
