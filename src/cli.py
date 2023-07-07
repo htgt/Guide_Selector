@@ -28,11 +28,11 @@ def run_window_cmd(args : dict) -> None:
     file_data = read_csv_to_list_dict(args['file'], "\t")
     for row in (file_data):
         runner = Runner()
-        rows.append(runner.window_frame(row))
-
-    print(rows)
+        runner.window_frame(row)
+        rows.append(runner)
 
     dict_list = mutator_to_dict_list(rows)
+
     headers = [
         'guide_id',
         'chromosome',

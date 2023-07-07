@@ -1,5 +1,5 @@
 import unittest
-from mutator.runner import Runner
+from mutator.runner import Runner, mutator_to_dict_list
 from mutator.base_sequence import BaseSequence
 from mutator.guide import GuideSequenceLoci
 from mutator.edit_window import EditWindow, WindowCodon, BaseWithPosition
@@ -82,6 +82,27 @@ class RunnerTestCase(unittest.TestCase):
         }
 
         self.assertEqual(row, expected_row)
+
+    def test_mutator_to_dict_list(self):
+        # Create a list of Runner objects
+        runners = [
+            Runner(100, 200, True, 'chr1', 0),
+            Runner(150, 250, False, 'chrX', 1),
+            Runner(200, 300, True, 'chr2', 2)
+        ]
+
+        # Convert the Runner objects to a list of dictionaries
+        dict_list = mutator_to_dict_list(runners)
+
+        # Assert that the dict_list is of the correct length
+        self.assertEqual(len(dict_list), len(runners))
+
+        # Assert that the dictionaries in dict_list match the expected format
+        for i, runner in enumerate(runners):
+            expected_dict = runner.as_row()
+            actual_dict = dict_list[i]
+            self.assertDictEqual(actual_dict, expected_dict)
+        
 
 
 if __name__ == '__main__':
