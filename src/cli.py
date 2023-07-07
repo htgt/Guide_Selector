@@ -1,9 +1,8 @@
 import sys
 
-from mutator.runner import Runner, write_mutator_to_tsv
+from mutator.runner import Runner, mutator_to_dict_list
 from utils.arguments_parser import InputArguments
-from utils.file_system import read_csv_to_list_dict
-from utils.file_system import write_dict_list_to_tsv
+from utils.file_system import read_csv_to_list_dict, write_dict_list_to_csv
 
 
 def resolve_command(command: str, args: dict) -> None:
@@ -15,12 +14,14 @@ def main() -> None:
     args = parsed_input.arguments
     command = parsed_input.command
 
-    file_data = read_csv_to_list_dict(file, "\t")
-    for row in (file_data):
-        cds, window = build_coding_region_objects(row)
-        get_window_frame(cds, window)
+    print(parsed_input.arguments)
 
-   # resolve_command(command, args)
+    #file_data = read_csv_to_list_dict(parsed_input.arguments["file"], "\t")
+    #for row in (file_data):
+        #cds, window = build_coding_region_objects(row)
+    #    get_window_frame(cds, window)
+
+    resolve_command(command, args)
 
 def run_window_cmd(args : dict) -> None:
     rows = []
@@ -29,7 +30,9 @@ def run_window_cmd(args : dict) -> None:
         runner = Runner()
         rows.append(runner.window_frame(row))
 
-    dict_list = write_mutator_to_tsv(rows)
+    print(rows)
+
+    dict_list = mutator_to_dict_list(rows)
     headers = [
         'guide_id',
         'chromosome',
