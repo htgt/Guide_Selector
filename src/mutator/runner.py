@@ -53,20 +53,29 @@ class Runner:
         )
         self.gene_name = data['gene_name']
 
-    def as_row(self) -> dict:
-        return {
+    def as_rows(self) -> dict:
+        rows = []
+        base = {
             'guide_id' : self.guide.guide_id,
             'chromosome' : self.cds.chromosome,
             'cds_strand' : self.cds.isPositiveStrand,
-            'gene_name' : 'ACT',
+            'gene_name' : self.gene_name,
             'guide_strand' : self.guide.isPositiveStrand,
             'guide_start' : self.guide.start,
             'guide_end' : self.guide.end,
-            'window_pos' : self.codon.third.window_position,
-            'pos' : self.codon.third.coordinate,
-            'ref_codon' : self.codon.bases,
-            'ref_pos_three' : self.codon.third.base
         }
+        for codon in (self.codons):
+            row = base
+            row.update({
+                'window_pos' : codon.third.window_position,
+                'pos' : codon.third.coordinate,
+                'ref_codon' : codon.bases,
+                'ref_pos_three' : codon.third.base
+            })
+            rows.append(row)
+
+        return rows
+        
 
 
 def _booleanise_strand(strand : str) -> bool:
@@ -76,5 +85,8 @@ def _trim_chromosome(chr : str) -> str:
     return chr[3:]
 
 def mutator_to_dict_list(runners : List[Runner]) -> List[dict]:
-    return [r.as_row() for r in runners]
+    rows = []
+    for runner in runners:
+        rows.extend(runner.as_rows())
+    return rows
 
