@@ -44,9 +44,13 @@ class EditWindow(BaseSequence):
         codons = []
 
         for i in range(0, len(bases) - 2, 3):
+            coordinate = self._get_third_base_coordinate(start, i+2)
+            window_position = self._get_base_window_position(coordinate)
+
             third = BaseWithPosition(
                 bases[i+2],
-                self._get_third_base_coordinate(start, i+2)
+                coordinate,
+                window_position,
             )
             codon = WindowCodon(bases[i:i+3], third)
 
@@ -57,6 +61,9 @@ class EditWindow(BaseSequence):
     def _get_third_base_coordinate(self, start, base_position):
         return start + base_position
 
+    def _get_base_window_position(self, coordinate: int) -> int:
+        return calculate_position_in_window(self.start, coordinate, self.isPositiveStrand)
+
     def get_window_codons(self) -> List[WindowCodon]:
         extended_coords = self._get_extended_window_coordinates()
 
@@ -65,8 +72,14 @@ class EditWindow(BaseSequence):
 
         return codons
 
-def calculate_position_in_window(window_start: int, coordinate: int, strand: bool, window_length: int = 12) -> int:
+def calculate_position_in_window(
+        window_start: int,
+        coordinate: int,
+        strand: bool,
+        window_length: int = 12
+) -> int:
     PAM_PROTECTION_LENGTH = 3
+
     result = 0
     coords_diff = coordinate - window_start
 
