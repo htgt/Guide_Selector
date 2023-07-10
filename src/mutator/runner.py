@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from typing import List
+import copy
 
 from mutator.mutation_builder import get_window_frame_and_codons
 from mutator.edit_window import WindowCodon, BaseWithPosition
@@ -18,14 +19,15 @@ class Runner:
     def __init__(self):
         self.cds = None
         self.window = None
-        self.codon = None
+        self.codons = None
         self.guide = None
         self.gene_name = None
 
-    def window_frame(self, row : dict) -> None:
+    def run_window_frame(self, row : dict) -> None:
         self.build_coding_region_objects(row)
 
         codons = get_window_frame_and_codons(self.cds, self.window)
+
         self.codons = codons
 
         return codons
@@ -64,6 +66,7 @@ class Runner:
             'guide_start' : self.guide.start,
             'guide_end' : self.guide.end,
         }
+
         for codon in (self.codons):
             row = base
             row.update({
@@ -72,10 +75,9 @@ class Runner:
                 'ref_codon' : codon.bases,
                 'ref_pos_three' : codon.third.base
             })
-            rows.append(row)
+            rows.append(copy.deepcopy(row))
 
         return rows
-        
 
 
 def _booleanise_strand(strand : str) -> bool:
@@ -88,5 +90,6 @@ def mutator_to_dict_list(runners : List[Runner]) -> List[dict]:
     rows = []
     for runner in runners:
         rows.extend(runner.as_rows())
+
     return rows
 

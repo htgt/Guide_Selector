@@ -14,8 +14,6 @@ def main() -> None:
     args = parsed_input.arguments
     command = parsed_input.command
 
-    print(parsed_input.arguments)
-
     #file_data = read_csv_to_list_dict(parsed_input.arguments["file"], "\t")
     #for row in (file_data):
         #cds, window = build_coding_region_objects(row)
@@ -24,11 +22,13 @@ def main() -> None:
     resolve_command(command, args)
 
 def run_window_cmd(args : dict) -> None:
+    OUTPUT_FILE_URL = 'output.tsv'
+
     rows = []
     file_data = read_csv_to_list_dict(args['file'], "\t")
     for row in (file_data):
         runner = Runner()
-        runner.window_frame(row)
+        runner.run_window_frame(row)
         rows.append(runner)
 
     dict_list = mutator_to_dict_list(rows)
@@ -46,7 +46,10 @@ def run_window_cmd(args : dict) -> None:
         'ref_codon',
         'ref_pos_three'
     ]
-    write_dict_list_to_csv('output.tsv', dict_list, headers, '\t')
+    write_dict_list_to_csv(OUTPUT_FILE_URL, dict_list, headers, '\t')
+
+    print('Window command success')
+    print('Output saved to', OUTPUT_FILE_URL)
 
 
 if __name__ == '__main__':

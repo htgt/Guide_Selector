@@ -25,7 +25,7 @@ class RunnerTestCase(unittest.TestCase):
             'gene_name': 'ACT'
         }
 
-        self.runner.window_frame(row)
+        self.runner.run_window_frame(row)
 
         self.assertIsInstance(self.runner.cds, BaseSequence)
         self.assertIsInstance(self.runner.window, EditWindow)
@@ -63,11 +63,12 @@ class RunnerTestCase(unittest.TestCase):
             isPositiveStrand=True,
             chromosome='1'
         )
-        self.runner.codon = WindowCodon('TCA', BaseWithPosition('A', 23, 1))
+        self.runner.gene_name = 'ACT'
+        self.runner.codons = [WindowCodon('TCA', BaseWithPosition('A', 23, 1))]
 
-        row = self.runner.as_row()
+        rows = self.runner.as_rows()
 
-        expected_row = {
+        expected_rows = [{
             'guide_id': 123,
             'chromosome': '1',
             'cds_strand': True,
@@ -79,30 +80,9 @@ class RunnerTestCase(unittest.TestCase):
             'pos': 23,
             'ref_codon': 'TCA',
             'ref_pos_three': 'A'
-        }
+        }]
 
-        self.assertEqual(row, expected_row)
-
-    def test_mutator_to_dict_list(self):
-        # Create a list of Runner objects
-        runners = [
-            Runner(100, 200, True, 'chr1', 0),
-            Runner(150, 250, False, 'chrX', 1),
-            Runner(200, 300, True, 'chr2', 2)
-        ]
-
-        # Convert the Runner objects to a list of dictionaries
-        dict_list = mutator_to_dict_list(runners)
-
-        # Assert that the dict_list is of the correct length
-        self.assertEqual(len(dict_list), len(runners))
-
-        # Assert that the dictionaries in dict_list match the expected format
-        for i, runner in enumerate(runners):
-            expected_dict = runner.as_row()
-            actual_dict = dict_list[i]
-            self.assertDictEqual(actual_dict, expected_dict)
-        
+        self.assertEqual(rows, expected_rows)
 
 
 if __name__ == '__main__':
