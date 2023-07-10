@@ -28,31 +28,26 @@ class TestEditWindow(unittest.TestCase):
 
 
 class TestEditWindowCodons(unittest.TestCase):
-        def test_split_window_into_codons(self):
-            bases = 'TATATTGAGCAAGG'
-            codons = [
-                WindowCodon('TAT', BaseWithPosition('T', 2)),
-                WindowCodon('ATT', BaseWithPosition('T', 5)),
-                WindowCodon('GAG', BaseWithPosition('G', 8)),
-                WindowCodon('CAA', BaseWithPosition('A', 11))
-            ]
+    @parameterized.expand([
+        ('TATATTGAGCAAGG', [
+            WindowCodon('TAT', BaseWithPosition('T', 2, 7)),
+            WindowCodon('ATT', BaseWithPosition('T', 5, 4)),
+            WindowCodon('GAG', BaseWithPosition('G', 8, 1)),
+            WindowCodon('CAA', BaseWithPosition('A', 11, -3))
+        ]),
+        ('TATTGAGCAAGG', [
+            WindowCodon('TAT', BaseWithPosition('T', 2, 7)),
+            WindowCodon('TGA', BaseWithPosition('A', 5, 4)),
+            WindowCodon('GCA', BaseWithPosition('A', 8, 1)),
+            WindowCodon('AGG', BaseWithPosition('G', 11, -3))
+        ])
+    ])
+    def test_split_window_into_codons(self, bases, expected_codons):
+        window = EditWindow(0, 12, True, '16')
 
-            window = EditWindow(0, 12, True, '16')
+        result_codons = window.split_window_into_codons(bases, 0)
 
-            self.assertEqual(window.split_window_into_codons(bases, 0), codons)
-
-        def test_split_window_into_codons2(self):
-            bases = 'TATTGAGCAAGG'
-            codons = [
-                WindowCodon('TAT', BaseWithPosition('T', 2)),
-                WindowCodon('TGA', BaseWithPosition('A', 5)),
-                WindowCodon('GCA', BaseWithPosition('A', 8)),
-                WindowCodon('AGG', BaseWithPosition('G', 11))
-            ]
-
-            window = EditWindow(0, 12, True, '16')
-
-            self.assertEqual(window.split_window_into_codons(bases, 0), codons)
+        self.assertEqual(result_codons, expected_codons, "Incorrect split into codons")
 
 
 class TestCalculatePosition(unittest.TestCase):
