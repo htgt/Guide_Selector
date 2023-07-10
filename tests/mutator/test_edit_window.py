@@ -1,10 +1,14 @@
-from mutator.edit_window import EditWindow, WindowCodon, BaseWithPosition
+from mutator.edit_window import \
+    EditWindow, \
+    WindowCodon, \
+    BaseWithPosition, \
+    calculate_position_in_window
 
 import unittest
 from parameterized import parameterized
 
 
-class TestParametrizedEditWindow(unittest.TestCase):
+class TestEditWindow(unittest.TestCase):
     @parameterized.expand([
         # Positive strand test cases
         (10, 21, True, '16', 0, (10, 21)),
@@ -21,6 +25,7 @@ class TestParametrizedEditWindow(unittest.TestCase):
         result_coordinates = window._get_extended_window_coordinates()
 
         self.assertEqual(result_coordinates, expected_coordinates, "Incorrect extended window coordinates")
+
 
 class TestEditWindowCodons(unittest.TestCase):
         def test_split_window_into_codons(self):
@@ -48,6 +53,24 @@ class TestEditWindowCodons(unittest.TestCase):
             window = EditWindow(0, 12, True, '16')
 
             self.assertEqual(window.split_window_into_codons(bases, 0), codons)
+
+
+class TestCalculatePosition(unittest.TestCase):
+    @parameterized.expand([
+        (67626583, 67626592, True, -1),
+        (67626583, 67626589, True, 3),
+        (67626583, 67626586, True, 6),
+        (77696647, 77696656, True, -1),
+        (77696647, 77696653, True, 3),
+        (67610855, 67610856, False, -2),
+        (67610855, 67610859, False, 2),
+        (67610855, 67610862, False, 5),
+        (67610855, 67610865, False, 8),
+    ])
+    def test_calculate_position_in_window(self, start, coordinate, strand, expected_position):
+        result_position = calculate_position_in_window(start, coordinate, strand)
+
+        self.assertEqual(result_position, expected_position, "Correct window position")
 
 
 if __name__ == '__main__':

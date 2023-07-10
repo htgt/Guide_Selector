@@ -64,3 +64,20 @@ class EditWindow(BaseSequence):
         codons = self.split_window_into_codons(bases, extended_coords[0])
 
         return codons
+
+def calculate_position_in_window(window_start: int, coordinate: int, strand: bool, window_length: int = 12) -> int:
+    PAM_PROTECTION_LENGTH = 3
+    result = 0
+    coords_diff = coordinate - window_start
+
+    if strand == True:
+        result = window_length - PAM_PROTECTION_LENGTH - coords_diff
+
+        if result <= 0:
+            result = result - 1
+    else:
+        result = coords_diff - PAM_PROTECTION_LENGTH
+        if result >= 0:
+            result = result + 1
+
+    return result
