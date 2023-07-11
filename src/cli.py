@@ -14,15 +14,23 @@ def main() -> None:
     args = parsed_input.arguments
     command = parsed_input.command
 
-    #file_data = read_csv_to_list_dict(parsed_input.arguments["file"], "\t")
-    #for row in (file_data):
-        #cds, window = build_coding_region_objects(row)
-    #    get_window_frame(cds, window)
-
     resolve_command(command, args)
 
 def run_window_cmd(args : dict) -> None:
     OUTPUT_FILE_URL = 'output.tsv'
+    OUTFUT_FILE_HEADERS = [
+        'guide_id',
+        'chromosome',
+        'cds_strand',
+        'gene_name',
+        'guide_strand',
+        'guide_start',
+        'guide_end',
+        'window_pos', 
+        'pos',
+        'ref_codon',
+        'ref_pos_three'
+    ]
 
     rows = []
     file_data = read_csv_to_list_dict(args['file'], "\t")
@@ -33,20 +41,7 @@ def run_window_cmd(args : dict) -> None:
 
     dict_list = mutator_to_dict_list(rows)
 
-    headers = [
-        'guide_id',
-        'chromosome',
-        'cds_strand',
-        'gene_name',
-        'guide_strand',
-        'guide_start',
-        'guide_end',
-        'window_pos',
-        'pos',
-        'ref_codon',
-        'ref_pos_three'
-    ]
-    write_dict_list_to_csv(OUTPUT_FILE_URL, dict_list, headers, '\t')
+    write_dict_list_to_csv(OUTPUT_FILE_URL, dict_list, OUTFUT_FILE_HEADERS, '\t')
 
     print('Window command success')
     print('Output saved to', OUTPUT_FILE_URL)
