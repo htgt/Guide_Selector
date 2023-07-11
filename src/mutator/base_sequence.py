@@ -22,7 +22,7 @@ class BaseSequence:
         bases = get_seq_from_ensembl_by_coords(chromosome, start, end)
 
         if not self.isPositiveStrand:
-            bases = Seq(bases).complement()
+            bases = Seq(bases).reverse_complement()
 
         return bases
 
