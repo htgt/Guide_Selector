@@ -16,7 +16,7 @@ class Runner:
     guide: GuideSequenceLoci
     gene_name: str
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.cds = None
         self.window = None
         self.codons = None

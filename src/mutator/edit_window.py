@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List
+from typing import List, Tuple
 
 from mutator.frame import get_frame
 from mutator.base_sequence import BaseSequence
@@ -17,7 +17,7 @@ class WindowCodon:
 
 
 class EditWindow(BaseSequence):
-    def _get_extended_window_coordinates(self):
+    def _get_extended_window_coordinates(self) -> Tuple[int, int]:
         start = self.start
         end = self.end
 
@@ -31,7 +31,7 @@ class EditWindow(BaseSequence):
 
         return start, end
 
-    def get_extended_window_bases(self, extended_window_start, extended_window_end) -> str:
+    def get_extended_window_bases(self, extended_window_start: int, extended_window_end: int) -> str:
         bases = self._get_sequence_by_coords(
             self.chromosome,
             extended_window_start,
@@ -58,7 +58,7 @@ class EditWindow(BaseSequence):
 
         return codons
 
-    def _get_third_base_coordinate(self, start, base_position):
+    def _get_third_base_coordinate(self, start: int, base_position: int) -> int:
         return start + base_position
 
     def _get_base_window_position(self, coordinate: int) -> int:
