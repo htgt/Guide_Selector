@@ -3,6 +3,8 @@ from enum import Enum
 from Bio.Seq import Seq
 
 from utils.get_data.ensembl import get_seq_from_ensembl_by_coords
+from mutator.frame import FragmentFrameIndicator
+
 
 class FragmentFrameIndicator(Enum):
     ZERO = 0

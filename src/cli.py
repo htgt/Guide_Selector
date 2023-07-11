@@ -26,7 +26,7 @@ def run_window_cmd(args : dict) -> None:
         'guide_strand',
         'guide_start',
         'guide_end',
-        'window_pos', 
+        'window_pos',
         'pos',
         'ref_codon',
         'ref_pos_three'

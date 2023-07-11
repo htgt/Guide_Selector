@@ -1,6 +1,7 @@
 import copy
+from typing import List
 from mutator.base_sequence import BaseSequence
-from mutator.edit_window import EditWindow
+from mutator.edit_window import EditWindow, WindowCodon
 from mutator.frame import get_frame
 
 
@@ -13,7 +14,7 @@ class MutationBuilder:
         return get_frame(self.cds, self.window)
 
 
-def get_window_frame_and_codons(cds : BaseSequence, window : EditWindow):
+def get_window_frame_and_codons(cds : BaseSequence, window : EditWindow) -> List[WindowCodon]:
     builder = MutationBuilder(cds, window)
 
     result_window = copy.deepcopy(window)
