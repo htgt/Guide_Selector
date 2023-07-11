@@ -72,6 +72,11 @@ class EditWindow(BaseSequence):
 
         return codons
 
+
+    # Position in window - for 12 bases length window (12 is 9 + PAM)
+    # Positive strand: NNNNNNNNN PAM - 9...1 -1 ... -3
+    # Negative strand: PAM NNNNNNNNN - -3 ... -1 1 ... 9
+
 def calculate_position_in_window(
         window_start: int,
         coordinate: int,
