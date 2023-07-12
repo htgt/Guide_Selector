@@ -32,8 +32,8 @@ class InputArguments:
     def _add_window_command_parser(self, parser) -> None:
         subparsers = parser.add_subparsers(dest='command')
 
-        parser_window = subparsers.add_parser('window',
-            help='Window command help')
+        parser_window = subparsers.add_parser('window', help='Window command help')
+        parser_window.add_argument('--file', type=str, help='Input file')
         parser_window.add_argument('--seq', type=str, help='Input sequence')
         parser_window.add_argument('--strand', type=str, help='Guide strand')
         parser_window.add_argument('--window_length', type=int, default=12, required=False, choices=range(12, 23), help='Length of mutatable window')

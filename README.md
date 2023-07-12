@@ -76,6 +76,6 @@ docker run sge-guide-selection --version
 ```
 source venv/bin/activate
 
-python -m unittest
+python -m unittest -v
 ```
 
