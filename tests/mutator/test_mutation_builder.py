@@ -21,7 +21,7 @@ class TestGuideSequence(TestCase):
 
         self.assertEqual(codons, control_codons)
 
-    def testget_window_frame_CTCF(self):
+    def test_get_window_frame_CTCF(self):
         cds = BaseSequence(676108336, 67611613, True, '16', 2)
         window = EditWindow(67610855, 67610866, True, '16', )
 
