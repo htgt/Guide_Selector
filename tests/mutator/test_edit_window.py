@@ -42,7 +42,7 @@ class TestEditWindowCodons(unittest.TestCase):
             WindowCodon('AGG', BaseWithPosition('G', 11, -3))
         ])
     ])
-    def test_split_window_into_codons(self, bases, expected_codons):
+    def testsplit_window_into_codons(self, bases, expected_codons):
         window = EditWindow(0, 12, True, '16')
 
         result_codons = window.split_window_into_codons(bases, 0)

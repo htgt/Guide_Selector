@@ -44,7 +44,7 @@ class EditWindow(BaseSequence):
         codons = []
 
         for i in range(0, len(bases) - 2, 3):
-            coordinate = self._get_third_base_coordinate(start, i+2)
+            coordinate = self._get_third_base_coordinate(start, i + 2)
             window_position = self._get_base_window_position(coordinate)
 
             third = BaseWithPosition(
