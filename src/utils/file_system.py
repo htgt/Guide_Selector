@@ -1,6 +1,12 @@
 from os import path
 import csv
-from typing import List
+from typing import List, TYPE_CHECKING
+from pathlib import Path
+from td_utils.src.utils.write_output_files import OutputFilesData
+
+if TYPE_CHECKING:
+    from pandas import DataFrame
+
 
 
 # copied from targeton-designer- need to make a shared repo
@@ -29,3 +35,10 @@ def write_dict_list_to_csv(file_name, dict_list, headers=None, delimiter=',') ->
         writer = csv.DictWriter(file, delimiter=delimiter, fieldnames=headers)
         writer.writeheader()
         writer.writerows(dict_list)
+        
+def write_mutator_to_vcf(file_path:str, mutation:DataFrame) -> str:
+    file_path = Path(file_path)
+    od = OutputFilesData(file_path.parent)
+    file_path.with_suffix(".vcf")
+    # mutation to vcf format.
+    return od.write_output(mutation.to_dict(), file_path)
