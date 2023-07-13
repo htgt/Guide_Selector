@@ -8,6 +8,8 @@ from utils.file_system import read_csv_to_list_dict, write_dict_list_to_csv
 def resolve_command(command: str, args: dict) -> None:
     if command == "window":
         run_window_cmd(args)
+    if command == "mutator":
+        run_mutator_cmd(args)
 
 def main() -> None:
     parsed_input = InputArguments()
@@ -15,6 +17,15 @@ def main() -> None:
     command = parsed_input.command
 
     resolve_command(command, args)
+
+def run_mutator_cmd(args : dict) -> None:
+    print('Running PAM mutator')
+    # Run Guide Frame Determiner 
+    # Determine Window
+    # 3rd Base finder
+    # Mutation finder
+    # Filter mutators
+    # Write to VCF
 
 def run_window_cmd(args : dict) -> None:
     OUTPUT_FILE_URL = 'output.tsv'

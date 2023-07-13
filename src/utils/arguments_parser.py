@@ -18,7 +18,10 @@ class InputArguments:
             prog='Guide Selection'
         )
 
-        self._add_window_command_parser(parser)
+        subparsers = parser.add_subparsers(dest='command')
+
+        self._add_mutator_command_parser(subparsers)
+        self._add_window_command_parser(subparsers)
 
         parser.add_argument(
             '--version',
@@ -29,14 +32,22 @@ class InputArguments:
 
         self.set_args(vars(parser.parse_args()))
 
-    def _add_window_command_parser(self, parser) -> None:
-        subparsers = parser.add_subparsers(dest='command')
+    def _add_mutator_command_parser(self, subparsers) -> None:
+        parser_mutator = subparsers.add_parser('mutator', help='Mutator command help')
+        parser_mutator.add_argument('--tsv', type=str,
+            help='Path to Guide Locus as TSV file. Required columns: guide start, end, strand and id')
+        parser_mutator.add_argument('--gtf', type=str, help='Path to reference GTF file')
+        parser_mutator.add_argument('--conf', type=str, help='Path to custom configuration file')
+        parser_mutator.add_argument('--out', type=str, nargs='?', const='./out/',
+            help='Desired output path (Default: ./out)')
 
+    def _add_window_command_parser(self, subparsers) -> None:
         parser_window = subparsers.add_parser('window', help='Window command help')
         parser_window.add_argument('--file', type=str, help='Input file')
         parser_window.add_argument('--seq', type=str, help='Input sequence')
         parser_window.add_argument('--strand', type=str, help='Guide strand')
-        parser_window.add_argument('--window_length', type=int, default=12, required=False, choices=range(12, 23), help='Length of mutatable window')
+        parser_window.add_argument('--window_length', type=int, default=12, required=False,
+            choices=range(12, 23), help='Length of mutable window')
 
 
 def add_input_args(parser) -> ArgumentParser:
