@@ -1,4 +1,4 @@
-from argparse import ArgumentParser
+from argparse import ArgumentParser, _SubParsersAction
 
 
 class InputArguments:
@@ -32,7 +32,7 @@ class InputArguments:
 
         self.set_args(vars(parser.parse_args()))
 
-    def _add_mutator_command_parser(self, subparsers) -> None:
+    def _add_mutator_command_parser(self, subparsers: _SubParsersAction) -> None:
         parser_mutator = subparsers.add_parser('mutator', help='Mutator command help')
         parser_mutator.add_argument('--tsv', type=str,
             help='Path to Guide Locus as TSV file. Required columns: guide start, end, strand and id')
@@ -41,7 +41,7 @@ class InputArguments:
         parser_mutator.add_argument('--out', type=str, nargs='?', const='./out/',
             help='Desired output path (Default: ./out)')
 
-    def _add_window_command_parser(self, subparsers) -> None:
+    def _add_window_command_parser(self, subparsers: _SubParsersAction) -> None:
         parser_window = subparsers.add_parser('window', help='Window command help')
         parser_window.add_argument('--file', type=str, help='Input file')
         parser_window.add_argument('--seq', type=str, help='Input sequence')
