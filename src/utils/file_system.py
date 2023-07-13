@@ -1,9 +1,19 @@
 from os import path
 import csv
+<<<<<<< HEAD
 from typing import List
 import json
 
 from utils.exceptions import FileFormatError
+=======
+from typing import List, TYPE_CHECKING
+from pathlib import Path
+from td_utils.src.utils.write_output_files import OutputFilesData
+
+if TYPE_CHECKING:
+    from pandas import DataFrame
+
+>>>>>>> 9b54dc7... TD_421 Trying setup the functions for exporting the vcf
 
 
 # copied from targeton-designer- need to make a shared repo
@@ -32,13 +42,10 @@ def write_dict_list_to_csv(file_name, dict_list, headers=None, delimiter=',') ->
         writer = csv.DictWriter(file, delimiter=delimiter, fieldnames=headers)
         writer.writeheader()
         writer.writerows(dict_list)
-
-
-def parse_json(file_path: str) -> dict:
-    with open(file_path, "r") as file:
-        try:
-            result = json.load(file)
-        except Exception as err:
-            raise FileFormatError
-
-    return result
+        
+def write_mutator_to_vcf(file_path:str, mutation:DataFrame) -> str:
+    file_path = Path(file_path)
+    od = OutputFilesData(file_path.parent)
+    file_path.with_suffix(".vcf")
+    # mutation to vcf format.
+    return od.write_output(mutation.to_dict(), file_path)
