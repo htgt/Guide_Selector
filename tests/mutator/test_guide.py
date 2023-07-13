@@ -6,11 +6,11 @@ from mutator.guide import GuideSequence, SequenceFragment
 class TestGuideSequence(TestCase):
     def setUp(self):
         positive_bases = "AGTTTCGGACTCCTCCACAAGGT"
-        self.test_positive_guide = GuideSequence(positive_bases, "+")
+        self.test_positive_guide = GuideSequence(positive_bases, True)
         self.pam_fragment_positive = SequenceFragment("AGG", 19, 22)
 
         negative_bases = "GCCATTGTCCGGGAGTCAGAAACT"
-        self.test_negative_guide = GuideSequence(negative_bases, "-")
+        self.test_negative_guide = GuideSequence(negative_bases, False)
         self.pam_fragment_negative = SequenceFragment("CCA", 1, 4)
 
 

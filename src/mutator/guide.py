@@ -19,12 +19,12 @@ class GuideSequenceLoci(BaseSequence):
 class GuideSequence:
     def __init__(self,
             bases: str,
-            strand: str = "+",
+            isPositiveStrand: bool = True,
             window_length: int = 12
         ) -> None:
 
         self.bases = bases.upper()
-        self.strand = strand
+        self.isPositiveStrand = isPositiveStrand
         self.window_length = window_length
 
         self.pam = self.find_pam()
@@ -32,13 +32,13 @@ class GuideSequence:
 
 
     def _define_pam_pattern(self) -> str:
-        return PAM_POSITIVE_PATTERN if self.strand == "+" else PAM_NEGATIVE_PATTERN
+        return PAM_POSITIVE_PATTERN if self.isPositiveStrand else PAM_NEGATIVE_PATTERN
 
     def _check_pam_position(self, match: re.Match) -> bool:
         MAX_PAM_POSITION_FROM_SEQ_EDGE = 2
         is_pam = False
 
-        if self.strand == "-":
+        if not self.isPositiveStrand:
             is_pam = ( match.start() <= MAX_PAM_POSITION_FROM_SEQ_EDGE )
         else:
             is_pam = ( match.end() >= len(self.bases) - MAX_PAM_POSITION_FROM_SEQ_EDGE )
@@ -61,7 +61,7 @@ class GuideSequence:
 
 
     def define_window(self) -> SequenceFragment:
-        if self.strand == "+":
+        if self.isPositiveStrand:
             window_start = self.pam.end - self.window_length
             window_end = self.pam.end
         else:
