@@ -7,7 +7,6 @@ from utils.file_system import read_csv_to_list_dict
 from utils.exceptions import MutatorError
 from mutator.codon import CodonEdit
 
-
 class Mutator:
     def mutate(gtf: str, guide_tsv: str) -> None:
         gtf_data, guide_data = Mutator.read_input_files(gtf, guide_tsv)
@@ -20,7 +19,7 @@ class Mutator:
     def read_input_files(gtf: str, guide_tsv: str) -> Tuple[List[dict], pd.DataFrame]:
         gtf_data = pr.read_gtf(gtf, as_df=True)
         gtf_data['Start'] += 1  # pyranges uses 0-based coords
-        guide_data = read_csv_to_list_dict(guide_tsv, delimiter='\t')
+        guide_data = read_csv_to_list_dict(guide_tsv, delimiter="\t")
         return (gtf_data, guide_data)
 
     def get_coding_regions_for_all_guides(

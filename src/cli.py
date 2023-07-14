@@ -1,5 +1,6 @@
 import sys
 
+from mutator.mutator import Mutator
 from mutator.runner import Runner, mutator_to_dict_list
 from utils.arguments_parser import InputArguments
 from utils.file_system import read_csv_to_list_dict, write_dict_list_to_csv
@@ -20,7 +21,8 @@ def main() -> None:
 
 def run_mutator_cmd(args : dict) -> None:
     print('Running PAM mutator')
-    # Run Guide Frame Determiner 
+    # Run Guide Frame Determiner
+    Mutator.mutate(args['gtf'], args['tsv'])
     # Determine Window
     # 3rd Base finder
     # Mutation finder
