@@ -2,9 +2,14 @@ FROM python:3.8.0
 
 WORKDIR /app
 
-COPY requirements.txt requirements.txt
-COPY src src
+COPY Makefile Makefile
+RUN apt-get update
+RUN make install
 
-RUN pip3 install -r requirements.txt
+COPY requirements.txt requirements.txt
+RUN make setup-venv
+
+COPY src src
+COPY tests tests
 
 ENTRYPOINT ["python3", "src/cli.py"]
