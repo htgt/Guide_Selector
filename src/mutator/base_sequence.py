@@ -15,14 +15,14 @@ class FragmentFrameIndicator(Enum):
 class BaseSequence:
     start: int
     end: int
-    isPositiveStrand: bool
+    is_positive_strand: bool
     chromosome: str = ""
     frame: FragmentFrameIndicator = 0
 
     def _get_sequence_by_coords(self, chromosome, start, end) -> str:
         bases = get_seq_from_ensembl_by_coords(chromosome, start, end)
 
-        if not self.isPositiveStrand:
+        if not self.is_positive_strand:
             bases = Seq(bases).reverse_complement()
 
         return bases

@@ -60,9 +60,9 @@ class Runner:
         base = {
             'guide_id' : self.guide.guide_id,
             'chromosome' : self.cds.chromosome,
-            'cds_strand' : self.cds.isPositiveStrand,
+            'cds_strand' : self.cds.is_positive_strand,
             'gene_name' : self.gene_name,
-            'guide_strand' : self.guide.isPositiveStrand,
+            'guide_strand' : self.guide.is_positive_strand,
             'guide_start' : self.guide.start,
             'guide_end' : self.guide.end,
         }
