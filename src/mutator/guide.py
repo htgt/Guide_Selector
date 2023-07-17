@@ -18,14 +18,21 @@ class GuideSequenceLoci(BaseSequence):
 
 class GuideSequence:
     def __init__(self,
-            bases: str,
+            start: int,
+            end: int,
             isPositiveStrand: bool = True,
+            guide_id: int = 0,
             window_length: int = 12
         ) -> None:
 
-        self.bases = bases.upper()
+        self.id = id
+        self.start = start
+        self.end  = end
+        self.guide_id = guide_id
         self.isPositiveStrand = isPositiveStrand
         self.window_length = window_length
+
+        self.bases = self._get_sequence_by_coord(self.chromosome, start, end).upper()
 
         self.pam = self.find_pam()
         self.window = self.define_window()

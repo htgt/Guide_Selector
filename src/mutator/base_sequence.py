@@ -16,7 +16,7 @@ class BaseSequence:
     start: int
     end: int
     isPositiveStrand: bool
-    chromosome: str
+    chromosome: str = ""
     frame: FragmentFrameIndicator = 0
 
     def _get_sequence_by_coords(self, chromosome, start, end) -> str:
