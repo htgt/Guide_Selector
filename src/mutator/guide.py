@@ -20,7 +20,7 @@ class GuideSequence:
     def __init__(self,
             start: int,
             end: int,
-            isPositiveStrand: bool = True,
+            is_positive_strand: bool = True,
             guide_id: int = 0,
             window_length: int = 12
         ) -> None:
@@ -29,7 +29,7 @@ class GuideSequence:
         self.start = start
         self.end  = end
         self.guide_id = guide_id
-        self.isPositiveStrand = isPositiveStrand
+        self.is_positive_strand = is_positive_strand
         self.window_length = window_length
 
         self.bases = self._get_sequence_by_coord(self.chromosome, start, end).upper()
@@ -39,13 +39,13 @@ class GuideSequence:
 
 
     def _define_pam_pattern(self) -> str:
-        return PAM_POSITIVE_PATTERN if self.isPositiveStrand else PAM_NEGATIVE_PATTERN
+        return PAM_POSITIVE_PATTERN if self.is_positive_strand else PAM_NEGATIVE_PATTERN
 
     def _check_pam_position(self, match: re.Match) -> bool:
         MAX_PAM_POSITION_FROM_SEQ_EDGE = 2
         is_pam = False
 
-        if not self.isPositiveStrand:
+        if not self.is_positive_strand:
             is_pam = ( match.start() <= MAX_PAM_POSITION_FROM_SEQ_EDGE )
         else:
             is_pam = ( match.end() >= len(self.bases) - MAX_PAM_POSITION_FROM_SEQ_EDGE )
@@ -68,7 +68,7 @@ class GuideSequence:
 
 
     def define_window(self) -> SequenceFragment:
-        if self.isPositiveStrand:
+        if self.is_positive_strand:
             window_start = self.pam.end - self.window_length
             window_end = self.pam.end
         else:
