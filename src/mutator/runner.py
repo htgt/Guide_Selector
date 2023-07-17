@@ -53,7 +53,7 @@ class Runner:
             guide_id=int(data['guide_id']),
             start=int(data['guide_start']),
             end=int(data['guide_end']),
-            isPositiveStrand=_booleanise_strand(data['guide_strand']),
+            is_positive_strand=_booleanise_strand(data['guide_strand']),
             chromosome=_trim_chromosome(data['chromosome']),
         )
         self.gene_name = data['gene_name']
@@ -63,9 +63,9 @@ class Runner:
         base = {
             'guide_id' : self.guide.guide_id,
             'chromosome' : self.cds.chromosome,
-            'cds_strand' : self.cds.isPositiveStrand,
+            'cds_strand' : self.cds.is_positive_strand,
             'gene_name' : self.gene_name,
-            'guide_strand' : self.guide.isPositiveStrand,
+            'guide_strand' : self.guide.is_positive_strand,
             'guide_start' : self.guide.start,
             'guide_end' : self.guide.end,
         }

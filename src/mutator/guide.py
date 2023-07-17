@@ -1,5 +1,6 @@
 import re
 from dataclasses import dataclass
+from typing import Tuple
 from mutator.base_sequence import BaseSequence
 
 PAM_POSITIVE_PATTERN = r'.GG'
@@ -16,29 +17,36 @@ class SequenceFragment:
 class GuideSequenceLoci(BaseSequence):
     guide_id: int = 0
 
-class GuideSequence:
+class GuideSequence(BaseSequence):
     def __init__(self,
-            bases: str,
-            strand: str = "+",
+            start: int,
+            end: int,
+            is_positive_strand: bool = True,
+            guide_id: int = 0,
             window_length: int = 12
         ) -> None:
 
-        self.bases = bases.upper()
-        self.strand = strand
+        self.id = id
+        self.start = start
+        self.end  = end
+        self.guide_id = guide_id
+        self.is_positive_strand = is_positive_strand
         self.window_length = window_length
+
+        self.bases = self._get_sequence_by_coords(self.chromosome, start, end).upper()
 
         self.pam = self.find_pam()
         self.window = self.define_window()
 
 
     def _define_pam_pattern(self) -> str:
-        return PAM_POSITIVE_PATTERN if self.strand == "+" else PAM_NEGATIVE_PATTERN
+        return PAM_POSITIVE_PATTERN if self.is_positive_strand else PAM_NEGATIVE_PATTERN
 
     def _check_pam_position(self, match: re.Match) -> bool:
         MAX_PAM_POSITION_FROM_SEQ_EDGE = 2
         is_pam = False
 
-        if self.strand == "-":
+        if not self.is_positive_strand:
             is_pam = ( match.start() <= MAX_PAM_POSITION_FROM_SEQ_EDGE )
         else:
             is_pam = ( match.end() >= len(self.bases) - MAX_PAM_POSITION_FROM_SEQ_EDGE )
@@ -61,7 +69,7 @@ class GuideSequence:
 
 
     def define_window(self) -> SequenceFragment:
-        if self.strand == "+":
+        if self.is_positive_strand:
             window_start = self.pam.end - self.window_length
             window_end = self.pam.end
         else:
@@ -73,4 +81,5 @@ class GuideSequence:
         return SequenceFragment(window_bases, window_start, window_end)
 
 
-
+def calculate_window_coordinates(bases: str, guide_start: int, guide_end: int) -> Tuple[int, int]:
+    pass
