@@ -60,7 +60,7 @@ class RunnerTestCase(unittest.TestCase):
             guide_id=123,
             start=160,
             end=170,
-            isPositiveStrand=True,
+            is_positive_strand=True,
             chromosome='1'
         )
         self.runner.gene_name = 'ACT'

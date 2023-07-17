@@ -21,7 +21,7 @@ class TestGetFrame(unittest.TestCase):
         self.assertEqual(
             result_frame,
             expected_frame,
-            f"Correct frame for test case {coding_region.isPositiveStrand, region.isPositiveStrand}"
+            f"Correct frame for test case {coding_region.is_positive_strand, region.is_positive_strand}"
         )
 
 if __name__ == '__main__':
