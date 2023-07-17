@@ -16,7 +16,7 @@ class SequenceFragment:
 class GuideSequenceLoci(BaseSequence):
     guide_id: int = 0
 
-class GuideSequence:
+class GuideSequence(BaseSequence):
     def __init__(self,
             start: int,
             end: int,
