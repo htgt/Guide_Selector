@@ -2,11 +2,11 @@ from unittest import TestCase
 
 import pandas as pd
 
-from mutator.mutator import Mutator
-from utils.exceptions import MutatorError
+from mutator.guide_determiner import GuideDeterminer
+from utils.exceptions import GuideDeterminerError
 
 
-class TestMutator(TestCase):
+class TestGuideDeterminer(TestCase):
     def setUp(self):
         self.gtf_data = pd.DataFrame({
             'Chromosome': ['chr16', 'chr16', 'chr16'],
@@ -40,7 +40,7 @@ class TestMutator(TestCase):
         expected = self.coding_region
 
         # act
-        actual = Mutator.get_coding_region_for_guide(self.gtf_data, self.guide_data)
+        actual = GuideDeterminer().get_coding_region_for_guide(self.gtf_data, self.guide_data)
 
         # assert
         pd.testing.assert_frame_equal(actual, expected, check_exact=True)
@@ -56,8 +56,8 @@ class TestMutator(TestCase):
         expected = 'Guide 1139541475 does not overlap with any coding regions'
 
         # act
-        with self.assertRaises(MutatorError) as cm:
-            print(Mutator.get_coding_region_for_guide(self.gtf_data, guide_data))
+        with self.assertRaises(GuideDeterminerError) as cm:
+            print(GuideDeterminer().get_coding_region_for_guide(self.gtf_data, guide_data))
 
         # assert
         self.assertEqual(str(cm.exception), expected)
@@ -73,8 +73,8 @@ class TestMutator(TestCase):
         expected = 'Guide 1139541055 overlaps with multiple coding regions'
 
         # act
-        with self.assertRaises(MutatorError) as cm:
-            Mutator.get_coding_region_for_guide(self.gtf_data, guide_data)
+        with self.assertRaises(GuideDeterminerError) as cm:
+            GuideDeterminer().get_coding_region_for_guide(self.gtf_data, guide_data)
 
         # assert
         self.assertEqual(str(cm.exception), expected)
@@ -95,7 +95,7 @@ class TestMutator(TestCase):
         }, index=pd.Index([1139540371], name='guide_id'))
 
         # act
-        actual = Mutator.add_guide_data_to_dataframe(self.coding_region, self.guide_data)
+        actual = GuideDeterminer().add_guide_data_to_dataframe(self.coding_region, self.guide_data)
 
         # assert
         pd.testing.assert_frame_equal(actual, expected, check_exact=True)
@@ -117,7 +117,7 @@ class TestMutator(TestCase):
         expected = '2'
 
         # act
-        actual = Mutator.determine_frame_for_guide(test_row)
+        actual = GuideDeterminer().determine_frame_for_guide(test_row)
 
         # assert
         self.assertEqual(actual, expected)
@@ -139,7 +139,7 @@ class TestMutator(TestCase):
         expected = '0'
 
         # act
-        actual = Mutator.determine_frame_for_guide(test_row)
+        actual = GuideDeterminer().determine_frame_for_guide(test_row)
 
         # assert
         self.assertEqual(actual, expected)
@@ -161,7 +161,7 @@ class TestMutator(TestCase):
         expected = '2'
 
         # act
-        actual = Mutator.determine_frame_for_guide(test_row)
+        actual = GuideDeterminer().determine_frame_for_guide(test_row)
 
         # assert
         self.assertEqual(actual, expected)
@@ -183,7 +183,7 @@ class TestMutator(TestCase):
         expected = '2'
 
         # act
-        actual = Mutator.determine_frame_for_guide(test_row)
+        actual = GuideDeterminer().determine_frame_for_guide(test_row)
 
         # assert
         self.assertEqual(actual, expected)
@@ -217,7 +217,7 @@ class TestMutator(TestCase):
         }, index=pd.Index([1139540371], name='guide_id'))
 
         # act
-        actual = Mutator.adjust_columns_for_output(data)
+        actual = GuideDeterminer().adjust_columns_for_output(data)
 
         # assert
         pd.testing.assert_frame_equal(actual, expected, check_exact=True)
@@ -233,7 +233,7 @@ class TestMutator(TestCase):
         })
 
         # act
-        Mutator.add_codon_edit_data_to_df(test_df)
+        GuideDeterminer().add_codon_edit_data_to_df(test_df)
 
         # assert
         pd.testing.assert_frame_equal(test_df, expected)

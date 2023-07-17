@@ -23,6 +23,9 @@ class Runner:
         self.guide = None
         self.gene_name = None
 
+    def parse_guide_loci(self) -> None: 
+        print('Dummy function for upcoming feature')
+
     def run_window_frame(self, row : dict) -> None:
         self.build_coding_region_objects(row)
 
