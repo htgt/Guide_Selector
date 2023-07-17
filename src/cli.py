@@ -20,6 +20,7 @@ def main() -> None:
     resolve_command(command, args)
 
 def run_mutator_cmd(args : dict) -> None:
+    runner = Runner()
     print('Running PAM mutator')
     # Run Guide Frame Determiner
     Mutator.mutate(args['gtf'], args['tsv'])
