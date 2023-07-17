@@ -24,7 +24,7 @@ class EditWindow(BaseSequence):
         if self.frame == 0:
             return start, end
 
-        if self.isPositiveStrand:
+        if self.is_positive_strand:
             start = self.start - 3 + self.frame
         else:
             end = self.end + 3 - self.frame

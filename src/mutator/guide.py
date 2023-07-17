@@ -1,5 +1,6 @@
 import re
 from dataclasses import dataclass
+from typing import Tuple
 from mutator.base_sequence import BaseSequence
 
 PAM_POSITIVE_PATTERN = r'.GG'
@@ -32,7 +33,7 @@ class GuideSequence(BaseSequence):
         self.is_positive_strand = is_positive_strand
         self.window_length = window_length
 
-        self.bases = self._get_sequence_by_coord(self.chromosome, start, end).upper()
+        self.bases = self._get_sequence_by_coords(self.chromosome, start, end).upper()
 
         self.pam = self.find_pam()
         self.window = self.define_window()
@@ -80,4 +81,5 @@ class GuideSequence(BaseSequence):
         return SequenceFragment(window_bases, window_start, window_end)
 
 
-
+def calculate_window_coordinates(bases: str, guide_start: int, guide_end: int) -> Tuple[int, int]:
+    pass
