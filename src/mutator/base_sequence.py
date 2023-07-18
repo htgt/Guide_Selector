@@ -20,7 +20,7 @@ class BaseSequence:
     frame: FragmentFrameIndicator = 0
 
     def _get_sequence_by_coords(self, chromosome, start, end) -> str:
-        bases = get_seq_from_ensembl_by_coords(chromosome, start, end)
+        bases = get_seq_from_ensembl_by_coords(self.chromosome, self.start, self.end)
 
         if not self.is_positive_strand:
             bases = Seq(bases).reverse_complement()
