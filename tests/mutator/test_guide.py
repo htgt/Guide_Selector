@@ -34,22 +34,15 @@ class TestGuideSequence(TestCase):
             self.pam_fragment_negative = SequenceFragment("CCA", 1, 4)
 
 
-
     def test_guide_find_pam_real_coords_positive_strand(self):
         bases = "ATATTGAGCAAGG"
 
-        def mock_get_sequence_by_coords(chromosome, start, end):
-            return bases
+        guide = GuideSequence(67626582, 67626594, is_positive_strand=True)
+        pam = SequenceFragment("AGG", 67626592, 67626594)
 
-        with patch.object(BaseSequence, '_get_sequence_by_coords',
-                side_effect=mock_get_sequence_by_coords):
+        test_pam = guide.find_pam(bases)
 
-            guide = GuideSequence(67626582, 67626594, is_positive_strand=True)
-            pam = SequenceFragment("AGG", 67626592, 67626594)
-
-            test_pam = guide.find_pam()
-
-            self.assertEqual(test_pam, pam)
+        self.assertEqual(test_pam, pam)
 
 
 class TestCalculateWindowCoordinates(TestCase):
@@ -60,7 +53,7 @@ class TestCalculateWindowCoordinates(TestCase):
         guide_start = 67626582
         guide_end = 67626594
 
-        def mock_get_sequence_by_coords(chromosome, start, end):
+        def mock_get_sequence_by_coords():
             return bases
 
         window_start = 67626583

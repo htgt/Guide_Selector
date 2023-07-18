@@ -38,35 +38,29 @@ class GuideSequence(BaseSequence):
         self.chromosome = chromosome
         self.frame = frame
 
-        self.bases = self._get_sequence_by_coords(self.chromosome, start, end).upper()
-
-        #self.pam = self.find_pam()
-        #self.window = self.define_window()
-
     def _define_pam_pattern(self) -> str:
         return PAM_POSITIVE_PATTERN if self.is_positive_strand else PAM_NEGATIVE_PATTERN
 
-    def _check_pam_position(self, match: re.Match) -> bool:
+    def _check_pam_position(self, match: re.Match, bases) -> bool:
         MAX_PAM_POSITION_FROM_SEQ_EDGE = 2
         is_pam = False
 
         if not self.is_positive_strand:
             is_pam = ( match.start() <= MAX_PAM_POSITION_FROM_SEQ_EDGE )
         else:
-            is_pam = ( match.end() >= len(self.bases) - MAX_PAM_POSITION_FROM_SEQ_EDGE )
+            is_pam = ( match.end() >= len(bases) - MAX_PAM_POSITION_FROM_SEQ_EDGE )
 
         return is_pam
 
+    def _calculate_actual_coordinate(self, relative_coordinate, region_start):
+        return region_start + relative_coordinate
 
-    def find_pam(self) -> SequenceFragment:
+    def find_pam(self, bases) -> SequenceFragment:
         pattern = self._define_pam_pattern()
-        pam_matches = re.finditer(pattern, self.bases)
-
-        print(self.bases)
+        pam_matches = re.finditer(pattern, bases)
 
         for match in pam_matches:
-            print(match)
-            if self._check_pam_position(match):
+            if self._check_pam_position(match, bases):
                 pam = match
 
         if pam_matches:
@@ -78,18 +72,18 @@ class GuideSequence(BaseSequence):
         else:
             raise Exception('No PAM found in the sequence')
 
-    def _calculate_actual_coordinate(self, relative_coordinate, region_start):
-        return region_start + relative_coordinate
-
     def define_window(self) -> SequenceFragment:
-        if self.is_positive_strand:
-            window_start = self.pam.end  - self.window_length + 1
-            window_end = self.pam.end
-        else:
-            window_start = self.pam.start
-            window_end = self.pam.end + self.window_length
+        bases = self._get_sequence_by_coords().upper()
+        pam = self.find_pam(bases)
 
-        window_bases = self.bases[window_start:window_end]
+        if self.is_positive_strand:
+            window_start = pam.end  - self.window_length + 1
+            window_end = pam.end
+        else:
+            window_start = pam.start
+            window_end = pam.end + self.window_length
+
+        window_bases = bases[window_start:window_end]
 
         return SequenceFragment(window_bases, window_start, window_end)
 
