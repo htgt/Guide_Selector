@@ -2,6 +2,7 @@ import re
 from dataclasses import dataclass
 from typing import Tuple
 from mutator.base_sequence import BaseSequence
+from typing import Optional
 
 PAM_POSITIVE_PATTERN = r'.GG'
 PAM_NEGATIVE_PATTERN = r'CC.'
@@ -23,7 +24,9 @@ class GuideSequence(BaseSequence):
             end: int,
             is_positive_strand: bool = True,
             guide_id: int = 0,
-            window_length: int = 12
+            window_length: int = 12,
+            chromosome: Optional[str] = None,
+            frame: int = 0,
         ) -> None:
 
         self.id = id
@@ -32,11 +35,13 @@ class GuideSequence(BaseSequence):
         self.guide_id = guide_id
         self.is_positive_strand = is_positive_strand
         self.window_length = window_length
+        self.chromosome = chromosome
+        self.frame = frame
 
         self.bases = self._get_sequence_by_coords(self.chromosome, start, end).upper()
 
-        self.pam = self.find_pam()
-        self.window = self.define_window()
+        #self.pam = self.find_pam()
+        #self.window = self.define_window()
 
 
     def _define_pam_pattern(self) -> str:
@@ -55,6 +60,7 @@ class GuideSequence(BaseSequence):
 
 
     def find_pam(self) -> SequenceFragment:
+        pprint(self.bases)
         pattern = self._define_pam_pattern()
         pam_matches = re.finditer(pattern, self.bases)
 
