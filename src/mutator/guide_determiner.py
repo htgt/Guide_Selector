@@ -16,6 +16,7 @@ class GuideDeterminer:
         )
         guide_frame_df = self.adjust_columns_for_output(coding_regions)
         print(guide_frame_df)
+        return guide_frame_df
 
     def read_input_files(self, gtf: str, guide_tsv: str) -> Tuple[List[dict], pd.DataFrame]:
         gtf_data = pr.read_gtf(gtf, as_df=True)

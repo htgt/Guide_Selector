@@ -24,7 +24,8 @@ def run_mutator_cmd(args : dict) -> None:
     print('Running PAM mutator')
     # Run Guide Frame Determiner
     guide_determiner = GuideDeterminer()
-    guide_determiner.parse_loci(args['gtf'], args['tsv'])
+    guide_data_df = guide_determiner.parse_loci(args['gtf'], args['tsv'])
+    runner.parse_coding_regions(guide_data_df)
     # Determine Window
     # 3rd Base finder
     # Mutation finder
