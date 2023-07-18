@@ -23,8 +23,14 @@ class MutationBuilder:
         return copy.deepcopy(cds)
 
     def _build_edit_window(self) -> EditWindow:
-        return "Edit Window here"
+        return get_window(self.guide)
 
+def get_window(guide:GuideSequence) -> EditWindow:
+    window_coordinates = guide.define_window()
+    window = Editwindow(window_coordinates[0], window_coordinates[1],
+        self.guide.is_positive_strand)
+
+    return window
 
 def get_window_frame_and_codons(cds : BaseSequence, window : EditWindow) -> List[WindowCodon]:
     builder = MutationBuilder(cds, window)
