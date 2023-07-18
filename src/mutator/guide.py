@@ -2,11 +2,7 @@ import re
 from dataclasses import dataclass
 from typing import Tuple
 from mutator.base_sequence import BaseSequence
-<<<<<<< HEAD
-from typing import Optional
-=======
-from mutator.edit_window import EditWindow
->>>>>>> bd95b0e... TD-419 Build window in MutationBuilder
+
 
 PAM_POSITIVE_PATTERN = r'.GG'
 PAM_NEGATIVE_PATTERN = r'CC.'
