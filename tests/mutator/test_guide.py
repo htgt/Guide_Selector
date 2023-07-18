@@ -1,8 +1,7 @@
 from unittest import TestCase, mock
 from unittest.mock import patch
 from mutator.base_sequence import BaseSequence
-from mutator.guide import GuideSequence, SequenceFragment, calculate_window_coordinates
-from mutator.edit_window import EditWindow
+from mutator.guide import GuideSequence, SequenceFragment
 
 
 class TestGuideSequence(TestCase):

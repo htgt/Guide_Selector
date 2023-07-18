@@ -2,7 +2,6 @@ import re
 from dataclasses import dataclass
 from typing import Tuple
 from mutator.base_sequence import BaseSequence
-from mutator.edit_window import EditWindow
 
 PAM_POSITIVE_PATTERN = r'.GG'
 PAM_NEGATIVE_PATTERN = r'CC.'
