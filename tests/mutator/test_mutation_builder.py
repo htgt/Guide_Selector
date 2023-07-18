@@ -2,6 +2,7 @@ from unittest import TestCase
 
 from mutator.mutation_builder import get_window_frame_and_codons
 from mutator.base_sequence import BaseSequence
+from mutator.guide_sequence import GuideSequence
 from mutator.edit_window import EditWindow, WindowCodon, BaseWithPosition
 
 
@@ -60,3 +61,28 @@ class TestGuideSequence(TestCase):
     #    test_edit_window = guide.build_edit_window()
 
     #    self.assertEqual(test_edit_window, window)
+
+class TestGetWindow(TestCase):
+    def test_get_window(self):
+        bases = "CAGCATTCCTATATTGAGCAAGG"
+        guide_start = 67626572
+        guide_end = 67626594
+
+        def mock_get_sequence_by_coords():
+            return bases
+
+        #window_start = 67626583
+        window_start = 676265831
+        window_end = 67626594
+
+        window = EditWindow(window_start, window_end, is_positive_strand=True)
+
+        with patch.object(
+                BaseSequence,
+                '_get_sequence_by_coords',
+                side_effect=mock_get_sequence_by_coords
+        ):
+            guide = GuideSequence(guide_start, guide_end, is_positive_strand=True)
+            result_window = calculate_window_coordinates(guide)
+
+        self.assertEqual(result_window, window)
