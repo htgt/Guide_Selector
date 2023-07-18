@@ -60,7 +60,6 @@ class GuideSequence(BaseSequence):
 
 
     def find_pam(self) -> SequenceFragment:
-        pprint(self.bases)
         pattern = self._define_pam_pattern()
         pam_matches = re.finditer(pattern, self.bases)
 
