@@ -1,2 +1,2 @@
-class MutatorError(Exception):
+class GuideDeterminerError(Exception):
     pass

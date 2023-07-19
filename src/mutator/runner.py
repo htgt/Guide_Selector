@@ -2,19 +2,24 @@ from dataclasses import dataclass
 from typing import List
 import copy
 
-from mutator.mutation_builder import get_window_frame_and_codons
+from mutator.mutation_builder import get_window_frame_and_codons, MutationBuilder
 from mutator.edit_window import WindowCodon, BaseWithPosition
 from mutator.base_sequence import BaseSequence
 from mutator.edit_window import EditWindow
-from mutator.guide import GuideSequenceLoci
+from mutator.guide import GuideSequence
+from mutator.coding_region import CodingRegion
+
+from pprint import pprint
+import pandas as pd
 
 @dataclass
 class Runner:
     cds: BaseSequence
     window: EditWindow
     codons: List[WindowCodon]
-    guide: GuideSequenceLoci
+    guide: GuideSequence
     gene_name: str
+    mutation_builders: List[MutationBuilder]
 
     def __init__(self) -> None:
         self.cds = None
@@ -22,6 +27,45 @@ class Runner:
         self.codons = None
         self.guide = None
         self.gene_name = None
+        self.mutation_builders = None
+
+    def build_mutations(self, region_data : pd.DataFrame) -> None:
+        guide = self.fill_guide_sequence(region_data)
+        coding_region = self.fill_coding_region(region_data)
+        mutation_builder = MutationBuilder(
+            guide=guide,
+            cds=coding_region
+        )
+        return mutation_builder
+
+    def fill_guide_sequence(self, row: pd.Series) -> GuideSequence:
+        return GuideSequence(
+            start=row['guide_start'],
+            end=row['guide_end'],
+            chromosome=row['chromosome'],
+            is_positive_strand=(row['cds_strand'] == '+'),
+            guide_id=row.name,
+            frame=row['guide_frame']
+        )
+
+    def fill_coding_region(self, row: pd.Series) -> CodingRegion:
+        return CodingRegion(
+            start=row['cds_start'],
+            end=row['cds_end'],
+            chromosome=row['chromosome'],
+            is_positive_strand=(row['cds_strand'] == '+'),
+            exon_number=row['exon_number'],
+            frame=row['cds_frame']
+        )
+
+    def parse_coding_regions(self, guide_data : pd.DataFrame) -> None: 
+        mutation_builder_objects = []
+
+        for index, row in guide_data.iterrows():
+            mutation_builder_objects.append(self.build_mutations(row))
+
+        pprint(mutation_builder_objects)
+        self.mutation_builders = mutation_builder_objects
 
     def run_window_frame(self, row : dict) -> None:
         self.build_coding_region_objects(row)
@@ -46,7 +90,7 @@ class Runner:
             _booleanise_strand(data['guide_strand']),
             _trim_chromosome(data['chromosome']),
         )
-        self.guide = GuideSequenceLoci(
+        self.guide = GuideSequence(
             guide_id=int(data['guide_id']),
             start=int(data['guide_start']),
             end=int(data['guide_end']),
