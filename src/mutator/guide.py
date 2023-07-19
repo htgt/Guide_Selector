@@ -49,8 +49,8 @@ class GuideSequence(BaseSequence):
 
         return is_pam
 
-    def _calculate_actual_coordinate(self, relative_coordinate, region_start):
-        return region_start + relative_coordinate
+    def _calculate_coordinate(self, difference, start):
+        return start + difference
 
     def find_pam(self, bases) -> SequenceFragment:
         pattern = self._define_pam_pattern()
@@ -63,8 +63,8 @@ class GuideSequence(BaseSequence):
         if pam_matches and pam is not None:
             return SequenceFragment(
                 pam.group(0),
-                self._calculate_actual_coordinate(pam.start(0), self.start),
-                self._calculate_actual_coordinate(pam.end(0) - 1, self.start)
+                self._calculate_coordinate(pam.start(0), self.start),
+                self._calculate_coordinate(pam.end(0) - 1, self.start)
             )
         else:
             raise Exception('No PAM found in the sequence')
