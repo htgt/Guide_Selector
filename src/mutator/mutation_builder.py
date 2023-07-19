@@ -14,16 +14,13 @@ class MutationBuilder:
 
         self.window = EditWindow()
 
-    def calculate_window_frame(self) -> int:
-        return get_frame(self.cds, self.window)
-
     def _build_guide_sequence(self, guide) -> GuideSequence:
         return copy.deepcopy(guide)
 
     def _build_coding_region(self, cds) -> CodingRegion:
         return copy.deepcopy(cds)
 
-    def _build_edit_window(self) -> EditWindow:
+    def build_edit_window(self) -> EditWindow:
         window = get_window(self.guide)
         self.window = window
 
@@ -40,13 +37,6 @@ def get_window(guide:GuideSequence) -> EditWindow:
 
     window.frame = get_frame(guide, window)
 
-    print(window)
     return window
 
-def get_window_frame_and_codons(cds, guide: GuideSequence) -> List[WindowCodon]:
-    builder = MutationBuilder(cds, guide)
-
-    result_window.frame = builder.calculate_window_frame()
-
-    return builder.get_window_codons()
 

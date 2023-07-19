@@ -32,6 +32,8 @@ class EditWindow(BaseSequence):
         return start, end
 
     def get_extended_window_bases(self, extended_window_start: int, extended_window_end: int) -> str:
+        extended_window = BaseSequence(extended_window_start, extended_window_end)
+
         bases = self._get_sequence_by_coords(
             self.chromosome,
             extended_window_start,
@@ -67,7 +69,14 @@ class EditWindow(BaseSequence):
     def get_window_codons(self) -> List[WindowCodon]:
         extended_coords = self._get_extended_window_coordinates()
 
-        bases = self.get_extended_window_bases(extended_coords[0], extended_coords[1])
+        extended_window = BaseSequence(
+            extended_coords[0],
+            extended_coords[1],
+            self.is_positive_strand,
+            self.chromosome,
+        )
+
+        bases = extended_window.get_sequence_by_coords()
         codons = self.split_window_into_codons(bases, extended_coords[0])
 
         return codons
