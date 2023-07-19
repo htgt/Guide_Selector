@@ -17,7 +17,7 @@ class TestGuideSequence(TestCase):
 
         with patch.object(
             BaseSequence,
-            '_get_sequence_by_coords',
+            'get_sequence_by_coords',
             side_effect=mock_get_sequence_by_coords_positive
         ):
 
@@ -26,7 +26,7 @@ class TestGuideSequence(TestCase):
 
         with patch.object(
             BaseSequence,
-            '_get_sequence_by_coords',
+            'get_sequence_by_coords',
             side_effect=mock_get_sequence_by_coords_negative
         ):
 
