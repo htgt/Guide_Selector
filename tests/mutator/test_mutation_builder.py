@@ -71,15 +71,6 @@ class TestGuideSequence(TestCase):
         self.assertEqual(codons, control_codons)
 
 
-   # def test_return_edit_window(self):
-   #     window = EditWindow(67626583, 67626594, True)
-
-   #     guide = self.test_positive_guide
-
-    #    test_edit_window = guide.build_edit_window()
-
-    #    self.assertEqual(test_edit_window, window)
-
 class TestGetWindow(TestCase):
     def test_get_window(self):
         bases = "CAGCATTCCTATATTGAGCAAGG"
