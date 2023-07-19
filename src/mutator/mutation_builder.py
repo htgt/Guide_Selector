@@ -29,9 +29,16 @@ class MutationBuilder:
 
 def get_window(guide:GuideSequence) -> EditWindow:
     window_coordinates = guide.define_window()
-    window = EditWindow(window_coordinates[0], window_coordinates[1],
-        guide.is_positive_strand)
+    window = EditWindow(
+        window_coordinates[0],
+        window_coordinates[1],
+        guide.is_positive_strand,
+        guide.chromosome,
+    )
 
+    window.frame = get_frame(guide, window)
+
+    print(window)
     return window
 
 def get_window_frame_and_codons(cds, guide: GuideSequence) -> List[WindowCodon]:
