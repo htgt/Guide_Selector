@@ -13,9 +13,9 @@ class FragmentFrameIndicator(Enum):
 
 @dataclass
 class BaseSequence:
-    start: int
-    end: int
-    is_positive_strand: bool
+    start: int = 0
+    end: int = 0
+    is_positive_strand: bool = True
     chromosome: str = ""
     frame: FragmentFrameIndicator = 0
 
