@@ -1,21 +1,12 @@
 from os import path
 import csv
-<<<<<<< HEAD
-from typing import List
-import json
-
-from utils.exceptions import FileFormatError
-=======
 from typing import List, TYPE_CHECKING
 from pathlib import Path
+from mutator.runner import Runner, mutator_to_dict_list
 from td_utils.src.utils.vcf_utils import write_to_vcf, Variant, Variants, REQUIRED_FIELDS, VCFHeader
-from td_utils.src.utils.file_system import read_csv
 
 if TYPE_CHECKING:
     from pandas import DataFrame
-
->>>>>>> 9b54dc7... TD_421 Trying setup the functions for exporting the vcf
-
 
 # copied from targeton-designer- need to make a shared repo
 def check_file_exists(file):
@@ -44,28 +35,32 @@ def write_dict_list_to_csv(file_name, dict_list, headers=None, delimiter=',') ->
         writer.writeheader()
         writer.writerows(dict_list)
         
-def write_mutator_to_vcf(tsv_file_path:str, variants:Variants) -> str:
-    tsv_file_path = Path(tsv_file_path)
-    tsv_data = read_csv(tsv_file_path).as_list_dicts()
-    variants = []
-    for row in tsv_data:
-        variants.append(row)
-        
-    vcf_file_path = tsv_file_path.copy()
-    vcf_file_path.with_suffix(".vcf")
-    
+def write_mutator_to_vcf(file_path:str, runners:List[Runner]) -> str:  
+    variants = transform_mutator_to_variants(runners)      
+    file_path = Path(file_path)
+    file_path.with_suffix(".vcf")
     # mutation to vcf format.
-    write_to_vcf()
-    return vcf_file_path
+    write_to_vcf(file_path, variants)
+    return file_path
 
-def transform_tsv_to_variants(data:List[dict], chrom:str, sgrna_num:int) -> Variant:
+def transform_mutator_to_variants(runners:List[Runner]) -> Variants:
     variants = []
-    for tsv_row in data:
-        lower_case_required_fields = [field.lower() for field in REQUIRED_FIELDS]
+    chrom = runners[0].guide.chromosome
+    sgrna_number = 1
+    
+    translation_dict = {
+        "CHROM":"chromosome",
+        "ID":"guide_id",
+        "POS":"pos",
+        "REF":"ref_pos_three",
+        "ALT":"alt_pos_three"
+    }
+    
+    list_runners = mutator_to_dict_list(runners)
+    for row in list_runners:
         variant_dict={}
-        for key, item in tsv_row.items():
-            if key.lower() in lower_case_required_fields:
-                field = REQUIRED_FIELDS[lower_case_required_fields.index(key.lower())]
-                variant_dict[field] = item
+        for variant_key, row_key in translation_dict.items():
+            variant_dict[variant_key] = row[row_key]
         variants.append(Variant(**variant_dict))
-    return Variants(variants, chrom, sgrna_num)
+
+    return Variants(variants, chrom, sgrna_number)
