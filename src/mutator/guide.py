@@ -56,14 +56,11 @@ class GuideSequence(BaseSequence):
         pattern = self._define_pam_pattern()
         pam_matches = re.finditer(pattern, bases)
 
-        print('BASES:::', bases)
-
         for match in pam_matches:
-            print('MATCH::::-----::::---', match)
             if self._check_pam_position(match, bases):
                 pam = match
 
-        if pam_matches:
+        if pam_matches and pam is not None:
             return SequenceFragment(
                 pam.group(0),
                 self._calculate_actual_coordinate(pam.start(0), self.start),
