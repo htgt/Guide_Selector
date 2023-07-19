@@ -58,6 +58,7 @@ def transform_mutator_to_variants(runners:List[Runner]) -> Variants:
     
     list_runners = mutator_to_dict_list(runners)
     for row in list_runners:
+        
         variant_dict={}
         for variant_key, row_key in translation_dict.items():
             variant_dict[variant_key] = row[row_key]

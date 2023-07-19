@@ -1,5 +1,0 @@
-	guide_id	chromosome	cds_strand	gene_name	guide_strand	guide_start	guide_end	window_pos	pos	ref_codon	ref_pos_three	alt	lost_amino_acids	permitted
-0	1193107704	chrX	-	ATRX	+	77696636	77696658	-1	77696656	CCT	T	C	N/A	False
-1	1193107704	chrX	-	ATRX	+	77696636	77696658	3	77696653	TTG	G	A	M,W	True
-2	1193107704	chrX	-	ATRX	+	77696636	77696658	6	77696650	GAT	T	C	N/A	True
-3	1193107704	chrX	-	ATRX	+	77696636	77696658	9	77696647	GAT	T	C	N/A	True

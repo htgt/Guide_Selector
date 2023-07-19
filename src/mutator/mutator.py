@@ -7,18 +7,6 @@ from utils.file_system import read_csv_to_list_dict
 from utils.exceptions import MutatorError
 from mutator.codon import CodonEdit
 
-REQUIRED_COLS = (
-            'chromosome',
-            'cds_start',
-            'cds_end',
-            'cds_strand',
-            'cds_frame',
-            'gene_name',
-            'exon_number',
-            'guide_start',
-            'guide_end',
-            'guide_frame',
-)
 
 class Mutator:
     def mutate(gtf: str, guide_tsv: str) -> None:
@@ -92,7 +80,19 @@ class Mutator:
             },
             inplace=True
         )
-        return coding_regions[REQUIRED_COLS].copy()
+        required_cols = [
+            'chromosome',
+            'cds_start',
+            'cds_end',
+            'cds_strand',
+            'cds_frame',
+            'gene_name',
+            'exon_number',
+            'guide_start',
+            'guide_end',
+            'guide_frame',
+        ]
+        return coding_regions[required_cols].copy()
 
     def add_codon_edit_data_to_df(df_with_ref_codons: pd.DataFrame) -> pd.DataFrame:
         df_with_ref_codons[[
