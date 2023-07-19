@@ -52,15 +52,21 @@ class TestGuideSequence(TestCase):
                            chromosome='X', frame=0)
 
         control_codons = [
-            WindowCodon('GAT', BaseWithPosition('T', 77696647, 9)),
-            WindowCodon('GAT', BaseWithPosition('T', 77696650, 6)),
-            WindowCodon('TTG', BaseWithPosition('G', 77696653, 3)),
-            WindowCodon('CCT', BaseWithPosition('T', 77696656, -1)),
+            WindowCodon('TCA', BaseWithPosition('A', 77696647, 9)),
+            WindowCodon('TCA', BaseWithPosition('A', 77696650, 6)),
+            WindowCodon('TCC', BaseWithPosition('C', 77696653, 3)),
+            WindowCodon('AAA', BaseWithPosition('A', 77696656, -1)),
+        #    WindowCodon('GAT', BaseWithPosition('T', 77696647, 9)),
+        #    WindowCodon('GAT', BaseWithPosition('T', 77696650, 6)),
+        #    WindowCodon('TTG', BaseWithPosition('G', 77696653, 3)),
+        #    WindowCodon('CCT', BaseWithPosition('T', 77696656, -1)),
         ]
 
         builder = MutationBuilder(guide, cds)
         window = builder.build_edit_window()
         codons = window.get_window_codons()
+
+        print(codons)
 
         self.assertEqual(codons, control_codons)
 
