@@ -1,8 +1,9 @@
 from unittest import TestCase
+from unittest.mock import patch
 
 from mutator.mutation_builder import get_window_frame_and_codons, get_window
 from mutator.base_sequence import BaseSequence
-from mutator.guide_sequence import GuideSequence
+from mutator.guide import GuideSequence
 from mutator.edit_window import EditWindow, WindowCodon, BaseWithPosition
 
 
@@ -71,8 +72,7 @@ class TestGetWindow(TestCase):
         def mock_get_sequence_by_coords():
             return bases
 
-        #window_start = 67626583
-        window_start = 676265831
+        window_start = 67626583
         window_end = 67626594
 
         window = EditWindow(window_start, window_end, is_positive_strand=True)
