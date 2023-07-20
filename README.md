@@ -63,12 +63,6 @@ python3 src/cli.py mutator --gtf ./example.gtf --tsv guides.tsv
 python3 src/cli.py mutator --gtf ./example.gtf --tsv guides.tsv --conf custom.conf --out ./output/
 ```
 
-Window command returns window for mutation in the guide. 
-Example:
-```
-python3 src/cli.py window --seq GCCATTGTCCGGGAGTCAGAAACT --strand + --window_length 15
-```
-
 ### Run with Docker
 
 Build image 
