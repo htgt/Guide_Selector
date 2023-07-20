@@ -9,7 +9,6 @@ from mutator.edit_window import EditWindow
 from mutator.guide import GuideSequence
 from mutator.coding_region import CodingRegion
 
-from pprint import pprint
 import pandas as pd
 
 @dataclass
@@ -43,7 +42,7 @@ class Runner:
             start=row['guide_start'],
             end=row['guide_end'],
             chromosome=row['chromosome'],
-            is_positive_strand=(row['cds_strand'] == '+'),
+            is_positive_strand=(row['guide_strand'] == '+'),
             guide_id=row.name,
             frame=row['guide_frame']
         )
@@ -64,17 +63,9 @@ class Runner:
         for index, row in guide_data.iterrows():
             mutation_builder_objects.append(self.build_mutations(row))
 
-        pprint(mutation_builder_objects)
         self.mutation_builders = mutation_builder_objects
 
-    def run_window_frame(self, row : dict) -> None:
-        self.build_coding_region_objects(row)
-
-        codons = get_window_frame_and_codons(self.cds, self.window)
-
-        self.codons = codons
-
-        return codons
+        return
     
     def build_coding_region_objects(self, data : dict) -> None:
         self.cds = BaseSequence(
