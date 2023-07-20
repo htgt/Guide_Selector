@@ -1,12 +1,9 @@
 from os import path
 import csv
-from typing import List, TYPE_CHECKING
+from typing import List
 from pathlib import Path
-from mutator.runner import Runner, mutator_to_dict_list
-from td_utils.src.utils.vcf_utils import write_to_vcf, Variant, Variants, REQUIRED_FIELDS, VCFHeader
-
-if TYPE_CHECKING:
-    from pandas import DataFrame
+from mutator.runner import Runner
+from td_utils.src.utils.vcf_utils import write_to_vcf, Variants
 
 # copied from targeton-designer- need to make a shared repo
 def check_file_exists(file):
@@ -35,32 +32,29 @@ def write_dict_list_to_csv(file_name, dict_list, headers=None, delimiter=',') ->
         writer.writeheader()
         writer.writerows(dict_list)
         
-def write_mutator_to_vcf(file_path:str, runners:List[Runner]) -> str:  
-    variants = transform_mutator_to_variants(runners)      
+def write_mutator_to_vcf(file_path:str, runner:Runner) -> str:  
+    variants = transform_runner_to_variants(runner)      
     file_path = Path(file_path)
     file_path.with_suffix(".vcf")
     # mutation to vcf format.
     write_to_vcf(file_path, variants)
     return file_path
 
-def transform_mutator_to_variants(runners:List[Runner]) -> Variants:
+def transform_runner_to_variants(runner:Runner) -> Variants:
     variants = []
-    chrom = runners[0].guide.chromosome
+    chrom = runner.mutation_builder[0].guide
     sgrna_number = 1
+    variants = Variants(chrom, sgrna_number)
     
-    translation_dict = {
-        "CHROM":"chromosome",
-        "ID":"guide_id",
-        "POS":"pos",
-        "REF":"ref_pos_three",
-        "ALT":"alt_pos_three"
-    }
-    
-    list_runners = mutator_to_dict_list(runners)
-    for row in list_runners:
-        
-        variant_dict={}
-        for variant_key, row_key in translation_dict.items():
-            variant_dict[variant_key] = row[row_key]
-        variants.append(Variant(**variant_dict))
-    return Variants(variants, chrom, sgrna_number)
+    for mb in runner.mutation_builder:
+        for codon in mb.codons:
+            if codon.is_permitted:
+                variants.append(
+                    mb.guide.chromosome,
+                    codon.third.window_position,
+                    ID = mb.guide.id,
+                    REF = codon.third.base,
+                    ALT = codon.editted.third.base, 
+                    INFO = {"SGRNA":mb.guide.id}
+                )
+    return variants
