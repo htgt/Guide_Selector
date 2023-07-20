@@ -19,7 +19,7 @@ class TestGuideSequence(TestCase):
         bases = "GCCATTGTCCGGGAGTCAGAAACT"
         guide = GuideSequence(0, 22, is_positive_strand=False)
 
-        pam_fragment_negative = SequenceFragment("CCA", 1, 4)
+        pam_fragment_negative = SequenceFragment("CCA", 1, 3)
 
         test_pam = guide.find_pam(bases)
 
