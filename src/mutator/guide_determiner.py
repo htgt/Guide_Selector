@@ -6,6 +6,7 @@ import pandas as pd
 from utils.file_system import read_csv_to_list_dict
 from utils.exceptions import GuideDeterminerError
 from mutator.codon import CodonEdit
+from pprint import pprint
 
 class GuideDeterminer:
     def parse_loci(self, gtf: str, guide_tsv: str) -> None:
@@ -15,13 +16,14 @@ class GuideDeterminer:
             self.determine_frame_for_guide, axis=1
         )
         guide_frame_df = self.adjust_columns_for_output(coding_regions)
-        print(guide_frame_df)
+        pprint(guide_frame_df)
         return guide_frame_df
 
     def read_input_files(self, gtf: str, guide_tsv: str) -> Tuple[List[dict], pd.DataFrame]:
         gtf_data = pr.read_gtf(gtf, as_df=True)
         gtf_data['Start'] += 1  # pyranges uses 0-based coords
         guide_data = read_csv_to_list_dict(guide_tsv, delimiter="\t")
+        
         return (gtf_data, guide_data)
 
     def get_coding_regions_for_all_guides(
@@ -50,12 +52,14 @@ class GuideDeterminer:
             )
         return coding_region
 
-    def add_guide_data_to_dataframe(self, dataframe: pd.DataFrame, guide: dict) -> pd.DataFrame:
+    def add_guide_data_to_dataframe(self, dataframe: pd.DataFrame, guide: dict) -> pd.DataFrame:      
         dataframe = dataframe.copy()
         dataframe['guide_id'] = int(guide['guide_id'])
         dataframe.set_index('guide_id', inplace=True)
         dataframe['guide_start'] = int(guide['start'])
         dataframe['guide_end'] = int(guide['end'])
+        dataframe['guide_strand'] = guide['grna_strand']
+ 
         return dataframe
 
     def determine_frame_for_guide(self, row: pd.Series) -> str:
@@ -92,6 +96,7 @@ class GuideDeterminer:
             'guide_start',
             'guide_end',
             'guide_frame',
+            'guide_strand'
         ]
         return coding_regions[required_cols].copy()
 
