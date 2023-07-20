@@ -1,0 +1,4 @@
+{
+    "ignore_positions": [-1, 1],
+    "allow_codon_loss": true
+}
