@@ -9,6 +9,8 @@ from mutator.edit_window import EditWindow
 from mutator.guide import GuideSequence
 from mutator.coding_region import CodingRegion
 
+
+
 from pprint import pprint
 import pandas as pd
 
@@ -20,6 +22,7 @@ class Runner:
     guide: GuideSequence
     gene_name: str
     mutation_builders: List[MutationBuilder]
+    failed_mutations: List[MutationBuilder]
 
     def __init__(self) -> None:
         self.cds = None
@@ -28,6 +31,7 @@ class Runner:
         self.guide = None
         self.gene_name = None
         self.mutation_builders = None
+        self.failed_mutations = None
 
     def build_mutations(self, region_data : pd.DataFrame) -> None:
         guide = self.fill_guide_sequence(region_data)

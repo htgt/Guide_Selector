@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from typing import Tuple
 from mutator.base_sequence import BaseSequence
 from typing import Optional
+from utils.exceptions import PamNotFoundError
 
 PAM_POSITIVE_PATTERN = r'.GG'
 PAM_NEGATIVE_PATTERN = r'CC.'
@@ -56,7 +57,8 @@ class GuideSequence(BaseSequence):
         pattern = self._define_pam_pattern()
         pam_matches = re.finditer(pattern, bases)
         pam = None
-
+        print(pam_matches)
+        print(bases)
         for match in pam_matches:
             if self._check_pam_position(match, bases):
                 pam = match
@@ -68,11 +70,15 @@ class GuideSequence(BaseSequence):
                 self._calculate_coordinate(pam.end(0) - 1, self.start)
             )
         else:
-            raise Exception('No PAM found in the sequence')
+            #raise Exception('No PAM found in the sequence')
+            return PamNotFoundError('No PAM found in the sequence: ' + bases)
 
     def define_window(self) -> Tuple[int, int]:
         bases = self.get_sequence_by_coords().upper()
         pam = self.find_pam(bases)
+
+        if type(pam) == PamNotFoundError:
+            return pam
 
         if self.is_positive_strand:
             window_start = pam.end  - self.window_length + 1
@@ -81,5 +87,5 @@ class GuideSequence(BaseSequence):
             window_start = pam.start
             window_end = pam.end + self.window_length - 1
 
-        return  window_start, window_end
+        return window_start, window_end
 
