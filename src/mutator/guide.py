@@ -55,6 +55,7 @@ class GuideSequence(BaseSequence):
     def find_pam(self, bases) -> SequenceFragment:
         pattern = self._define_pam_pattern()
         pam_matches = re.finditer(pattern, bases)
+        pam = None
 
         for match in pam_matches:
             if self._check_pam_position(match, bases):
