@@ -1,5 +1,6 @@
-from unittest import TestCase
+from unittest.mock import Mock, patch
 
+from pyfakefs.fake_filesystem_unittest import TestCase
 import pandas as pd
 
 from mutator.guide_determiner import GuideDeterminer
@@ -8,6 +9,7 @@ from utils.exceptions import GuideDeterminerError
 
 class TestGuideDeterminer(TestCase):
     def setUp(self):
+        self.setUpPyfakefs()
         self.gtf_data = pd.DataFrame({
             'Chromosome': ['chr16', 'chr16', 'chr16'],
             'Feature': ['CDS', 'CDS', 'CDS'],
@@ -35,18 +37,48 @@ class TestGuideDeterminer(TestCase):
             'end': '67610877',
         }
 
+    @patch('mutator.guide_determiner.DEFAULT_CONFIG_FILE', 'default_config.json')
+    def test_prepare_config_default(self):
+        # arrange
+        contents = '{"ignore_positions": [-1, 1], "allow_codon_loss": true}'
+        self.fs.create_file('default_config.json', contents=contents)
+        expected = {'ignore_positions': [-1, 1], 'allow_codon_loss': True}
+
+        # act
+        actual = GuideDeterminer.prepare_config('')
+
+        # assert
+        self.assertEqual(actual, expected)
+
+    @patch('mutator.guide_determiner.DEFAULT_CONFIG_FILE', 'default_config.json')
+    def test_prepare_config_custom(self):
+        # arrange
+        default_contents = '{"ignore_positions": [-1, 1], "allow_codon_loss": true}'
+        custom_contents = '{"ignore_positions": [1]}'
+        self.fs.create_file('default_config.json', contents=default_contents)
+        self.fs.create_file('custom_config.json', contents=custom_contents)
+        expected = {'ignore_positions': [1], 'allow_codon_loss': True}
+
+        # act
+        actual = GuideDeterminer.prepare_config('custom_config.json')
+
+        # assert
+        self.assertEqual(actual, expected)
+
     def test_get_coding_region_for_guide_success(self):
         # arrange
+        mock_object = Mock()
         expected = self.coding_region
 
         # act
-        actual = GuideDeterminer().get_coding_region_for_guide(self.gtf_data, self.guide_data)
+        actual = GuideDeterminer.get_coding_region_for_guide(mock_object, self.gtf_data, self.guide_data)
 
         # assert
         pd.testing.assert_frame_equal(actual, expected, check_exact=True)
 
     def test_get_coding_region_for_guide_raises_error_when_no_region_found(self):
         # arrange
+        mock_object = Mock()
         guide_data = {
             'guide_id': '1139541475',
             'chr': 'chr16',
@@ -57,13 +89,14 @@ class TestGuideDeterminer(TestCase):
 
         # act
         with self.assertRaises(GuideDeterminerError) as cm:
-            print(GuideDeterminer().get_coding_region_for_guide(self.gtf_data, guide_data))
+            GuideDeterminer.get_coding_region_for_guide(mock_object, self.gtf_data, guide_data)
 
         # assert
         self.assertEqual(str(cm.exception), expected)
 
     def test_get_coding_region_for_guide_raises_error_when_multiple_regions_found(self):
         # arrange
+        mock_object = Mock()
         guide_data = {
             'guide_id': '1139541055',
             'chr': 'chr16',
@@ -74,13 +107,14 @@ class TestGuideDeterminer(TestCase):
 
         # act
         with self.assertRaises(GuideDeterminerError) as cm:
-            GuideDeterminer().get_coding_region_for_guide(self.gtf_data, guide_data)
+            GuideDeterminer.get_coding_region_for_guide(mock_object, self.gtf_data, guide_data)
 
         # assert
         self.assertEqual(str(cm.exception), expected)
 
     def test_add_guide_data_to_dataframe(self):
         # arrange
+        mock_object = Mock()
         expected = pd.DataFrame({
             'Chromosome': 'chr16',
             'Feature': 'CDS',
@@ -95,13 +129,14 @@ class TestGuideDeterminer(TestCase):
         }, index=pd.Index([1139540371], name='guide_id'))
 
         # act
-        actual = GuideDeterminer().add_guide_data_to_dataframe(self.coding_region, self.guide_data)
+        actual = GuideDeterminer.add_guide_data_to_dataframe(mock_object, self.coding_region, self.guide_data)
 
         # assert
         pd.testing.assert_frame_equal(actual, expected, check_exact=True)
 
     def test_determine_frame_for_guide_within_forward_strand_cds(self):
         # arrange
+        mock_object = Mock()
         test_row = pd.Series({
             'Chromosome': 'chr16',
             'Feature': 'CDS',
@@ -117,13 +152,14 @@ class TestGuideDeterminer(TestCase):
         expected = '2'
 
         # act
-        actual = GuideDeterminer().determine_frame_for_guide(test_row)
+        actual = GuideDeterminer.determine_frame_for_guide(mock_object, test_row)
 
         # assert
         self.assertEqual(actual, expected)
 
     def test_determine_frame_for_guide_starting_before_forward_strand_cds(self):
         # arrange
+        mock_object = Mock()
         test_row = pd.Series({
             'Chromosome': 'chr16',
             'Feature': 'CDS',
@@ -139,13 +175,14 @@ class TestGuideDeterminer(TestCase):
         expected = '0'
 
         # act
-        actual = GuideDeterminer().determine_frame_for_guide(test_row)
+        actual = GuideDeterminer.determine_frame_for_guide(mock_object, test_row)
 
         # assert
         self.assertEqual(actual, expected)
 
     def test_determine_frame_for_guide_within_reverse_strand_cds(self):
         # arrange
+        mock_object = Mock()
         test_row = pd.Series({
             'Chromosome': 'chr16',
             'Feature': 'CDS',
@@ -161,13 +198,14 @@ class TestGuideDeterminer(TestCase):
         expected = '2'
 
         # act
-        actual = GuideDeterminer().determine_frame_for_guide(test_row)
+        actual = GuideDeterminer.determine_frame_for_guide(mock_object, test_row)
 
         # assert
         self.assertEqual(actual, expected)
 
     def test_determine_frame_for_guide_ending_after_reverse_strand_cds(self):
         # arrange
+        mock_object = Mock()
         test_row = pd.Series({
             'Chromosome': 'chr16',
             'Feature': 'CDS',
@@ -183,13 +221,14 @@ class TestGuideDeterminer(TestCase):
         expected = '2'
 
         # act
-        actual = GuideDeterminer().determine_frame_for_guide(test_row)
+        actual = GuideDeterminer.determine_frame_for_guide(mock_object, test_row)
 
         # assert
         self.assertEqual(actual, expected)
 
     def test_adjust_columns_for_output(self):
         # arrange
+        mock_object = Mock()
         data = pd.DataFrame({
             'Chromosome': 'chr16',
             'Feature': 'CDS',
@@ -217,23 +256,51 @@ class TestGuideDeterminer(TestCase):
         }, index=pd.Index([1139540371], name='guide_id'))
 
         # act
-        actual = GuideDeterminer().adjust_columns_for_output(data)
+        actual = GuideDeterminer.adjust_columns_for_output(mock_object, data)
 
         # assert
         pd.testing.assert_frame_equal(actual, expected, check_exact=True)
 
-    def test_add_codon_edit_data_to_df(self):
+    def test_add_codon_edit_data_to_df_all_permitted(self):
         # arrange
-        test_df = pd.DataFrame({'ref_codon': ['CCT', 'TTG', 'GAT', 'GAT']})
+        mock_object = Mock()
+        mock_object._config = {'ignore_positions': [], 'allow_codon_loss': True}
+        test_df = pd.DataFrame({
+            'ref_codon': ['CCT', 'TTG', 'GAT', 'GAT'],
+            'window_pos': [1, 3, 6, 9],
+        })
         expected = pd.DataFrame({
             'ref_codon': ['CCT', 'TTG', 'GAT', 'GAT'],
+            'window_pos': [1, 3, 6, 9],
             'alt': ['C', 'A', 'C', 'C'],
             'lost_amino_acids': ['N/A', 'M,W', 'N/A', 'N/A'],
             'permitted': [True, True, True, True],
         })
 
         # act
-        GuideDeterminer().add_codon_edit_data_to_df(test_df)
+        GuideDeterminer.add_codon_edit_data_to_df(mock_object, test_df)
+
+        # assert
+        pd.testing.assert_frame_equal(test_df, expected)
+
+    def test_add_codon_edit_data_to_df_not_all_permitted(self):
+        # arrange
+        mock_object = Mock()
+        mock_object._config = {'ignore_positions': [1], 'allow_codon_loss': False}
+        test_df = pd.DataFrame({
+            'ref_codon': ['CCT', 'TTG', 'GAT', 'GAT'],
+            'window_pos': [1, 3, 6, 9],
+        })
+        expected = pd.DataFrame({
+            'ref_codon': ['CCT', 'TTG', 'GAT', 'GAT'],
+            'window_pos': [1, 3, 6, 9],
+            'alt': ['C', 'A', 'C', 'C'],
+            'lost_amino_acids': ['N/A', 'M,W', 'N/A', 'N/A'],
+            'permitted': [False, False, True, True],
+        })
+
+        # act
+        GuideDeterminer.add_codon_edit_data_to_df(mock_object, test_df)
 
         # assert
         pd.testing.assert_frame_equal(test_df, expected)
