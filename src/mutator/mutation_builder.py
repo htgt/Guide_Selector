@@ -1,17 +1,29 @@
 import copy
 from typing import List
 from mutator.base_sequence import BaseSequence
+from mutator.guide import GuideSequence
 from mutator.edit_window import EditWindow, WindowCodon
 from mutator.frame import get_frame
+from mutator.coding_region import CodingRegion
 
 
 class MutationBuilder:
-    def __init__(self, cds: BaseSequence, window: EditWindow) -> None:
-        self.cds = copy.deepcopy(cds)
-        self.window = copy.deepcopy(window)
+    def __init__(self, guide: GuideSequence, cds: CodingRegion) -> None:
+        self.guide = self._build_guide_sequence(guide)
+        self.cds = self._build_coding_region(cds)
+        self.window = self._build_edit_window()
 
     def calculate_window_frame(self) -> int:
         return get_frame(self.cds, self.window)
+
+    def _build_guide_sequence(self, guide) -> GuideSequence:
+        return copy.deepcopy(guide)
+
+    def _build_coding_region(self, cds) -> CodingRegion:
+        return copy.deepcopy(cds)
+
+    def _build_edit_window(self) -> EditWindow:
+        return "Edit Window here"
 
 
 def get_window_frame_and_codons(cds : BaseSequence, window : EditWindow) -> List[WindowCodon]:
