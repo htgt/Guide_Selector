@@ -56,7 +56,7 @@ class GuideSequence(BaseSequence):
         pattern = self._define_pam_pattern()
         pam_matches = re.finditer(pattern, bases)
         pam = None
-        print(pam_matches)
+
         for match in pam_matches:
             if self._check_pam_position(match, bases):
                 pam = match

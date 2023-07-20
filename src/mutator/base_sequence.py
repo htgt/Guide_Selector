@@ -25,7 +25,7 @@ class BaseSequence:
         if not self.is_positive_strand:
             bases = Seq(bases).reverse_complement()
 
-        return bases
+        return str(bases)
 
     def _get_sequence_codons(self):
         pass
