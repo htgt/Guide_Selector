@@ -66,8 +66,6 @@ class TestGuideSequence(TestCase):
         window = builder.build_edit_window()
         codons = window.get_window_codons()
 
-        print(codons)
-
         self.assertEqual(codons, control_codons)
 
 

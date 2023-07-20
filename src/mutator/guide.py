@@ -55,8 +55,7 @@ class GuideSequence(BaseSequence):
     def find_pam(self, bases) -> SequenceFragment:
         pattern = self._define_pam_pattern()
         pam_matches = re.finditer(pattern, bases)
-        pam = None
-        print(pam_matches)
+
         for match in pam_matches:
             if self._check_pam_position(match, bases):
                 pam = match
@@ -68,8 +67,7 @@ class GuideSequence(BaseSequence):
                 self._calculate_coordinate(pam.end(0) - 1, self.start)
             )
         else:
-            #raise Exception('No PAM found in the sequence')
-            print('No PAM found in the sequence: ' + bases)
+            raise Exception('No PAM found in the sequence')
 
     def define_window(self) -> Tuple[int, int]:
         bases = self.get_sequence_by_coords().upper()
