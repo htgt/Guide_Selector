@@ -12,7 +12,9 @@ class MutationBuilder:
         self.guide = self._build_guide_sequence(guide)
         self.cds = self._build_coding_region(cds)
         self.window = EditWindow()
-        self.failed = False
+
+    #def __repr__(self):
+    #    return f"guide: {self.guide}, cds: {self.cds}, window: {self.window}"
 
     def _build_guide_sequence(self, guide) -> GuideSequence:
         return copy.deepcopy(guide)
@@ -29,7 +31,6 @@ class MutationBuilder:
 def get_window(guide: GuideSequence) -> EditWindow:
     window_coordinates = guide.define_window()
     if type(window_coordinates) == PamNotFoundError:
-        guide.failed = True
         return
 
     window = EditWindow(

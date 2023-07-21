@@ -68,17 +68,7 @@ class Runner:
         for index, row in guide_data.iterrows():
             mutation_builder_objects.append(self.build_mutations(row))
 
-        pprint(mutation_builder_objects)
         self.mutation_builders = mutation_builder_objects
-
-    def run_window_frame(self, row : dict) -> None:
-        self.build_coding_region_objects(row)
-
-        codons = get_window_frame_and_codons(self.cds, self.window)
-
-        self.codons = codons
-
-        return codons
     
     def build_coding_region_objects(self, data : dict) -> None:
         self.cds = BaseSequence(
@@ -126,6 +116,16 @@ class Runner:
             rows.append(copy.deepcopy(row))
 
         return rows
+
+    def generate_edit_windows_for_builders(self) -> None:
+        failed_mutations = []
+        for mb in self.mutation_builders:
+            mb.build_edit_window()
+            if mb.window is None:
+                failed_mutations.append(mb)
+                self.mutation_builders.remove(mb)
+
+        self.failed_mutations = failed_mutations
 
 
 def _booleanise_strand(strand : str) -> bool:
