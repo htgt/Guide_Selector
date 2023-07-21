@@ -1,7 +1,7 @@
 from mutator.base_sequence import BaseSequence
 
 def get_frame(coding_region: BaseSequence, region: BaseSequence) -> int:
-    if coding_region.isPositiveStrand:
+    if coding_region.is_positive_strand:
         if region.start < coding_region.start:
             return coding_region.frame
         difference = region.start - coding_region.start

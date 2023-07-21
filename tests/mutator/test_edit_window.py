@@ -19,8 +19,8 @@ class TestEditWindow(unittest.TestCase):
         (10, 21, False, '16', 1, (10, 23)),
         (10, 21, False, '16', 2, (10, 22)),
     ])
-    def test_get_extended_window_coordinates(self, start, end, isPositiveStrand, chromosome, frame, expected_coordinates):
-        window = EditWindow(start, end, isPositiveStrand, chromosome, frame)
+    def test_get_extended_window_coordinates(self, start, end, is_positive_strand, chromosome, frame, expected_coordinates):
+        window = EditWindow(start, end, is_positive_strand, chromosome, frame)
 
         result_coordinates = window._get_extended_window_coordinates()
 
