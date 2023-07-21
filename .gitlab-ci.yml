@@ -47,3 +47,8 @@ test:
     - make test
   dependencies:
     - docker-build
+    
+sast:
+  stage: test
+include:
+- template: Security/SAST.gitlab-ci.yml
