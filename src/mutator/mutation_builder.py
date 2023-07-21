@@ -6,8 +6,9 @@ from mutator.edit_window import EditWindow, WindowCodon
 from mutator.frame import get_frame
 from mutator.coding_region import CodingRegion
 
+
 class MutationBuilder:
-    def __init__(self, guide: GuideSequence, cds) -> None:
+    def __init__(self, guide: GuideSequence, cds: CodingRegion) -> None:
         self.guide = self._build_guide_sequence(guide)
         self.cds = cds
 
