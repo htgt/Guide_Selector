@@ -11,12 +11,7 @@ class MutationBuilder:
         self.guide = self._build_guide_sequence(guide)
         self.cds = cds
 
-        self.window = EditWindow()
-        #self.cds = self._build_coding_region()
-        #self.window = self._build_edit_window()
-
-    def calculate_window_frame(self) -> int:
-        return get_frame(self.cds, self.window)
+        self.window = EditWindow(0,0)
 
     def _build_guide_sequence(self, guide) -> GuideSequence:
         return copy.deepcopy(guide)
