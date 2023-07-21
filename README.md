@@ -53,7 +53,6 @@ python3 src/cli.py --version
 Available commands:
 - --version
 - mutator
-- window 
 
 Mutator command runs the PAM mutator workflow in one command. Mutator requires the Guide Loci + ID, a reference GTF file to run. 
 Custom configuration can be passed to the command for any tweaks necessary.
