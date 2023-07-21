@@ -16,10 +16,10 @@ class MutationBuilder:
     #def __repr__(self):
     #    return f"guide: {self.guide}, cds: {self.cds}, window: {self.window}"
 
-    def _build_guide_sequence(self, guide) -> GuideSequence:
+    def _build_guide_sequence(self, guide: GuideSequence) -> GuideSequence:
         return copy.deepcopy(guide)
 
-    def _build_coding_region(self, cds) -> CodingRegion:
+    def _build_coding_region(self, cds: CodingRegion) -> CodingRegion:
         return copy.deepcopy(cds)
 
     def build_edit_window(self) -> EditWindow:

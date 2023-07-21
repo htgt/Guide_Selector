@@ -50,10 +50,10 @@ class GuideSequence(BaseSequence):
 
         return is_pam
 
-    def _calculate_coordinate(self, difference, start):
+    def _calculate_coordinate(self, difference: int, start: int):
         return start + difference
 
-    def find_pam(self, bases) -> SequenceFragment:
+    def find_pam(self, bases: str) -> SequenceFragment:
         pattern = self._define_pam_pattern()
         pam_matches = re.finditer(pattern, bases)
         pam = None
