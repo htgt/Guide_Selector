@@ -1,6 +1,9 @@
 from os import path
 import csv
 from typing import List
+import json
+
+from utils.exceptions import FileFormatError
 
 
 # copied from targeton-designer- need to make a shared repo
@@ -29,3 +32,13 @@ def write_dict_list_to_csv(file_name, dict_list, headers=None, delimiter=',') ->
         writer = csv.DictWriter(file, delimiter=delimiter, fieldnames=headers)
         writer.writeheader()
         writer.writerows(dict_list)
+
+
+def parse_json(file_path: str) -> dict:
+    with open(file_path, "r") as file:
+        try:
+            result = json.load(file)
+        except Exception as err:
+            raise FileFormatError
+
+    return result
