@@ -8,8 +8,10 @@ from src.mutator.guide import GuideSequenceLoci
 from src.mutator.edit_window import EditWindow, WindowCodon, BaseWithPosition
 from td_utils.src.vcf_utils import read_vcf, Variants, Variant
 
+
 class TestWriteVCF(TestCase):
     test_dir = '/test_dir'
+
     def setUp(self):
         self.runner = Runner()
         self.setUpPyfakefs()
@@ -27,26 +29,26 @@ class TestWriteVCF(TestCase):
         self.runner.codons = [WindowCodon('TCA', BaseWithPosition('A', 23, 1))]
         self.variant = Variant(
             CHROM=self.runner.guide.chromosome,
-            POS=self.runner.codons[0].third.coordinate, 
-            REF=self.runner.codons[0].third.base, 
-            ALT='G', 
+            POS=self.runner.codons[0].third.coordinate,
+            REF=self.runner.codons[0].third.base,
+            ALT='G',
             INFO={'SGRNA': "sGRNA_XXXXX"}
-            )
+        )
         self.variants = Variants([self.variant], self.runner.guide.chromosome)
-        
+
     def test_transform_mutator_to_variants(self):
-        # arrange   
+        # arrange
         test_data = [self.runner]
         expected_result = self.variants
         # act
         test_result = transform_mutator_to_variants(test_data)
         # assert
         self.assertEqual(test_result, expected_result)
-        
+
     @unittest.mock.patch('src.utils.file_system.write_to_vcf')
     @unittest.mock.patch('src.utils.file_system.transform_mutator_to_variants')
     def test_write_mutator_to_vcf(self, mocked_write_to_vcf, mocked_transform_mutator_to_variants):
-        # arrange   
+        # arrange
         test_data = [self.runner]
         expected_file_name = 'test_file'
         expected_file = expected_file_name + '.vcf'
@@ -56,7 +58,7 @@ class TestWriteVCF(TestCase):
 
         # act
         test_result = write_mutator_to_vcf(expected_file_path, test_data)
-        
+
         # assert
         self.assertEqual(test_result, expected_file_path)
         assert mocked_write_to_vcf.called()
