@@ -1,9 +1,13 @@
 from os import path
 import csv
+import json
 from typing import List
 from pathlib import Path
 from mutator.runner import Runner
 from td_utils.src.utils.vcf_utils import write_to_vcf, Variants
+
+from utils.exceptions import FileFormatError
+
 
 # copied from targeton-designer- need to make a shared repo
 
@@ -62,3 +66,13 @@ def transform_runner_to_variants(runner: Runner) -> Variants:
                     INFO={"SGRNA": mb.guide.id}
                 )
     return variants
+
+
+def parse_json(file_path: str) -> dict:
+    with open(file_path, "r") as file:
+        try:
+            result = json.load(file)
+        except Exception as err:
+            raise FileFormatError
+
+    return result
