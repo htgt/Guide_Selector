@@ -77,7 +77,7 @@ class GuideSequence(BaseSequence):
         pam = self.find_pam(bases)
 
         if self.is_positive_strand:
-            window_start = pam.end  - self.window_length + 1
+            window_start = pam.end - self.window_length + 1
             window_end = pam.end
         else:
             window_start = pam.start
