@@ -12,7 +12,7 @@ class MutationBuilder:
         self.cds = self._build_coding_region(cds)
         self.cds = cds
 
-        self.window = EditWindow()
+        self.window = EditWindow(0,0)
 
     def _build_guide_sequence(self, guide) -> GuideSequence:
         return copy.deepcopy(guide)
