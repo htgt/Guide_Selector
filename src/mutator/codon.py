@@ -1,4 +1,19 @@
+from dataclasses import dataclass
+
 from utils.exceptions import MutatorError
+
+
+@dataclass
+class BaseWithPosition:
+    base: str
+    coordinate: int
+    window_position: int = 0
+
+
+@dataclass
+class WindowCodon:
+    bases: str
+    third: BaseWithPosition
 
 
 class CodonEdit:
