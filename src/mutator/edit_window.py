@@ -1,19 +1,8 @@
-from dataclasses import dataclass
 from typing import List, Tuple
 
 from mutator.frame import get_frame
 from mutator.base_sequence import BaseSequence
-
-@dataclass
-class BaseWithPosition:
-    base: str
-    coordinate: int
-    window_position: int = 0
-
-@dataclass
-class WindowCodon:
-    bases: str
-    third: BaseWithPosition
+from mutator.codon import BaseWithPosition, WindowCodon
 
 
 class EditWindow(BaseSequence):
