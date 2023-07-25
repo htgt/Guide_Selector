@@ -1,11 +1,13 @@
+from dataclasses import dataclass
 from typing import List, Tuple
 
 from mutator.frame import get_frame
 from mutator.base_sequence import BaseSequence
-from mutator.codon import BaseWithPosition, WindowCodon
+from mutator.codon import WindowCodon, BaseWithPosition
 
 
 class EditWindow(BaseSequence):
+
     def _get_extended_window_coordinates(self) -> Tuple[int, int]:
         start = self.start
         end = self.end
@@ -20,26 +22,46 @@ class EditWindow(BaseSequence):
 
         return start, end
 
-    def split_window_into_codons(self, bases: str, start: int) -> List[WindowCodon]:
+    def split_window_into_codons(
+            self,
+            bases: str,
+            start: int,
+            end: int,
+            is_positive_strand: bool,
+    ) -> List[WindowCodon]:
+
+        length = len(bases)
         codons = []
 
-        for i in range(0, len(bases) - 2, 3):
-            coordinate = self._get_third_base_coordinate(start, i + 2)
+        for i in range(0, length - 2, 3):
+            coordinate = self._get_third_base_coordinate(start, end, i , is_positive_strand)
             window_position = self._get_base_window_position(coordinate)
 
-            third = BaseWithPosition(
-                bases[i+2],
-                coordinate,
-                window_position,
-            )
-            codon = WindowCodon(bases[i:i+3], third)
+            if is_positive_strand:
+                third = BaseWithPosition(
+                    bases[i+2],
+                    coordinate,
+                    window_position,
+                )
+                codon = WindowCodon(bases[i:i+3], third)
+            else:
+                third = BaseWithPosition(
+                    bases[length - i - 1],
+                    coordinate,
+                    window_position,
+                )
+                codon = WindowCodon(bases[length - i - 3: length - i], third)
 
             codons.append(codon)
 
         return codons
 
-    def _get_third_base_coordinate(self, start: int, base_position: int) -> int:
-        return start + base_position
+
+    def _get_third_base_coordinate(self, start: int, end: int, i: int, is_positive_strand: bool) -> int:
+        if is_positive_strand:
+            return start + i + 2
+        else:
+            return end - i
 
     def _get_base_window_position(self, coordinate: int) -> int:
         return calculate_position_in_window(self.start, coordinate, self.is_positive_strand)
@@ -55,7 +77,13 @@ class EditWindow(BaseSequence):
         )
 
         extended_bases = extended_window.get_sequence_by_coords()
-        codons = self.split_window_into_codons(extended_bases, extended_coords[0])
+
+        codons = self.split_window_into_codons(
+            extended_bases,
+            extended_coords[0],
+            extended_coords[1],
+            self.is_positive_strand
+        )
 
         return codons
 

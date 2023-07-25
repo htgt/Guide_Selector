@@ -22,22 +22,21 @@ class MutationBuilder:
         return copy.deepcopy(cds)
 
     def build_edit_window(self) -> EditWindow:
-        window = get_window(self.guide)
+        window = get_window(self.guide, self.cds)
         self.window = window
 
         return window
 
-def get_window(guide:GuideSequence) -> EditWindow:
+def get_window(guide:GuideSequence, cds: CodingRegion) -> EditWindow:
     window_coordinates = guide.define_window()
     window = EditWindow(
         window_coordinates[0],
         window_coordinates[1],
-        guide.is_positive_strand,
+        cds.is_positive_strand,
         guide.chromosome,
     )
 
-    window.frame = get_frame(guide, window)
-
+    window.frame = get_frame(cds, window)
     return window
 
 
