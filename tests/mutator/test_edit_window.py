@@ -27,23 +27,40 @@ class TestEditWindow(unittest.TestCase):
 
 class TestEditWindowCodons(unittest.TestCase):
     @parameterized.expand([
-        ('TATATTGAGCAAGG', [
-            WindowCodon('TAT', BaseWithPosition('T', 2, 7)),
-            WindowCodon('ATT', BaseWithPosition('T', 5, 4)),
-            WindowCodon('GAG', BaseWithPosition('G', 8, 1)),
-            WindowCodon('CAA', BaseWithPosition('A', 11, -3))
+        ('TATATTGAGCAAGG', (2, 13), [
+            WindowCodon('TAT', third=BaseWithPosition('T', 2, 9)),
+            WindowCodon('ATT', third=BaseWithPosition('T', 5, 6)),
+            WindowCodon('GAG', third=BaseWithPosition('G', 8, 3)),
+            WindowCodon('CAA', third=BaseWithPosition('A', 11, -1))
         ]),
-        ('TATTGAGCAAGG', [
+        ('TATTGAGCAAGG',  (0, 11), [
             WindowCodon('TAT', BaseWithPosition('T', 2, 7)),
             WindowCodon('TGA', BaseWithPosition('A', 5, 4)),
             WindowCodon('GCA', BaseWithPosition('A', 8, 1)),
             WindowCodon('AGG', BaseWithPosition('G', 11, -3))
-        ])
+        ]),
     ])
-    def test_split_window_into_codons(self, bases, expected_codons):
-        window = EditWindow(0, 12, True, '16')
 
-        result_codons = window.split_window_into_codons(bases, 0)
+    def test_split_window_into_codons(self, bases, window_coords, expected_codons):
+        window = EditWindow(window_coords[0], window_coords[1], True, '16')
+
+        result_codons = window.split_window_into_codons(bases, 0, len(bases), True)
+
+        self.assertEqual(result_codons, expected_codons, "Incorrect split into codons")
+
+
+class TestEditWindowCodonsNegative(unittest.TestCase):
+    @parameterized.expand([('ACCTTTGGATGAT',
+        [WindowCodon('GAT', BaseWithPosition('T', 77696659, 10)),
+        WindowCodon('GAT', BaseWithPosition('T', 77696656, 7)),
+        WindowCodon('TTG', BaseWithPosition('G', 77696653, 4)),
+        WindowCodon('CCT', BaseWithPosition('T', 77696650, 1))]),
+    ])
+
+    def testsplit_window_into_codons_negative(self, bases, expected_codons):
+        window = EditWindow(77696647, 77696659, False, 'X')
+
+        result_codons = window.split_window_into_codons(bases, 77696647, 77696659, False)
 
         self.assertEqual(result_codons, expected_codons, "Incorrect split into codons")
 
