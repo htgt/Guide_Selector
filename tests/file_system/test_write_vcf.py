@@ -1,12 +1,11 @@
 import unittest
 from pyfakefs.fake_filesystem_unittest import TestCase
 from pathlib import Path
-from src.utils.file_system import transform_mutator_to_variants, write_mutator_to_vcf
-from src.mutator.runner import Runner, mutator_to_dict_list
+from src.mutator.runner import Runner
 from src.mutator.base_sequence import BaseSequence
 from src.mutator.guide import GuideSequenceLoci
 from src.mutator.edit_window import EditWindow, WindowCodon, BaseWithPosition
-from td_utils.src.vcf_utils import read_vcf, Variants, Variant
+from td_utils.src.vcf_utils import read_vcf, Variants, Variant, write_to_vcf
 
 
 class TestWriteVCF(TestCase):
@@ -46,10 +45,10 @@ class TestWriteVCF(TestCase):
         self.assertEqual(test_result, expected_result)
 
     @unittest.mock.patch('src.utils.file_system.write_to_vcf')
-    @unittest.mock.patch('src.utils.file_system.transform_mutator_to_variants')
+    @unittest.mock.patch('src.mutator.runner.Runner.to_variants')
     def test_write_mutator_to_vcf(self, mocked_write_to_vcf, mocked_transform_mutator_to_variants):
         # arrange
-        test_data = [self.runner]
+        test_runner = self.runner
         expected_file_name = 'test_file'
         expected_file = expected_file_name + '.vcf'
         expected_file_path = Path(self.test_dir) / expected_file
@@ -57,7 +56,7 @@ class TestWriteVCF(TestCase):
         mocked_transform_mutator_to_variants.return_value = self.variants
 
         # act
-        test_result = write_mutator_to_vcf(expected_file_path, test_data)
+        test_result = write_to_vcf(expected_file_path, test_runner.to_variants())
 
         # assert
         self.assertEqual(test_result, expected_file_path)

@@ -2,9 +2,6 @@ from os import path
 import csv
 import json
 from typing import List
-from pathlib import Path
-from mutator.runner import Runner
-from td_utils.src.utils.vcf_utils import write_to_vcf
 
 from utils.exceptions import FileFormatError
 
@@ -37,15 +34,6 @@ def write_dict_list_to_csv(file_name, dict_list, headers=None, delimiter=',') ->
         writer = csv.DictWriter(file, delimiter=delimiter, fieldnames=headers)
         writer.writeheader()
         writer.writerows(dict_list)
-
-
-def write_mutator_to_vcf(file_path: str, runner: Runner) -> str:
-    variants = runner.to_variants()
-    file_path = Path(file_path)
-    file_path.with_suffix(".vcf")
-    # mutation to vcf format.
-    write_to_vcf(file_path, variants)
-    return str(file_path)
 
 
 def parse_json(file_path: str) -> dict:
