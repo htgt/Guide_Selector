@@ -1,14 +1,31 @@
 from typing import Tuple, List
+from pathlib import Path
 
 import pyranges as pr
 import pandas as pd
 
-from utils.file_system import read_csv_to_list_dict
+from utils.file_system import read_csv_to_list_dict, parse_json
 from utils.exceptions import GuideDeterminerError
 from mutator.codon import CodonEdit
-from pprint import pprint
+
+DEFAULT_CONFIG_FILE = Path(__file__).parent / '../../config/mutator_default_config.json'
+
 
 class GuideDeterminer:
+    def __init__(self, config_file: str = '') -> None:
+        self._config = self.prepare_config(config_file)
+
+    @staticmethod
+    def prepare_config(config_file: str) -> dict:
+        default_config = parse_json(DEFAULT_CONFIG_FILE)
+        if config_file:
+            config = parse_json(config_file)
+            for field in default_config.keys():
+                config.setdefault(field, default_config[field])
+        else:
+            config = default_config
+        return config
+
     def parse_loci(self, gtf: str, guide_tsv: str) -> None:
         gtf_data, guide_data = self.read_input_files(gtf, guide_tsv)
         coding_regions = self.get_coding_regions_for_all_guides(gtf_data, guide_data)
@@ -16,14 +33,13 @@ class GuideDeterminer:
             self.determine_frame_for_guide, axis=1
         )
         guide_frame_df = self.adjust_columns_for_output(coding_regions)
-        pprint(guide_frame_df)
+        print(guide_frame_df)
         return guide_frame_df
 
     def read_input_files(self, gtf: str, guide_tsv: str) -> Tuple[List[dict], pd.DataFrame]:
         gtf_data = pr.read_gtf(gtf, as_df=True)
         gtf_data['Start'] += 1  # pyranges uses 0-based coords
         guide_data = read_csv_to_list_dict(guide_tsv, delimiter="\t")
-        
         return (gtf_data, guide_data)
 
     def get_coding_regions_for_all_guides(
@@ -52,14 +68,12 @@ class GuideDeterminer:
             )
         return coding_region
 
-    def add_guide_data_to_dataframe(self, dataframe: pd.DataFrame, guide: dict) -> pd.DataFrame:      
+    def add_guide_data_to_dataframe(self, dataframe: pd.DataFrame, guide: dict) -> pd.DataFrame:
         dataframe = dataframe.copy()
         dataframe['guide_id'] = int(guide['guide_id'])
         dataframe.set_index('guide_id', inplace=True)
         dataframe['guide_start'] = int(guide['start'])
         dataframe['guide_end'] = int(guide['end'])
-        dataframe['guide_strand'] = guide['grna_strand']
- 
         return dataframe
 
     def determine_frame_for_guide(self, row: pd.Series) -> str:
@@ -96,7 +110,6 @@ class GuideDeterminer:
             'guide_start',
             'guide_end',
             'guide_frame',
-            'guide_strand'
         ]
         return coding_regions[required_cols].copy()
 
@@ -105,15 +118,15 @@ class GuideDeterminer:
             'alt',
             'lost_amino_acids',
             'permitted'
-        ]] = df_with_ref_codons.apply(self.make_codon_edit, axis=1)
+        ]] = df_with_ref_codons.apply(GuideDeterminer.make_codon_edit, axis=1, args=(self._config,))
 
-    def make_codon_edit(self, row: pd.Series) -> pd.Series:
-        codon_edit = CodonEdit(row['ref_codon'])
+    def make_codon_edit(row: pd.Series, config: dict) -> pd.Series:
+        codon_edit = CodonEdit(row['ref_codon'], row['window_pos'])
         lost_amino_acids = ','.join(codon_edit.lost_amino_acids)
         if not lost_amino_acids:
             lost_amino_acids = 'N/A'
         return pd.Series([
             codon_edit.edited_codon[2],
             lost_amino_acids,
-            codon_edit.is_permitted,
+            codon_edit.is_permitted(config),
         ])

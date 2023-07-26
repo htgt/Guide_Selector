@@ -1,10 +1,18 @@
+from utils.exceptions import MutatorError
+
+
 class CodonEdit:
-    def __init__(self, codon: str) -> None:
+    def __init__(self, codon: str, window_pos: int) -> None:
         self._original_codon = codon.upper()
+        self._window_pos = window_pos
 
     @property
     def original_codon(self) -> str:
         return self._original_codon
+
+    @property
+    def window_pos(self) -> int:
+        return self._window_pos
 
     @property
     def edited_codon(self) -> str:
@@ -12,10 +20,16 @@ class CodonEdit:
         new_codon = self.original_codon[:2] + base_edits[self.original_codon[2]]
         return new_codon
 
-    @property
-    def is_permitted(self) -> bool:
+    def is_permitted(self, config: dict) -> bool:
         if self.original_codon in ('ATG', 'TGG', 'ATA', 'TGA'):
             return False
+        try:
+            if self.window_pos in config['ignore_positions']:
+                return False
+            if (not config['allow_codon_loss']) and self.lost_amino_acids:
+                return False
+        except KeyError:
+            raise MutatorError('Field missing from config')
         return True
 
     @property

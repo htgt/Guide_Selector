@@ -5,19 +5,21 @@ from mutator.guide import GuideSequence
 from mutator.edit_window import EditWindow, WindowCodon
 from mutator.frame import get_frame
 from mutator.coding_region import CodingRegion
+from utils.exceptions import PamNotFoundError
 
 class MutationBuilder:
-    def __init__(self, guide: GuideSequence, cds) -> None:
+    def __init__(self, guide: GuideSequence, cds : CodingRegion) -> None:
         self.guide = self._build_guide_sequence(guide)
         self.cds = self._build_coding_region(cds)
-        self.cds = cds
-
         self.window = EditWindow()
 
-    def _build_guide_sequence(self, guide) -> GuideSequence:
+    #def __repr__(self):
+    #    return f"guide: {self.guide}, cds: {self.cds}, window: {self.window}"
+
+    def _build_guide_sequence(self, guide: GuideSequence) -> GuideSequence:
         return copy.deepcopy(guide)
 
-    def _build_coding_region(self, cds) -> CodingRegion:
+    def _build_coding_region(self, cds: CodingRegion) -> CodingRegion:
         return copy.deepcopy(cds)
 
     def build_edit_window(self) -> EditWindow:
@@ -26,8 +28,11 @@ class MutationBuilder:
 
         return window
 
-def get_window(guide:GuideSequence) -> EditWindow:
+def get_window(guide: GuideSequence) -> EditWindow:
     window_coordinates = guide.define_window()
+    if type(window_coordinates) == PamNotFoundError:
+        return
+
     window = EditWindow(
         window_coordinates[0],
         window_coordinates[1],

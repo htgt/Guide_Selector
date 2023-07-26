@@ -9,6 +9,9 @@ from mutator.edit_window import EditWindow
 from mutator.guide import GuideSequence
 from mutator.coding_region import CodingRegion
 
+
+
+from pprint import pprint
 import pandas as pd
 
 @dataclass
@@ -19,6 +22,7 @@ class Runner:
     guide: GuideSequence
     gene_name: str
     mutation_builders: List[MutationBuilder]
+    failed_mutations: List[MutationBuilder]
 
     def __init__(self) -> None:
         self.cds = None
@@ -27,6 +31,7 @@ class Runner:
         self.guide = None
         self.gene_name = None
         self.mutation_builders = None
+        self.failed_mutations = None
 
     def build_mutations(self, region_data : pd.DataFrame) -> None:
         guide = self.fill_guide_sequence(region_data)
@@ -42,7 +47,7 @@ class Runner:
             start=row['guide_start'],
             end=row['guide_end'],
             chromosome=row['chromosome'],
-            is_positive_strand=(row['guide_strand'] == '+'),
+            is_positive_strand=(row['cds_strand'] == '+'),
             guide_id=row.name,
             frame=row['guide_frame']
         )
@@ -64,8 +69,6 @@ class Runner:
             mutation_builder_objects.append(self.build_mutations(row))
 
         self.mutation_builders = mutation_builder_objects
-
-        return
     
     def build_coding_region_objects(self, data : dict) -> None:
         self.cds = BaseSequence(
@@ -113,6 +116,16 @@ class Runner:
             rows.append(copy.deepcopy(row))
 
         return rows
+
+    def generate_edit_windows_for_builders(self) -> None:
+        failed_mutations = []
+        for mb in self.mutation_builders:
+            mb.build_edit_window()
+            if mb.window is None:
+                failed_mutations.append(mb)
+                self.mutation_builders.remove(mb)
+
+        self.failed_mutations = failed_mutations
 
 
 def _booleanise_strand(strand : str) -> bool:
