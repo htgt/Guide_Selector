@@ -41,12 +41,12 @@ def write_mutator_to_vcf(file_path: str, runner: Runner) -> str:
     file_path.with_suffix(".vcf")
     # mutation to vcf format.
     write_to_vcf(file_path, variants)
-    return file_path
+    return str(file_path)
 
 
 def transform_runner_to_variants(runner: Runner) -> Variants:
     variants = []
-    chrom = runner.mutation_builder[0].guide
+    chrom = runner.mutation_builder[0].guide.chromosome
     sgrna_number = 1
     variants = Variants(chrom, sgrna_number)
 
@@ -55,10 +55,10 @@ def transform_runner_to_variants(runner: Runner) -> Variants:
             if codon.is_permitted:
                 variants.append(
                     mb.guide.chromosome,
-                    codon.third.window_position,
+                    codon.third_base_coord,
                     ID=mb.guide.id,
-                    REF=codon.third.base,
-                    ALT=codon.editted.third.base,
+                    REF=codon.third_base_on_positive_strand,
+                    ALT=codon.edited_third_base_on_positive_strand,
                     INFO={"SGRNA": mb.guide.id}
                 )
     return variants
