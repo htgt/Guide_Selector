@@ -7,11 +7,14 @@ from mutator.frame import get_frame
 from mutator.coding_region import CodingRegion
 from utils.exceptions import PamNotFoundError
 
+
 class MutationBuilder:
-    def __init__(self, guide: GuideSequence, cds : CodingRegion) -> None:
+    def __init__(self, guide: GuideSequence, cds: CodingRegion) -> None:
         self.guide = self._build_guide_sequence(guide)
         self.cds = self._build_coding_region(cds)
-        self.window = EditWindow()
+        self.cds = cds
+
+        self.window = EditWindow(0,0)
 
     #def __repr__(self):
     #    return f"guide: {self.guide}, cds: {self.cds}, window: {self.window}"
@@ -23,25 +26,27 @@ class MutationBuilder:
         return copy.deepcopy(cds)
 
     def build_edit_window(self) -> EditWindow:
-        window = get_window(self.guide)
+        window = get_window(self.guide, self.cds)
         self.window = window
 
         return window
 
-def get_window(guide: GuideSequence) -> EditWindow:
+
+def get_window(guide:GuideSequence, cds: CodingRegion) -> EditWindow:
     window_coordinates = guide.define_window()
     if type(window_coordinates) == PamNotFoundError:
         return
 
     window = EditWindow(
-        window_coordinates[0],
-        window_coordinates[1],
-        guide.is_positive_strand,
-        guide.chromosome,
+        start=window_coordinates[0],
+        end=window_coordinates[1],
+        is_positive_strand=cds.is_positive_strand,
+        chromosome=guide.chromosome,
+        frame=0,
+        guide_strand_is_positive=guide.is_positive_strand
     )
 
-    window.frame = get_frame(guide, window)
-
+    window.frame = get_frame(cds, window)
     return window
 
 

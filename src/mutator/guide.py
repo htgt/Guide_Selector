@@ -36,30 +36,34 @@ class GuideSequence(BaseSequence):
         self.chromosome = chromosome
         self.frame = frame
 
-    def _define_pam_pattern(self) -> str:
-        return PAM_POSITIVE_PATTERN if self.is_positive_strand else PAM_NEGATIVE_PATTERN
+    @staticmethod
+    def _define_pam_pattern(is_positive_strand: bool) -> str:
+        return PAM_POSITIVE_PATTERN if is_positive_strand else PAM_NEGATIVE_PATTERN
 
-    def _check_pam_position(self, match: re.Match, bases) -> bool:
+    @staticmethod
+    def _check_pam_position( match: re.Match, bases: str, is_positive_strand: bool) -> bool:
         MAX_PAM_POSITION_FROM_SEQ_EDGE = 2
         is_pam = False
 
-        if not self.is_positive_strand:
+        if not is_positive_strand:
             is_pam = ( match.start() <= MAX_PAM_POSITION_FROM_SEQ_EDGE )
         else:
             is_pam = ( match.end() >= len(bases) - MAX_PAM_POSITION_FROM_SEQ_EDGE )
 
         return is_pam
 
-    def _calculate_coordinate(self, difference: int, start: int):
+    @staticmethod
+    def _calculate_coordinate(difference: int, start: int):
         return start + difference
 
     def find_pam(self, bases: str) -> SequenceFragment:
-        pattern = self._define_pam_pattern()
+        pattern = self._define_pam_pattern(self.is_positive_strand)
+
         pam_matches = re.finditer(pattern, bases)
         pam = None
 
         for match in pam_matches:
-            if self._check_pam_position(match, bases):
+            if self._check_pam_position(match, bases, self.is_positive_strand):
                 pam = match
 
         if pam_matches and pam is not None:
@@ -79,7 +83,7 @@ class GuideSequence(BaseSequence):
             return pam
 
         if self.is_positive_strand:
-            window_start = pam.end  - self.window_length + 1
+            window_start = pam.end - self.window_length + 1
             window_end = pam.end
         else:
             window_start = pam.start
