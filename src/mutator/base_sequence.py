@@ -23,7 +23,7 @@ class BaseSequence:
         bases = get_seq_from_ensembl_by_coords(self.chromosome, self.start, self.end)
 
         if not self.is_positive_strand:
-            bases = Seq(bases).reverse_complement()
+            bases = str(Seq(bases).reverse_complement())
 
         return bases
 

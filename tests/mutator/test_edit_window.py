@@ -18,7 +18,7 @@ class TestEditWindow(unittest.TestCase):
         (10, 21, False, '16', 2, (10, 22)),
     ])
     def test_get_extended_window_coordinates(self, start, end, is_positive_strand, chromosome, frame, expected_coordinates):
-        window = EditWindow(start, end, is_positive_strand, chromosome, frame)
+        window = EditWindow(start, end, is_positive_strand, chromosome, frame, is_positive_strand)
 
         result_coordinates = window._get_extended_window_coordinates()
 
@@ -57,7 +57,7 @@ class TestEditWindowCodonsNegative(unittest.TestCase):
         WindowCodon('CCT', BaseWithPosition('T', 77696650, 1))]),
     ])
 
-    def testsplit_window_into_codons_negative(self, bases, expected_codons):
+    def test_split_window_into_codons_negative(self, bases, expected_codons):
         window = EditWindow(77696647, 77696659, False, 'X')
 
         result_codons = window.split_window_into_codons(bases, 77696647, 77696659, False)
