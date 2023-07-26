@@ -1,11 +1,30 @@
-from typing import List, Tuple
+from dataclasses import dataclass
+from typing import List, Tuple, Optional
+from Bio.Seq import Seq
 
 from mutator.frame import get_frame
 from mutator.base_sequence import BaseSequence
-from mutator.codon import BaseWithPosition, WindowCodon
+from mutator.codon import WindowCodon, BaseWithPosition
 
 
 class EditWindow(BaseSequence):
+    def __init__(self,
+            start: int,
+            end: int,
+            is_positive_strand: bool = True,
+            chromosome: Optional[str] = None,
+            frame: int = 0,
+            guide_strand_is_positive: bool = True
+        ) -> None:
+
+        self.id = id
+        self.start = start
+        self.end  = end
+        self.is_positive_strand = is_positive_strand
+        self.chromosome = chromosome
+        self.frame = frame
+        self.guide_strand = guide_strand_is_positive
+
     def _get_extended_window_coordinates(self) -> Tuple[int, int]:
         start = self.start
         end = self.end
@@ -20,44 +39,65 @@ class EditWindow(BaseSequence):
 
         return start, end
 
-    def get_extended_window_bases(self, extended_window_start: int, extended_window_end: int) -> str:
-        bases = self._get_sequence_by_coords(
-            self.chromosome,
-            extended_window_start,
-            extended_window_end,
-        )
+    def split_window_into_codons(
+            self,
+            bases: str,
+            start: int,
+            end: int,
+            is_positive_strand: bool,
+    ) -> List[WindowCodon]:
 
-        return bases
-
-    def split_window_into_codons(self, bases: str, start: int) -> List[WindowCodon]:
+        length = len(bases)
         codons = []
 
-        for i in range(0, len(bases) - 2, 3):
-            coordinate = self._get_third_base_coordinate(start, i + 2)
+        for i in range(0, length - 2, 3):
+            coordinate = self._get_third_base_coordinate(start, end, i , is_positive_strand)
             window_position = self._get_base_window_position(coordinate)
 
+            if is_positive_strand:
+                codon_seq = bases[i:i+3]
+            else:
+                codon_seq = str(Seq(bases[length - i - 3: length - i]).reverse_complement())
+
             third = BaseWithPosition(
-                bases[i+2],
+                codon_seq[2],
                 coordinate,
                 window_position,
             )
-            codon = WindowCodon(bases[i:i+3], third)
+            codon = WindowCodon(codon_seq, third)
 
             codons.append(codon)
 
         return codons
 
-    def _get_third_base_coordinate(self, start: int, base_position: int) -> int:
-        return start + base_position
+
+    def _get_third_base_coordinate(self, start: int, end: int, i: int, is_positive_strand: bool) -> int:
+        if is_positive_strand:
+            return start + i + 2
+        else:
+            return end - i - 3
 
     def _get_base_window_position(self, coordinate: int) -> int:
-        return calculate_position_in_window(self.start, coordinate, self.is_positive_strand)
+        return calculate_position_in_window(self.start, coordinate, self.guide_strand)
 
     def get_window_codons(self) -> List[WindowCodon]:
         extended_coords = self._get_extended_window_coordinates()
 
-        bases = self.get_extended_window_bases(extended_coords[0], extended_coords[1])
-        codons = self.split_window_into_codons(bases, extended_coords[0])
+        extended_window = BaseSequence(
+            extended_coords[0],
+            extended_coords[1],
+            self.is_positive_strand,
+            self.chromosome,
+        )
+
+        extended_bases = extended_window.get_sequence_by_coords()
+
+        codons = self.split_window_into_codons(
+            extended_bases,
+            extended_coords[0],
+            extended_coords[1],
+            self.is_positive_strand
+        )
 
         return codons
 
@@ -77,7 +117,7 @@ def calculate_position_in_window(
     result = 0
     coords_diff = coordinate - window_start
 
-    if strand == True:
+    if strand:
         result = window_length - PAM_PROTECTION_LENGTH - coords_diff
 
         if result <= 0:
@@ -86,5 +126,6 @@ def calculate_position_in_window(
         result = coords_diff - PAM_PROTECTION_LENGTH
         if result >= 0:
             result = result + 1
+
 
     return result

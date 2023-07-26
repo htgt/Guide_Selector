@@ -2,8 +2,8 @@ from dataclasses import dataclass
 from typing import List
 import copy
 
-from mutator.mutation_builder import get_window_frame_and_codons, MutationBuilder
-from mutator.edit_window import WindowCodon, BaseWithPosition, EditWindow
+from mutator.mutation_builder import MutationBuilder
+from mutator.edit_window import WindowCodon, EditWindow
 from mutator.base_sequence import BaseSequence
 from mutator.guide import GuideSequence
 from mutator.coding_region import CodingRegion

@@ -4,10 +4,10 @@ class CodingRegion(BaseSequence):
     def __init__(self,
         start: int,
         end: int,
-        chromosome: str,
         is_positive_strand: bool = True,
-        exon_number: int = 0,
+        chromosome: str = '',
         frame: int = 0,
+        exon_number: int = 0,
     ) -> None:
         self.exon_number = exon_number
         self.start = start

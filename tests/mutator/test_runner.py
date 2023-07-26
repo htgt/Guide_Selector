@@ -11,28 +11,6 @@ class RunnerTestCase(unittest.TestCase):
     def setUp(self):
         self.runner = Runner()
 
-    def test_window_frame(self):
-        row = {
-            'cds_start': 100,
-            'cds_end': 200,
-            'cds_strand': '+',
-            'chromosome': 'chr1',
-            'cds_frame': 1,
-            'window_start': 150,
-            'window_end': 180,
-            'guide_strand': '+',
-            'guide_id': 123,
-            'guide_start': 160,
-            'guide_end': 170,
-            'gene_name': 'ACT'
-        }
-
-        self.runner.run_window_frame(row)
-
-        self.assertIsInstance(self.runner.cds, BaseSequence)
-        self.assertIsInstance(self.runner.window, EditWindow)
-        self.assertIsInstance(self.runner.codons[0], WindowCodon)
-
     def test_build_coding_region_objects(self):
         data = {
             'cds_start': 100,
