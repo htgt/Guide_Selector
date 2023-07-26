@@ -31,7 +31,7 @@ class EditWindow(BaseSequence):
         if self.frame == 0:
             return start, end
 
-        if self.guide_strand:
+        if self.is_positive_strand:
             start = self.start - 3 + self.frame
         else:
             end = self.end + 3 - self.frame
@@ -80,7 +80,7 @@ class EditWindow(BaseSequence):
             return end - i
 
     def _get_base_window_position(self, coordinate: int) -> int:
-        return calculate_position_in_window(self.start, coordinate, self.is_positive_strand)
+        return calculate_position_in_window(self.start, coordinate, self.guide_strand)
 
     def get_window_codons(self) -> List[WindowCodon]:
         extended_coords = self._get_extended_window_coordinates()
@@ -98,7 +98,7 @@ class EditWindow(BaseSequence):
             extended_bases,
             extended_coords[0],
             extended_coords[1],
-            self.guide_strand
+            self.is_positive_strand
         )
 
         return codons
