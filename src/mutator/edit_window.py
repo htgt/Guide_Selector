@@ -54,19 +54,24 @@ class EditWindow(BaseSequence):
             window_position = self._get_base_window_position(coordinate)
 
             if is_positive_strand:
+                codon_seq = bases[i:i+3]
+
                 third = BaseWithPosition(
-                    bases[i+2],
+                    codon_seq[2],
                     coordinate,
                     window_position,
                 )
-                codon = WindowCodon(bases[i:i+3], third)
+                codon = WindowCodon(codon_seq, third)
             else:
+                codon_seq = reverse_str(bases[length - i - 3: length - i])
+
                 third = BaseWithPosition(
-                    bases[length - i - 1],
+                    codon_seq[2],
                     coordinate,
                     window_position,
                 )
-                codon = WindowCodon(bases[length - i - 3: length - i], third)
+
+                codon = WindowCodon(codon_seq, third)
 
             codons.append(codon)
 
@@ -77,7 +82,7 @@ class EditWindow(BaseSequence):
         if is_positive_strand:
             return start + i + 2
         else:
-            return end - i
+            return end - i - 3
 
     def _get_base_window_position(self, coordinate: int) -> int:
         return calculate_position_in_window(self.start, coordinate, self.guide_strand)
@@ -103,6 +108,10 @@ class EditWindow(BaseSequence):
 
         return codons
 
+def reverse_str(s):
+    temp_list = list(s)
+    temp_list.reverse()
+    return ''.join(temp_list)
 
     # Position in window - for 12 bases length window (12 is 9 + PAM)
     # Positive strand: NNNNNNNNN PAM - 9...1 -1 ... -3
@@ -119,7 +128,7 @@ def calculate_position_in_window(
     result = 0
     coords_diff = coordinate - window_start
 
-    if strand == True:
+    if strand:
         result = window_length - PAM_PROTECTION_LENGTH - coords_diff
 
         if result <= 0:
@@ -128,5 +137,6 @@ def calculate_position_in_window(
         result = coords_diff - PAM_PROTECTION_LENGTH
         if result >= 0:
             result = result + 1
+
 
     return result
