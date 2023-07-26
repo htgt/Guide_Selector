@@ -50,19 +50,21 @@ class TestEditWindowCodons(unittest.TestCase):
 
 
 class TestEditWindowCodonsNegative(unittest.TestCase):
-    @parameterized.expand([('ACCTTTGGATGAT',
-        [WindowCodon('GAT', BaseWithPosition('T', 77696659, 10)),
-        WindowCodon('GAT', BaseWithPosition('T', 77696656, 7)),
-        WindowCodon('TTG', BaseWithPosition('G', 77696653, 4)),
-        WindowCodon('CCT', BaseWithPosition('T', 77696650, 1))]),
+    @parameterized.expand([('ATCATCCAAAGG',
+        [WindowCodon('CCT', BaseWithPosition('T', 77696656, -3)),
+        WindowCodon('TTG', BaseWithPosition('G', 77696653, 1)),
+        WindowCodon('GAT', BaseWithPosition('T', 77696650, 4)),
+        WindowCodon('GAT', BaseWithPosition('T', 77696647, 7))]),
     ])
 
     def test_split_window_into_codons_negative(self, bases, expected_codons):
-        window = EditWindow(77696647, 77696659, False, 'X')
+        window = EditWindow(77696645, 77696656, False, 'X')
 
         result_codons = window.split_window_into_codons(bases, 77696647, 77696659, False)
 
-      #  self.assertEqual(result_codons, expected_codons, "Incorrect split into codons")
+        ## TODO: Check window position
+
+        self.assertEqual(result_codons, expected_codons, "Incorrect split into codons")
 
 
 class TestCalculatePosition(unittest.TestCase):

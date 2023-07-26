@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from typing import List, Tuple, Optional
+from Bio.Seq import Seq
 
 from mutator.frame import get_frame
 from mutator.base_sequence import BaseSequence
@@ -55,23 +56,15 @@ class EditWindow(BaseSequence):
 
             if is_positive_strand:
                 codon_seq = bases[i:i+3]
-
-                third = BaseWithPosition(
-                    codon_seq[2],
-                    coordinate,
-                    window_position,
-                )
-                codon = WindowCodon(codon_seq, third)
             else:
-                codon_seq = reverse_str(bases[length - i - 3: length - i])
+                codon_seq = str(Seq(bases[length - i - 3: length - i]).reverse_complement())
 
-                third = BaseWithPosition(
-                    codon_seq[2],
-                    coordinate,
-                    window_position,
-                )
-
-                codon = WindowCodon(codon_seq, third)
+            third = BaseWithPosition(
+                codon_seq[2],
+                coordinate,
+                window_position,
+            )
+            codon = WindowCodon(codon_seq, third)
 
             codons.append(codon)
 
@@ -108,10 +101,6 @@ class EditWindow(BaseSequence):
 
         return codons
 
-def reverse_str(s):
-    temp_list = list(s)
-    temp_list.reverse()
-    return ''.join(temp_list)
 
     # Position in window - for 12 bases length window (12 is 9 + PAM)
     # Positive strand: NNNNNNNNN PAM - 9...1 -1 ... -3
