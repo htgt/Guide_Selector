@@ -35,13 +35,13 @@ class TestWriteVCF(TestCase):
             INFO={'SGRNA': "sGRNA_XXXXX"}
         )
         self.variants = Variants([self.variant], self.runner.guide.chromosome)
-
+        
     def test_transform_mutator_to_variants(self):
         # arrange
-        test_data = [self.runner]
+        test_runner = self.runner
         expected_result = self.variants
         # act
-        test_result = transform_mutator_to_variants(test_data)
+        test_result = test_runner.to_variants()
         # assert
         self.assertEqual(test_result, expected_result)
 

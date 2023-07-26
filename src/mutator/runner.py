@@ -8,6 +8,7 @@ from mutator.base_sequence import BaseSequence
 from mutator.edit_window import EditWindow
 from mutator.guide import GuideSequence
 from mutator.coding_region import CodingRegion
+from td_utils.src.vcf_utils import Variants
 
 from pprint import pprint
 import pandas as pd
@@ -122,6 +123,24 @@ class Runner:
             rows.append(copy.deepcopy(row))
 
         return rows
+    
+    def to_variants(self) -> Variants:
+        chrom = self.mutation_builder[0].guide.chromosome
+        sgrna_number = 1
+        variants = Variants(chrom, sgrna_number)
+
+        for mb in self.mutation_builder:
+            for codon in mb.codons:
+                if codon.is_permitted:
+                    variants.append(
+                        mb.guide.chromosome,
+                        codon.third_base_coord,
+                        ID=mb.guide.id,
+                        REF=codon.third_base_on_positive_strand,
+                        ALT=codon.edited_third_base_on_positive_strand,
+                        INFO={"SGRNA": f"sgRNA_{mb.guide.id}"}
+                    )
+        return variants
 
 
 def _booleanise_strand(strand : str) -> bool:
