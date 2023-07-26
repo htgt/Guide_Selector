@@ -63,7 +63,7 @@ def transform_runner_to_variants(runner: Runner) -> Variants:
                     ID=mb.guide.id,
                     REF=codon.third_base_on_positive_strand,
                     ALT=codon.edited_third_base_on_positive_strand,
-                    INFO={"SGRNA": mb.guide.id}
+                    INFO={"SGRNA": f"sgRNA_{mb.guide.id}"}
                 )
     return variants
 
