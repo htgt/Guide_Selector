@@ -2,8 +2,8 @@ import unittest
 
 from parameterized import parameterized
 
-from mutator.edit_window import EditWindow, calculate_position_in_window
-from mutator.codon import WindowCodon, BaseWithPosition
+from mutator.edit_window import EditWindow, calculate_position_in_window, WindowCodon
+#from mutator.codon import WindowCodon
 
 
 class TestEditWindow(unittest.TestCase):
@@ -28,16 +28,16 @@ class TestEditWindow(unittest.TestCase):
 class TestEditWindowCodons(unittest.TestCase):
     @parameterized.expand([
         ('TATATTGAGCAAGG', (2, 13), [
-            WindowCodon('TAT', third=BaseWithPosition('T', 2, 9)),
-            WindowCodon('ATT', third=BaseWithPosition('T', 5, 6)),
-            WindowCodon('GAG', third=BaseWithPosition('G', 8, 3)),
-            WindowCodon('CAA', third=BaseWithPosition('A', 11, -1))
+            WindowCodon('TAT', 2, 9, True),
+            WindowCodon('ATT', 5, 6, True),
+            WindowCodon('GAG', 8, 3, True),
+            WindowCodon('CAA', 11, -1, True)
         ]),
         ('TATTGAGCAAGG',  (0, 11), [
-            WindowCodon('TAT', BaseWithPosition('T', 2, 7)),
-            WindowCodon('TGA', BaseWithPosition('A', 5, 4)),
-            WindowCodon('GCA', BaseWithPosition('A', 8, 1)),
-            WindowCodon('AGG', BaseWithPosition('G', 11, -3))
+            WindowCodon('TAT', 2, 7, True),
+            WindowCodon('TGA', 5, 4, True),
+            WindowCodon('GCA', 8, 1, True),
+            WindowCodon('AGG', 11, -3, True)
         ]),
     ])
 
@@ -46,15 +46,16 @@ class TestEditWindowCodons(unittest.TestCase):
 
         result_codons = window.split_window_into_codons(bases, 0, len(bases), True)
 
-        self.assertEqual(result_codons, expected_codons, "Incorrect split into codons")
+        self.assertEqual(list(map(vars, result_codons)),  list(map(vars, expected_codons)))
+        #self.assertEqual(result_codons, expected_codons, "Incorrect split into codons")
 
 
 class TestEditWindowCodonsNegative(unittest.TestCase):
     @parameterized.expand([('ATCATCCAAAGG',
-        [WindowCodon('CCT', BaseWithPosition('T', 77696656, -3)),
-        WindowCodon('TTG', BaseWithPosition('G', 77696653, 1)),
-        WindowCodon('GAT', BaseWithPosition('T', 77696650, 4)),
-        WindowCodon('GAT', BaseWithPosition('T', 77696647, 7))]),
+        [WindowCodon('CCT', 77696656, -3, False),
+        WindowCodon('TTG', 77696653, 1, False),
+        WindowCodon('GAT', 77696650, 4, False),
+        WindowCodon('GAT', 77696647, 7, False)]),
     ])
 
     def test_split_window_into_codons_negative(self, bases, expected_codons):
@@ -64,7 +65,8 @@ class TestEditWindowCodonsNegative(unittest.TestCase):
 
         ## TODO: Check window position
 
-        self.assertEqual(result_codons, expected_codons, "Incorrect split into codons")
+        self.assertEqual(list(map(vars, result_codons)),  list(map(vars, expected_codons)))
+        #self.assertEqual(result_codons, expected_codons, "Incorrect split into codons")
 
 
 class TestCalculatePosition(unittest.TestCase):

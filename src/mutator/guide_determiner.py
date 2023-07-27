@@ -112,21 +112,3 @@ class GuideDeterminer:
             'guide_frame',
         ]
         return coding_regions[required_cols].copy()
-
-    def add_codon_edit_data_to_df(self, df_with_ref_codons: pd.DataFrame) -> pd.DataFrame:
-        df_with_ref_codons[[
-            'alt',
-            'lost_amino_acids',
-            'permitted'
-        ]] = df_with_ref_codons.apply(GuideDeterminer.make_codon_edit, axis=1, args=(self._config,))
-
-    def make_codon_edit(row: pd.Series, config: dict) -> pd.Series:
-        codon_edit = CodonEdit(row['ref_codon'], row['window_pos'])
-        lost_amino_acids = ','.join(codon_edit.lost_amino_acids)
-        if not lost_amino_acids:
-            lost_amino_acids = 'N/A'
-        return pd.Series([
-            codon_edit.edited_codon[2],
-            lost_amino_acids,
-            codon_edit.is_permitted(config),
-        ])
