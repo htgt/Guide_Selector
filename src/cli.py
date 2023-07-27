@@ -4,6 +4,7 @@ from mutator.guide_determiner import GuideDeterminer
 from mutator.runner import Runner, mutator_to_dict_list
 from utils.arguments_parser import InputArguments
 from utils.file_system import read_csv_to_list_dict, write_dict_list_to_csv
+from pprint import pprint
 
 
 def resolve_command(command: str, args: dict) -> None:
@@ -25,6 +26,13 @@ def run_mutator_cmd(args : dict) -> None:
     guide_data_df = guide_determiner.parse_loci(args['gtf'], args['tsv'])
     runner.parse_coding_regions(guide_data_df)
     # Determine Window
+    print("Length of mutation_builders list:", len(runner.mutation_builders))
+
+    runner.generate_edit_windows_for_builders()
+    print("Length of mutation_builders list:", len(runner.mutation_builders))
+    print("Length of failed_mutations list:", len(runner.failed_mutations))
+
+
     # 3rd Base finder
     # Mutation finder
     # Filter mutators
