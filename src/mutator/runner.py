@@ -124,6 +124,8 @@ class Runner:
             if mb.window is None:
                 failed_mutations.append(mb)
                 self.mutation_builders.remove(mb)
+            else:
+                mb.build_window_codons()
 
         self.failed_mutations = failed_mutations
 

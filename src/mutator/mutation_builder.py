@@ -5,6 +5,7 @@ from mutator.guide import GuideSequence
 from mutator.edit_window import EditWindow, WindowCodon
 from mutator.frame import get_frame
 from mutator.coding_region import CodingRegion
+from mutator.codon import WindowCodon
 from utils.exceptions import PamNotFoundError
 
 
@@ -15,6 +16,7 @@ class MutationBuilder:
         self.cds = cds
 
         self.window = EditWindow(0,0)
+        self.codons = []
 
     #def __repr__(self):
     #    return f"guide: {self.guide}, cds: {self.cds}, window: {self.window}"
@@ -30,6 +32,12 @@ class MutationBuilder:
         self.window = window
 
         return window
+
+    def build_window_codons(self) -> List[WindowCodon]:
+        codons = self.window.get_window_codons()
+        self.codons = codons
+
+        return codons
 
 
 def get_window(guide:GuideSequence, cds: CodingRegion) -> EditWindow:
