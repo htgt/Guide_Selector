@@ -18,8 +18,8 @@ class MutationBuilder:
         self.window = EditWindow(0,0)
         self.codons = []
 
-    #def __repr__(self):
-    #    return f"guide: {self.guide}, cds: {self.cds}, window: {self.window}"
+    def __repr__(self):
+        return f"guide: {self.guide}, cds: {self.cds}, window: {self.window}"
 
     def _build_guide_sequence(self, guide: GuideSequence) -> GuideSequence:
         return copy.deepcopy(guide)
