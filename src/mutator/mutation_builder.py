@@ -11,10 +11,9 @@ class MutationBuilder:
     def __init__(self, guide: GuideSequence, cds: CodingRegion) -> None:
         self.guide = self._build_guide_sequence(guide)
         self.cds = self._build_coding_region(cds)
-        self.window = self._build_edit_window()
+        self.cds = cds
 
-    def calculate_window_frame(self) -> int:
-        return get_frame(self.cds, self.window)
+        self.window = EditWindow(0,0)
 
     def _build_guide_sequence(self, guide) -> GuideSequence:
         return copy.deepcopy(guide)
@@ -22,15 +21,24 @@ class MutationBuilder:
     def _build_coding_region(self, cds) -> CodingRegion:
         return copy.deepcopy(cds)
 
-    def _build_edit_window(self) -> EditWindow:
-        return "Edit Window here"
+    def build_edit_window(self) -> EditWindow:
+        window = get_window(self.guide, self.cds)
+        self.window = window
 
+        return window
 
-def get_window_frame_and_codons(cds : BaseSequence, window : EditWindow) -> List[WindowCodon]:
-    builder = MutationBuilder(cds, window)
+def get_window(guide:GuideSequence, cds: CodingRegion) -> EditWindow:
+    window_coordinates = guide.define_window()
+    window = EditWindow(
+        start=window_coordinates[0],
+        end=window_coordinates[1],
+        is_positive_strand=cds.is_positive_strand,
+        chromosome=guide.chromosome,
+        frame=0,
+        guide_strand_is_positive=guide.is_positive_strand
+    )
 
-    result_window = copy.deepcopy(window)
-    result_window.frame = builder.calculate_window_frame()
+    window.frame = get_frame(cds, window)
+    return window
 
-    return result_window.get_window_codons()
 

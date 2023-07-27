@@ -4,64 +4,23 @@ from mutator.base_sequence import BaseSequence
 from mutator.guide import GuideSequence, SequenceFragment
 
 
-
-
 class TestGuideSequence(TestCase):
-    def setUp(self):
-        positive_bases = "AGTTTCGGACTCCTCCACAAGGT"
-        negative_bases = "GCCATTGTCCGGGAGTCAGAAACT"
+    def test_guide_find_pam_real_coords_positive_strand(self):
+        bases = "ATATTGAGCAAGG"
 
-        def mock_get_sequence_by_coords_positive(chromosome, start, end):
-            return positive_bases
+        guide = GuideSequence(67626582, 67626594, is_positive_strand=True)
+        pam = SequenceFragment("AGG", 67626592, 67626594)
 
-        def mock_get_sequence_by_coords_negative(chromosome, start, end):
-            return negative_bases
+        test_pam = guide.find_pam(bases)
 
-        with patch.object(BaseSequence, '_get_sequence_by_coords',
-            side_effect=mock_get_sequence_by_coords_positive):
-
-            self.test_positive_guide = GuideSequence(0, 1, is_positive_strand=True)
-            self.pam_fragment_positive = SequenceFragment("AGG", 19, 22)
-
-        with patch.object(BaseSequence, '_get_sequence_by_coords',
-            side_effect=mock_get_sequence_by_coords_negative):
-
-            self.test_negative_guide = GuideSequence(0, 1, is_positive_strand=False)
-            self.pam_fragment_negative = SequenceFragment("CCA", 1, 4)
-
-
-    def testguide_find_pam_positive_strand(self):
-        guide = self.test_positive_guide
-
-        test_pam = guide.find_pam()
-
-        self.assertEqual(test_pam, self.pam_fragment_positive)
-
+        self.assertEqual(test_pam, pam)
 
     def test_guide_find_pam_negative_strand(self):
-        guide = self.test_negative_guide
+        bases = "GCCATTGTCCGGGAGTCAGAAACT"
+        guide = GuideSequence(0, 22, is_positive_strand=False)
 
-        test_pam = guide.find_pam()
+        pam_fragment_negative = SequenceFragment("CCA", 1, 3)
 
-        self.assertEqual(test_pam, self.pam_fragment_negative)
+        test_pam = guide.find_pam(bases)
 
-
-    def test_define_window_positive_strand(self):
-        window = SequenceFragment("TCCTCCACAAGG", 10, 22)
-
-        guide = self.test_positive_guide
-
-        test_window = guide.define_window()
-
-        self.assertEqual(test_window, window)
-
-
-    def test_define_window_negative_strand(self):
-        window = SequenceFragment("CCATTGTCCGGGAGT", 1, 16)
-
-        guide = self.test_negative_guide
-
-        test_window = guide.define_window()
-
-        self.assertEqual(test_window, window)
-
+        self.assertEqual(test_pam, pam_fragment_negative)
