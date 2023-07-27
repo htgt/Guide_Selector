@@ -4,7 +4,8 @@ from mutator.runner import Runner
 from mutator.base_sequence import BaseSequence
 from mutator.guide import GuideSequence
 from mutator.coding_region import CodingRegion
-from mutator.edit_window import EditWindow, WindowCodon, BaseWithPosition
+from mutator.edit_window import EditWindow
+from mutator.codon import WindowCodon
 import pandas as pd
 
 class RunnerTestCase(unittest.TestCase):
@@ -44,7 +45,7 @@ class RunnerTestCase(unittest.TestCase):
             chromosome='1'
         )
         self.runner.gene_name = 'ACT'
-        self.runner.codons = [WindowCodon('TCA', BaseWithPosition('A', 23, 1))]
+        self.runner.codons = [WindowCodon('TCA', 23, 1, True)]
 
         rows = self.runner.as_rows()
 

@@ -1,10 +1,8 @@
-from dataclasses import dataclass
 from typing import List, Tuple, Optional
 from Bio.Seq import Seq
 
-from mutator.frame import get_frame
 from mutator.base_sequence import BaseSequence
-from mutator.codon import WindowCodon, BaseWithPosition
+from mutator.codon import WindowCodon
 
 
 class EditWindow(BaseSequence):
@@ -59,12 +57,7 @@ class EditWindow(BaseSequence):
             else:
                 codon_seq = str(Seq(bases[length - i - 3: length - i]).reverse_complement())
 
-            third = BaseWithPosition(
-                codon_seq[2],
-                coordinate,
-                window_position,
-            )
-            codon = WindowCodon(codon_seq, third)
+            codon = WindowCodon(codon_seq, coordinate, window_position, is_positive_strand)
 
             codons.append(codon)
 

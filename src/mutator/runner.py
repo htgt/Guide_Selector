@@ -3,7 +3,7 @@ from typing import List
 import copy
 
 from mutator.mutation_builder import MutationBuilder
-from mutator.edit_window import WindowCodon, BaseWithPosition
+from mutator.codon import WindowCodon
 from mutator.base_sequence import BaseSequence
 from mutator.edit_window import EditWindow
 from mutator.guide import GuideSequence
@@ -108,10 +108,10 @@ class Runner:
         for codon in (self.codons):
             row = base
             row.update({
-                'window_pos' : codon.third.window_position,
-                'pos' : codon.third.coordinate,
+                'window_pos' : codon.third_base_pos,
+                'pos' : codon.third_base_coord,
                 'ref_codon' : codon.bases,
-                'ref_pos_three' : codon.third.base
+                'ref_pos_three' : codon.third_base_on_positive_strand
             })
             rows.append(copy.deepcopy(row))
 
