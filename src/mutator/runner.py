@@ -7,8 +7,9 @@ from mutator.edit_window import WindowCodon, EditWindow
 from mutator.base_sequence import BaseSequence
 from mutator.guide import GuideSequence
 from mutator.coding_region import CodingRegion
-from mutator.codon import CONFIG
 from td_utils.src.vcf_utils import Variants
+
+EDIT_CONFIG = {"ignore_positions": [-1, 1], "allow_codon_loss": True}
 
 from pprint import pprint
 import pandas as pd
@@ -131,7 +132,7 @@ class Runner:
 
         for mb in self.mutation_builder:
             for codon in mb.codons:
-                if codon.is_edit_permitted(CONFIG):
+                if codon.is_edit_permitted(EDIT_CONFIG):
                     variants.append(
                         mb.guide.chromosome,
                         codon.third_base_coord,
