@@ -12,7 +12,7 @@ def get_frame(coding_region: BaseSequence, region: BaseSequence) -> int:
 
     frames = (0, 2, 1)
 
-    return frames[(difference + int(frames.index(coding_region.frame))) % 3]
+    return frames[(difference + int(frames.index(int(coding_region.frame)))) % 3]
 
 
 
