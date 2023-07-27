@@ -6,20 +6,6 @@ from utils.arguments_parser import InputArguments
 from utils.file_system import read_csv_to_list_dict, write_dict_list_to_csv
 from pprint import pprint
 
-OUTFUT_FILE_HEADERS = [
-    'guide_id',
-    'chromosome',
-    'cds_strand',
-    'gene_name',
-    'guide_strand',
-    'guide_start',
-    'guide_end',
-    'window_pos',
-    'pos',
-    'ref_codon',
-    'ref_pos_three'
-]
-
 
 def resolve_command(command: str, args: dict) -> None:
     if command == "mutator":
@@ -51,7 +37,6 @@ def run_mutator_cmd(args : dict) -> None:
 
 
     tsv_rows = runner.as_rows()
-    print(tsv_rows)
     tsv_path = args['out'] + '/' + OUTPUT_FILE_URL
     write_dict_list_to_csv(tsv_path, tsv_rows, tsv_rows[0].keys(), "\t")
     print('Output saved to', tsv_path)

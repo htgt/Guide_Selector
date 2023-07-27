@@ -116,7 +116,6 @@ class Runner:
                 })
                 rows.append(copy.deepcopy(row))
 
-        pprint(rows)
         return rows
 
     def generate_edit_windows_for_builders(self) -> None:
