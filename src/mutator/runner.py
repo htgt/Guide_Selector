@@ -1,4 +1,4 @@
-src/mutator/runner.pyfrom dataclasses import dataclass
+from dataclasses import dataclass
 from typing import List
 import copy
 
@@ -95,7 +95,6 @@ class Runner:
 
     def as_rows(self) -> dict:
         rows = []
-<<<<<<< HEAD
         for mb in (self.mutation_builders):
             base = {
                 'guide_id' : mb.guide.guide_id,
@@ -110,12 +109,13 @@ class Runner:
             for codon in (mb.codons):
                 row = base
                 row.update({
-                    'window_pos' : codon.third.window_position,
-                    'pos' : codon.third.coordinate,
+                    'window_pos' : codon.third_base_pos,
+                    'pos' : codon.third_base_coord,
                     'ref_codon' : codon.bases,
-                    'ref_pos_three' : codon.third.base
+                    'ref_pos_three' : codon.third_base_on_positive_strand
                 })
                 rows.append(copy.deepcopy(row))
+
         pprint(rows)
         return rows
 
