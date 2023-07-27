@@ -1,9 +1,9 @@
-from dataclasses import dataclass
+src/mutator/runner.pyfrom dataclasses import dataclass
 from typing import List
 import copy
 
 from mutator.mutation_builder import MutationBuilder
-from mutator.edit_window import WindowCodon, BaseWithPosition
+from mutator.codon import WindowCodon
 from mutator.base_sequence import BaseSequence
 from mutator.edit_window import EditWindow
 from mutator.guide import GuideSequence
@@ -95,6 +95,7 @@ class Runner:
 
     def as_rows(self) -> dict:
         rows = []
+<<<<<<< HEAD
         for mb in (self.mutation_builders):
             base = {
                 'guide_id' : mb.guide.guide_id,

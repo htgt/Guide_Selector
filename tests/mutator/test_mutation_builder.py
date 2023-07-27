@@ -5,7 +5,8 @@ from mutator.mutation_builder import get_window, MutationBuilder
 from mutator.base_sequence import BaseSequence
 from mutator.coding_region import CodingRegion
 from mutator.guide import GuideSequence
-from mutator.edit_window import EditWindow, WindowCodon, BaseWithPosition
+from mutator.edit_window import EditWindow
+from mutator.codon import WindowCodon
 
 
 class TestGuideSequence(TestCase):
@@ -14,17 +15,18 @@ class TestGuideSequence(TestCase):
         cds = CodingRegion(67626555, 67626715, is_positive_strand=True, chromosome='16', frame=2)
 
         control_codons = [
-            WindowCodon('TAT', BaseWithPosition('T', 67626583, 9)),
-            WindowCodon('ATT', BaseWithPosition('T', 67626586, 6)),
-            WindowCodon('GAG', BaseWithPosition('G', 67626589, 3)),
-            WindowCodon('CAA', BaseWithPosition('A', 67626592, -1)),
+            WindowCodon('TAT', 67626583, 9, True),
+            WindowCodon('ATT', 67626586, 6, True),
+            WindowCodon('GAG', 67626589, 3, True),
+            WindowCodon('CAA', 67626592, -1, True),
         ]
 
         builder = MutationBuilder(guide, cds)
         window = builder.build_edit_window()
         codons = window.get_window_codons()
 
-        self.assertEqual(codons, control_codons)
+        self.assertEqual(list(map(vars, codons)), list(map(vars, control_codons)))
+        #self.assertEqual(codons, control_codons)
 
     def test_get_window_frame_CTCF(self):
         guide = GuideSequence(67610855, 67610877, is_positive_strand=True,
@@ -33,10 +35,10 @@ class TestGuideSequence(TestCase):
                            chromosome='16', frame=0)
 
         control_codons = [
-            WindowCodon('GCC', BaseWithPosition('C', 67610856, 8)),
-            WindowCodon('ATT', BaseWithPosition('T', 67610859, 5)),
-            WindowCodon('GTG', BaseWithPosition('G', 67610862, 2)),
-            WindowCodon('GAG', BaseWithPosition('G', 67610865, -2)),
+            WindowCodon('GCC', 67610856, 8, True),
+            WindowCodon('ATT', 67610859, 5, True),
+            WindowCodon('GTG', 67610862, 2, True),
+            WindowCodon('GAG', 67610865, -2, True),
        ]
 
     ##   TODO: Mixed strands case
@@ -55,10 +57,10 @@ class TestGuideSequence(TestCase):
                            chromosome='X', frame=0)
 
         control_codons = [
-            WindowCodon('GAT', BaseWithPosition('T', 77696658, 9)),
-            WindowCodon('GAT', BaseWithPosition('T', 77696653, 6)),
-            WindowCodon('TTG', BaseWithPosition('G', 77696650, 3)),
-            WindowCodon('CCT', BaseWithPosition('T', 77696647, -1)),
+            WindowCodon('GAT', 77696658, 9, False),
+            WindowCodon('GAT', 77696653, 6, False),
+            WindowCodon('TTG', 77696650, 3, False),
+            WindowCodon('CCT', 77696647, -1, False),
         ]
 
         builder = MutationBuilder(guide, cds)

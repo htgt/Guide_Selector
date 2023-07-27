@@ -1,55 +1,56 @@
-from dataclasses import dataclass
-
 from utils.exceptions import MutatorError
 
 
-@dataclass
-class BaseWithPosition:
-    base: str
-    coordinate: int
-    window_position: int = 0
-
-
-@dataclass
 class WindowCodon:
-    bases: str
-    third: BaseWithPosition
-
-
-class CodonEdit:
-    def __init__(self, codon: str, window_pos: int) -> None:
-        self._original_codon = codon.upper()
-        self._window_pos = window_pos
-
-    @property
-    def original_codon(self) -> str:
-        return self._original_codon
-
-    @property
-    def window_pos(self) -> int:
-        return self._window_pos
+    def __init__(
+        self,
+        bases: str,
+        third_base_coord: int,
+        third_base_pos: int,
+        is_positive_strand: bool,
+    ) -> None:
+        self._bases = bases.upper()
+        self._third_base_coord = third_base_coord
+        self._third_base_pos = third_base_pos
+        self._is_positive_strand = is_positive_strand
 
     @property
-    def edited_codon(self) -> str:
+    def bases(self) -> str:
+        return self._bases
+
+    @property
+    def third_base_coord(self) -> int:
+        return self._third_base_coord
+
+    @property
+    def third_base_pos(self) -> int:
+        return self._third_base_pos
+
+    @property
+    def is_positive_strand(self) -> bool:
+        return self._is_positive_strand
+
+    @property
+    def edited_bases(self) -> str:
         base_edits = {'T': 'C', 'C': 'T', 'A': 'G', 'G': 'A'}
-        new_codon = self.original_codon[:2] + base_edits[self.original_codon[2]]
+        new_codon = self.bases[:2] + base_edits[self.bases[2]]
         return new_codon
 
-    def is_permitted(self, config: dict) -> bool:
-        if self.original_codon in ('ATG', 'TGG', 'ATA', 'TGA'):
+    def is_edit_permitted(self, config: dict) -> bool:
+        if self.bases in ('ATG', 'TGG', 'ATA', 'TGA'):
             return False
         try:
-            if self.window_pos in config['ignore_positions']:
+            if self.third_base_pos in config['ignore_positions']:
                 return False
-            if (not config['allow_codon_loss']) and self.lost_amino_acids:
+            if (not config['allow_codon_loss']) and self.amino_acids_lost_from_edit:
                 return False
         except KeyError:
             raise MutatorError('Field missing from config')
         return True
 
     @property
-    def lost_amino_acids(self) -> list:
-        edited_codon = self.edited_codon
+    def amino_acids_lost_from_edit(self) -> list:
+        edited_codon = self.edited_bases
         if edited_codon in ('ATG', 'TGG', 'ATA', 'TGA'):
             # rules don't apply
             return []
@@ -64,3 +65,18 @@ class CodonEdit:
         elif edited_codon[1] == 'G' and edited_codon[2] == 'G':
             lost_amino_acids.append('*')
         return lost_amino_acids
+
+    @property
+    def third_base_on_positive_strand(self) -> str:
+        return get_third_base_on_positive_strand(self.bases, self.is_positive_strand)
+
+    @property
+    def edited_third_base_on_positive_strand(self) -> str:
+        return get_third_base_on_positive_strand(self.edited_bases, self.is_positive_strand)
+
+
+def get_third_base_on_positive_strand(bases: str, is_positive_strand: bool) -> str:
+    complements = {'T': 'A', 'C': 'G', 'A': 'T', 'G': 'C'}
+    if is_positive_strand:
+        return bases[2]
+    return complements[bases[2]]

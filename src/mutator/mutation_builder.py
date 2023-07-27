@@ -2,7 +2,7 @@ import copy
 from typing import List
 from mutator.base_sequence import BaseSequence
 from mutator.guide import GuideSequence
-from mutator.edit_window import EditWindow, WindowCodon
+from mutator.edit_window import EditWindow
 from mutator.frame import get_frame
 from mutator.coding_region import CodingRegion
 from mutator.codon import WindowCodon
