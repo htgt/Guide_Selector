@@ -3,13 +3,18 @@ from typing import List
 import copy
 
 from mutator.mutation_builder import MutationBuilder
-from mutator.edit_window import WindowCodon, EditWindow
+from mutator.codon import WindowCodon
+from mutator.edit_window import EditWindow
 from mutator.base_sequence import BaseSequence
 from mutator.guide import GuideSequence
 from mutator.coding_region import CodingRegion
 from td_utils.vcf_utils import Variants
 
 EDIT_CONFIG = {"ignore_positions": [-1, 1], "allow_codon_loss": True}
+
+
+
+
 
 from pprint import pprint
 import pandas as pd
@@ -22,6 +27,7 @@ class Runner:
     guide: GuideSequence
     gene_name: str
     mutation_builders: List[MutationBuilder]
+    failed_mutations: List[MutationBuilder]
 
     def __init__(self) -> None:
         self.cds = None
@@ -30,6 +36,7 @@ class Runner:
         self.guide = None
         self.gene_name = None
         self.mutation_builders = None
+        self.failed_mutations = None
 
     def build_mutations(self, region_data : pd.DataFrame) -> None:
         guide = self.fill_guide_sequence(region_data)
@@ -66,17 +73,7 @@ class Runner:
         for index, row in guide_data.iterrows():
             mutation_builder_objects.append(self.build_mutations(row))
 
-        pprint(mutation_builder_objects)
         self.mutation_builders = mutation_builder_objects
-
-    def run_window_frame(self, row : dict) -> None:
-        self.build_coding_region_objects(row)
-
-        codons = get_window_frame_and_codons(self.cds, self.window)
-
-        self.codons = codons
-
-        return codons
     
     def build_coding_region_objects(self, data : dict) -> None:
         self.cds = BaseSequence(
@@ -116,15 +113,27 @@ class Runner:
         for codon in (self.codons):
             row = base
             row.update({
-                'window_pos' : codon.third.window_position,
-                'pos' : codon.third.coordinate,
+                'window_pos' : codon.third_base_pos,
+                'pos' : codon.third_base_coord,
                 'ref_codon' : codon.bases,
-                'ref_pos_three' : codon.third.base
+                'ref_pos_three' : codon.third_base_on_positive_strand
             })
             rows.append(copy.deepcopy(row))
 
         return rows
     
+    def generate_edit_windows_for_builders(self) -> None:
+        failed_mutations = []
+        for mb in self.mutation_builders:
+            mb.build_edit_window()
+            if mb.window is None:
+                failed_mutations.append(mb)
+                self.mutation_builders.remove(mb)
+            else:
+                mb.build_window_codons()
+
+        self.failed_mutations = failed_mutations
+
     def to_variants(self) -> Variants:
         chrom = self.mutation_builder[0].guide.chromosome
         sgrna_number = 1

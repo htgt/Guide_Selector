@@ -4,8 +4,9 @@ from pathlib import Path
 from src.mutator.runner import Runner
 from src.mutator.base_sequence import BaseSequence
 from src.mutator.guide import GuideSequenceLoci
-from src.mutator.edit_window import EditWindow, WindowCodon, BaseWithPosition
-from td_utils.vcf_utils import read_vcf, Variants, Variant, write_to_vcf
+from src.mutator.edit_window import EditWindow
+from src.mutator.codon import WindowCodon
+from td_utils.src.vcf_utils import write_to_vcf, Variants, Variant
 
 
 class TestWriteVCF(TestCase):
@@ -25,7 +26,7 @@ class TestWriteVCF(TestCase):
             chromosome='1'
         )
         self.runner.gene_name = 'ACT'
-        self.runner.codons = [WindowCodon('TCA', BaseWithPosition('A', 23, 1))]
+        self.runner.codons = [WindowCodon('TCA', 23, 1, True)]
         self.variant = Variant(
             CHROM=self.runner.guide.chromosome,
             POS=self.runner.codons[0].third.coordinate,
