@@ -131,7 +131,7 @@ class Runner:
 
         for mb in self.mutation_builder:
             for codon in mb.codons:
-                if codon.is_permitted(CONFIG):
+                if codon.is_edit_permitted(CONFIG):
                     variants.append(
                         mb.guide.chromosome,
                         codon.third_base_coord,
