@@ -7,7 +7,7 @@ from mutator.edit_window import WindowCodon, EditWindow
 from mutator.base_sequence import BaseSequence
 from mutator.guide import GuideSequence
 from mutator.coding_region import CodingRegion
-from td_utils.src.vcf_utils import Variants
+from td_utils.vcf_utils import Variants
 
 EDIT_CONFIG = {"ignore_positions": [-1, 1], "allow_codon_loss": True}
 
