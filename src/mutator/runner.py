@@ -95,26 +95,28 @@ class Runner:
 
     def as_rows(self) -> dict:
         rows = []
-        base = {
-            'guide_id' : self.guide.guide_id,
-            'chromosome' : self.cds.chromosome,
-            'cds_strand' : self.cds.is_positive_strand,
-            'gene_name' : self.gene_name,
-            'guide_strand' : self.guide.is_positive_strand,
-            'guide_start' : self.guide.start,
-            'guide_end' : self.guide.end,
-        }
+        for mb in (self.mutation_builders):
+            base = {
+                'guide_id' : mb.guide.guide_id,
+                'chromosome' : mb.cds.chromosome,
+                'cds_strand' : mb.cds.is_positive_strand,
+                'gene_name' : self.gene_name,
+                'guide_strand' : mb.guide.is_positive_strand,
+                'guide_start' : mb.guide.start,
+                'guide_end' : mb.guide.end,
+            }
 
-        for codon in (self.codons):
-            row = base
-            row.update({
-                'window_pos' : codon.third_base_pos,
-                'pos' : codon.third_base_coord,
-                'ref_codon' : codon.bases,
-                'ref_pos_three' : codon.third_base_on_positive_strand
-            })
-            rows.append(copy.deepcopy(row))
+            for codon in (mb.codons):
+                row = base
+                row.update({
+                    'window_pos' : codon.third_base_pos,
+                    'pos' : codon.third_base_coord,
+                    'ref_codon' : codon.bases,
+                    'ref_pos_three' : codon.third_base_on_positive_strand
+                })
+                rows.append(copy.deepcopy(row))
 
+        pprint(rows)
         return rows
 
     def generate_edit_windows_for_builders(self) -> None:

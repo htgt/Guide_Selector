@@ -25,12 +25,17 @@ def run_mutator_cmd(args : dict) -> None:
     guide_determiner = GuideDeterminer()
     guide_data_df = guide_determiner.parse_loci(args['gtf'], args['tsv'])
     runner.parse_coding_regions(guide_data_df)
+    
     # Determine Window
     print("Length of mutation_builders list:", len(runner.mutation_builders))
 
     runner.generate_edit_windows_for_builders()
     print("Length of mutation_builders list:", len(runner.mutation_builders))
     print("Length of failed_mutations list:", len(runner.failed_mutations))
+
+    tsv_rows = runner.as_rows()
+    print(tsv_rows)
+    print('Output saved to', OUTPUT_FILE_URL)
 
 
     # 3rd Base finder

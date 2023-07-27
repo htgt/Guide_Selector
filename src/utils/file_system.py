@@ -4,7 +4,9 @@ import json
 from typing import List
 from pathlib import Path
 from mutator.runner import Runner
-from td_utils.src.utils.vcf_utils import write_to_vcf, Variants
+import sys
+#sys.path.append("/home/ubuntu/sge-guide-selection/")
+#from td_utils.src.utils.vcf_utils import write_to_vcf, Variants
 
 from utils.exceptions import FileFormatError
 
@@ -47,16 +49,22 @@ def write_mutator_to_vcf(file_path: str, runner: Runner) -> str:
     write_to_vcf(file_path, variants)
     return str(file_path)
 
+class temp(object):
+    pass
 
-def transform_runner_to_variants(runner: Runner) -> Variants:
+#def transform_runner_to_variants(runner: Runner) -> Variants:
+def transform_runner_to_variants(runner: Runner):
     variants = []
     chrom = runner.mutation_builder[0].guide.chromosome
     sgrna_number = 1
-    variants = Variants(chrom, sgrna_number)
+    #variants = Variants(chrom, sgrna_number)
+    variants = temp()
 
     for mb in runner.mutation_builder:
         for codon in mb.codons:
             if codon.is_permitted:
+                variants.append('')
+                '''
                 variants.append(
                     mb.guide.chromosome,
                     codon.third_base_coord,
@@ -65,6 +73,7 @@ def transform_runner_to_variants(runner: Runner) -> Variants:
                     ALT=codon.edited_third_base_on_positive_strand,
                     INFO={"SGRNA": f"sgRNA_{mb.guide.id}"}
                 )
+                '''
     return variants
 
 
