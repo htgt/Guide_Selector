@@ -6,7 +6,6 @@ import pandas as pd
 
 from utils.file_system import read_csv_to_list_dict, parse_json
 from utils.exceptions import GuideDeterminerError
-from mutator.codon import CodonEdit
 
 DEFAULT_CONFIG_FILE = Path(__file__).parent / '../../config/mutator_default_config.json'
 
