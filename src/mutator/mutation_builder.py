@@ -2,35 +2,61 @@ import copy
 from typing import List
 from mutator.base_sequence import BaseSequence
 from mutator.guide import GuideSequence
-from mutator.edit_window import EditWindow, WindowCodon
+from mutator.edit_window import EditWindow
 from mutator.frame import get_frame
 from mutator.coding_region import CodingRegion
+from mutator.codon import WindowCodon
+from utils.exceptions import PamNotFoundError
 
 
 class MutationBuilder:
-    def __init__(self, guide: GuideSequence, cds: CodingRegion) -> None:
+    def __init__(
+        self,
+        guide: GuideSequence,
+        cds: CodingRegion,
+        gene_name: str,
+        window_length: int,
+        target_region_id: str
+    ) -> None:
+        self.gene_name = gene_name
+        self.target_region_id = target_region_id
+        self.codons = []
+
         self.guide = self._build_guide_sequence(guide)
-        self.cds = cds
+        self.cds = self._build_coding_region(cds)
+        self.window = self._build_edit_window(window_length)
 
-        self.window = EditWindow(0,0)
+    def __repr__(self):
+        return f"guide: {self.guide}, cds: {self.cds}, window: {self.window}, target region id: {self.target_region_id}"
 
-    def _build_guide_sequence(self, guide) -> GuideSequence:
+    def _build_guide_sequence(self, guide: GuideSequence) -> GuideSequence:
         return copy.deepcopy(guide)
 
-    def _build_coding_region(self, cds) -> CodingRegion:
+    def _build_coding_region(self, cds: CodingRegion) -> CodingRegion:
         return copy.deepcopy(cds)
 
-    def build_edit_window(self) -> EditWindow:
-        window = get_window(self.guide, self.cds)
+    def _build_edit_window(self, window_length) -> EditWindow:
+        window = get_window(self.guide, self.cds, window_length)
         self.window = window
 
         return window
 
-def get_window(guide:GuideSequence, cds: CodingRegion) -> EditWindow:
-    window_coordinates = guide.define_window()
+    def build_window_codons(self) -> List[WindowCodon]:
+        codons = self.window.get_window_codons()
+        self.codons = codons
+
+        return codons
+
+
+def get_window(guide: GuideSequence, cds: CodingRegion, window_length: int) -> EditWindow:
+    window_coordinates = guide.define_window(window_length)
+    if type(window_coordinates) == PamNotFoundError:
+        return
+
     window = EditWindow(
         start=window_coordinates[0],
         end=window_coordinates[1],
+        window_length=window_length,
         is_positive_strand=cds.is_positive_strand,
         chromosome=guide.chromosome,
         frame=0,

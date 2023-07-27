@@ -1,0 +1,7 @@
+{
+    "ignore_positions": [-1, 1],
+    "allow_codon_loss": true,
+    "species_id": "Grch38",
+    "assembly": "GRCh38",
+    "window_length": 12
+}

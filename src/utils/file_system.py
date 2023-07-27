@@ -1,9 +1,12 @@
 from os import path
 import csv
 from typing import List
-from pathlib import Path
-from mutator.runner import Runner
-from td_utils.src.utils.vcf_utils import write_to_vcf, Variants
+
+import pandas as pd
+import pyranges as pr
+
+from utils.exceptions import FileFormatError
+from src.mutator.mutation_builder import MutationBuilder
 
 # copied from targeton-designer- need to make a shared repo
 
@@ -35,31 +38,22 @@ def write_dict_list_to_csv(file_name, dict_list, headers=None, delimiter=',') ->
         writer.writerows(dict_list)
 
 
-def write_mutator_to_vcf(file_path: str, runner: Runner) -> str:
-    variants = transform_runner_to_variants(runner)
-    file_path = Path(file_path)
-    file_path.with_suffix(".vcf")
-    # mutation to vcf format.
-    write_to_vcf(file_path, variants)
-    return str(file_path)
+def write_json_failed_guides(file_path: str, failed_mutations: List[MutationBuilder]) -> None:
+    with open(file_path, 'w') as json_file:
+        json.dump(failed_mutations, json_file, default=lambda x: x.__dict__, indent=4)
 
 
-def transform_runner_to_variants(runner: Runner) -> Variants:
-    variants = []
-    chrom = runner.mutation_builder[0].guide.chromosome
-    sgrna_number = 1
-    variants = Variants(chrom, sgrna_number)
+def parse_json(file_path: str) -> dict:
+    with open(file_path, "r") as file:
+        try:
+            result = json.load(file)
+        except Exception as err:
+            raise FileFormatError
 
-    for mb in runner.mutation_builder:
-        for codon in mb.codons:
-            if codon.is_permitted:
-                variants.append(
-                    mb.guide.chromosome,
-                    codon.third_base_coord,
-                    ID=mb.guide.id,
-                    REF=codon.third_base_on_positive_strand,
-                    ALT=codon.edited_third_base_on_positive_strand,
-                    INFO={"SGRNA": f"sgRNA_{mb.guide.id}"}
-                )
-    return variants
+    return result
 
+
+def read_gtf_to_df(gtf: str) -> pd.DataFrame:
+    gtf_df = pr.read_gtf(gtf, as_df=True)
+    gtf_df['Start'] += 1  # pyranges uses 0-based coords
+    return gtf_df

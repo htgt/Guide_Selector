@@ -18,10 +18,12 @@ class InputArguments:
             prog='Guide Selection'
         )
 
-        subparsers = parser.add_subparsers(dest='command')
+        self._add_input_args(parser)
+        self._add_subparsers(parser)
 
         self._add_mutator_command_parser(subparsers)
         self._add_window_command_parser(subparsers)
+        self._add_wge_command_parser(subparsers)
 
         parser.add_argument(
             '--version',
@@ -30,25 +32,56 @@ class InputArguments:
         )
         parser = add_input_args(parser)
 
-        self.set_args(vars(parser.parse_args()))
+    def _add_subparsers(self, parser) -> None:
+        subparsers = parser.add_subparsers(dest='command')
 
-    def _add_mutator_command_parser(self, subparsers: _SubParsersAction) -> None:
+        self._add_mutator_command_parser(subparsers)
+        self._add_retrieve_command_parser(subparsers)
+
+    @staticmethod
+    def _add_mutator_command_parser(subparsers: _SubParsersAction) -> None:
         parser_mutator = subparsers.add_parser('mutator', help='Mutator command help')
-        parser_mutator.add_argument('--tsv', type=str,
-            help='Path to Guide Locus as TSV file. Required columns: guide start, end, strand and id')
-        parser_mutator.add_argument('--gtf', type=str, help='Path to reference GTF file')
-        parser_mutator.add_argument('--conf', type=str, help='Path to custom configuration file')
-        parser_mutator.add_argument('--out', type=str, nargs='?', const='./out/',
-            help='Desired output path (Default: ./out)')
+        parser_mutator.add_argument(
+            '--tsv',
+            type=str,
+            help='Path to Guide Locus as TSV file. Required columns: guide start, end, chr, strand and id'
+        )
+        parser_mutator.add_argument(
+            '--gtf',
+            type=str,
+            help='Path to reference GTF file'
+        )
 
-    def _add_window_command_parser(self, subparsers: _SubParsersAction) -> None:
-        parser_window = subparsers.add_parser('window', help='Window command help')
-        parser_window.add_argument('--file', type=str, help='Input file')
-        parser_window.add_argument('--seq', type=str, help='Input sequence')
-        parser_window.add_argument('--strand', type=str, help='Guide strand')
-        parser_window.add_argument('--window_length', type=int, default=12, required=False,
-            choices=range(12, 23), help='Length of mutable window')
+    def _add_guide_selector_command_parser(self, subparsers: _SubParsersAction) -> None:
+        parser_guide_selector = subparsers.add_parser(
+            'guide_selector',
+            help='Guide Selector command to run retrieve->mutator together'
+        )
 
+        self._add_region_group(parser_guide_selector)
 
-def add_input_args(parser) -> ArgumentParser:
-    return parser
+        parser_guide_selector.add_argument(
+            '--gtf',
+            type=str,
+            help='Path to reference GTF file'
+        )
+
+    def _add_retrieve_command_parser(self, subparsers: _SubParsersAction) -> None:
+        parser_retrieve = subparsers.add_parser('retrieve', help='Retrieve command help')
+        self._add_region_group(parser_retrieve)
+
+    @staticmethod
+    def _add_region_group(parser: ArgumentParser):
+        region_group = parser.add_mutually_exclusive_group()
+
+        region_group.add_argument(
+            '--region',
+            type=str,
+            help='Target region specified in format chr1:1-10001'
+        )
+        region_group.add_argument(
+            '--region_file',
+            type=str,
+            help='Path to the input file with data for Target Regions separated by new line'
+        )
+

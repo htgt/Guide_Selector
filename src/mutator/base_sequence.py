@@ -20,7 +20,11 @@ class BaseSequence:
 
     def get_sequence_by_coords(self) -> str:
         bases = get_seq_from_ensembl_by_coords(self.chromosome, self.start, self.end)
-        return bases
+
+        if not self.is_positive_strand:
+            bases = Seq(bases).reverse_complement()
+
+        return str(bases)
 
     def _get_sequence_codons(self):
         pass
