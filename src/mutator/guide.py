@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from typing import Tuple
 from mutator.base_sequence import BaseSequence
 from typing import Optional
+from utils.exceptions import PamNotFoundError
 
 PAM_POSITIVE_PATTERN = r'.GG'
 PAM_NEGATIVE_PATTERN = r'CC.'
@@ -14,9 +15,6 @@ class SequenceFragment:
     start: int
     end: int
 
-@dataclass
-class GuideSequenceLoci(BaseSequence):
-    guide_id: int = 0
 
 class GuideSequence(BaseSequence):
     def __init__(self,
@@ -38,53 +36,58 @@ class GuideSequence(BaseSequence):
         self.chromosome = chromosome
         self.frame = frame
 
-        self.bases = self._get_sequence_by_coords(self.chromosome, start, end).upper()
+    @staticmethod
+    def _define_pam_pattern(is_positive_strand: bool) -> str:
+        return PAM_POSITIVE_PATTERN if is_positive_strand else PAM_NEGATIVE_PATTERN
 
-        #self.pam = self.find_pam()
-        #self.window = self.define_window()
-
-
-    def _define_pam_pattern(self) -> str:
-        return PAM_POSITIVE_PATTERN if self.is_positive_strand else PAM_NEGATIVE_PATTERN
-
-    def _check_pam_position(self, match: re.Match) -> bool:
+    @staticmethod
+    def _check_pam_position( match: re.Match, bases: str, is_positive_strand: bool) -> bool:
         MAX_PAM_POSITION_FROM_SEQ_EDGE = 2
         is_pam = False
 
-        if not self.is_positive_strand:
+        if not is_positive_strand:
             is_pam = ( match.start() <= MAX_PAM_POSITION_FROM_SEQ_EDGE )
         else:
-            is_pam = ( match.end() >= len(self.bases) - MAX_PAM_POSITION_FROM_SEQ_EDGE )
+            is_pam = ( match.end() >= len(bases) - MAX_PAM_POSITION_FROM_SEQ_EDGE )
 
         return is_pam
 
+    @staticmethod
+    def _calculate_coordinate(difference: int, start: int):
+        return start + difference
 
-    def find_pam(self) -> SequenceFragment:
-        pattern = self._define_pam_pattern()
-        pam_matches = re.finditer(pattern, self.bases)
+    def find_pam(self, bases: str) -> SequenceFragment:
+        pattern = self._define_pam_pattern(self.is_positive_strand)
+
+        pam_matches = re.finditer(pattern, bases)
+        pam = None
 
         for match in pam_matches:
-            if self._check_pam_position(match):
+            if self._check_pam_position(match, bases, self.is_positive_strand):
                 pam = match
 
-        if pam_matches:
-            return SequenceFragment(pam.group(0), pam.start(0), pam.end(0))
+        if pam_matches and pam is not None:
+            return SequenceFragment(
+                pam.group(0),
+                self._calculate_coordinate(pam.start(0), self.start),
+                self._calculate_coordinate(pam.end(0) - 1, self.start)
+            )
         else:
-            raise Exception('No PAM found in the sequence')
+            return PamNotFoundError('No PAM found in the sequence: ' + bases)
 
+    def define_window(self) -> Tuple[int, int]:
+        bases = self.get_sequence_by_coords().upper()
+        pam = self.find_pam(bases)
 
-    def define_window(self) -> SequenceFragment:
+        if type(pam) == PamNotFoundError:
+            return pam
+
         if self.is_positive_strand:
-            window_start = self.pam.end - self.window_length
-            window_end = self.pam.end
+            window_start = pam.end - self.window_length + 1
+            window_end = pam.end
         else:
-            window_start = self.pam.start
-            window_end = self.pam.end + self.window_length
+            window_start = pam.start
+            window_end = pam.end + self.window_length - 1
 
-        window_bases = self.bases[window_start:window_end]
+        return window_start, window_end
 
-        return SequenceFragment(window_bases, window_start, window_end)
-
-
-def calculate_window_coordinates(bases: str, guide_start: int, guide_end: int) -> Tuple[int, int]:
-    pass

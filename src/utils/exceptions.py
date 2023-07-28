@@ -1,8 +1,10 @@
 class GuideDeterminerError(Exception):
     pass
 
-
 class MutatorError(Exception):
+    pass
+
+class PamNotFoundError(Exception):
     pass
 
 

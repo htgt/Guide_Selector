@@ -1,11 +1,9 @@
-from mutator.edit_window import \
-    EditWindow, \
-    WindowCodon, \
-    BaseWithPosition, \
-    calculate_position_in_window
-
 import unittest
+
 from parameterized import parameterized
+
+from mutator.edit_window import EditWindow, calculate_position_in_window, WindowCodon
+#from mutator.codon import WindowCodon
 
 
 class TestEditWindow(unittest.TestCase):
@@ -20,7 +18,7 @@ class TestEditWindow(unittest.TestCase):
         (10, 21, False, '16', 2, (10, 22)),
     ])
     def test_get_extended_window_coordinates(self, start, end, is_positive_strand, chromosome, frame, expected_coordinates):
-        window = EditWindow(start, end, is_positive_strand, chromosome, frame)
+        window = EditWindow(start, end, is_positive_strand, chromosome, frame, is_positive_strand)
 
         result_coordinates = window._get_extended_window_coordinates()
 
@@ -29,25 +27,46 @@ class TestEditWindow(unittest.TestCase):
 
 class TestEditWindowCodons(unittest.TestCase):
     @parameterized.expand([
-        ('TATATTGAGCAAGG', [
-            WindowCodon('TAT', BaseWithPosition('T', 2, 7)),
-            WindowCodon('ATT', BaseWithPosition('T', 5, 4)),
-            WindowCodon('GAG', BaseWithPosition('G', 8, 1)),
-            WindowCodon('CAA', BaseWithPosition('A', 11, -3))
+        ('TATATTGAGCAAGG', (2, 13), [
+            WindowCodon('TAT', 2, 9, True),
+            WindowCodon('ATT', 5, 6, True),
+            WindowCodon('GAG', 8, 3, True),
+            WindowCodon('CAA', 11, -1, True)
         ]),
-        ('TATTGAGCAAGG', [
-            WindowCodon('TAT', BaseWithPosition('T', 2, 7)),
-            WindowCodon('TGA', BaseWithPosition('A', 5, 4)),
-            WindowCodon('GCA', BaseWithPosition('A', 8, 1)),
-            WindowCodon('AGG', BaseWithPosition('G', 11, -3))
-        ])
+        ('TATTGAGCAAGG',  (0, 11), [
+            WindowCodon('TAT', 2, 7, True),
+            WindowCodon('TGA', 5, 4, True),
+            WindowCodon('GCA', 8, 1, True),
+            WindowCodon('AGG', 11, -3, True)
+        ]),
     ])
-    def test_split_window_into_codons(self, bases, expected_codons):
-        window = EditWindow(0, 12, True, '16')
 
-        result_codons = window.split_window_into_codons(bases, 0)
+    def test_split_window_into_codons(self, bases, window_coords, expected_codons):
+        window = EditWindow(window_coords[0], window_coords[1], True, '16')
 
-        self.assertEqual(result_codons, expected_codons, "Incorrect split into codons")
+        result_codons = window.split_window_into_codons(bases, 0, len(bases), True)
+
+        self.assertEqual(list(map(vars, result_codons)),  list(map(vars, expected_codons)))
+        #self.assertEqual(result_codons, expected_codons, "Incorrect split into codons")
+
+
+class TestEditWindowCodonsNegative(unittest.TestCase):
+    @parameterized.expand([('ATCATCCAAAGG',
+        [WindowCodon('CCT', 77696656, -3, False),
+        WindowCodon('TTG', 77696653, 1, False),
+        WindowCodon('GAT', 77696650, 4, False),
+        WindowCodon('GAT', 77696647, 7, False)]),
+    ])
+
+    def test_split_window_into_codons_negative(self, bases, expected_codons):
+        window = EditWindow(77696645, 77696656, False, 'X')
+
+        result_codons = window.split_window_into_codons(bases, 77696647, 77696659, False)
+
+        ## TODO: Check window position
+
+        self.assertEqual(list(map(vars, result_codons)),  list(map(vars, expected_codons)))
+        #self.assertEqual(result_codons, expected_codons, "Incorrect split into codons")
 
 
 class TestCalculatePosition(unittest.TestCase):

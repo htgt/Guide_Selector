@@ -1,6 +1,5 @@
 from dataclasses import dataclass
 from enum import Enum
-from Bio.Seq import Seq
 
 from utils.get_data.ensembl import get_seq_from_ensembl_by_coords
 
@@ -15,18 +14,13 @@ class FragmentFrameIndicator(Enum):
 class BaseSequence:
     start: int
     end: int
-    is_positive_strand: bool
+    is_positive_strand: bool = True
     chromosome: str = ""
     frame: FragmentFrameIndicator = 0
 
-    def _get_sequence_by_coords(self, chromosome, start, end) -> str:
-        bases = get_seq_from_ensembl_by_coords(chromosome, start, end)
-
-        if not self.is_positive_strand:
-            bases = Seq(bases).reverse_complement()
+    def get_sequence_by_coords(self) -> str:
+        bases = get_seq_from_ensembl_by_coords(self.chromosome, self.start, self.end)
 
         return bases
 
-    def _get_sequence_codons(self):
-        pass
 
