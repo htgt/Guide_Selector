@@ -171,6 +171,7 @@ run-docker-interactive: build-docker
 	@docker run -i --name "${DOCKER_NAME}" -t "${DOCKER_IMAGE_NAME}" bash
 
 connect-docker-interactive:
+	@docker start -i ${DOCKER_NAME}
 	@docker exec -it ${DOCKER_NAME} bash
 
 clean-docker-containers:
