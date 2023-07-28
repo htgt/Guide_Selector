@@ -121,7 +121,9 @@ venv/bin/activate:
 setup-venv: venv/requirements_run
 
 venv/requirements_run: venv/bin/activate requirements.txt 
+	@./venv/bin/pip install --upgrade pip setuptools wheel
 	@./venv/bin/pip install -r requirements.txt
+	@./venv/bin/pip install -r td_utils/requirements.txt
 	@echo "Python requirements installed."
 	@touch venv/requirements_run
 
