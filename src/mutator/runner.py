@@ -108,11 +108,16 @@ class Runner:
 
             for codon in (mb.codons):
                 row = base
+                lost_amino = ','.join(codon.amino_acids_lost_from_edit) if codon.amino_acids_lost_from_edit else 'N/A'
+
                 row.update({
                     'window_pos' : codon.third_base_pos,
                     'pos' : codon.third_base_coord,
                     'ref_codon' : codon.bases,
-                    'ref_pos_three' : codon.third_base_on_positive_strand
+                    'ref_pos_three' : codon.bases[2],
+                    'alt' : codon.edited_bases[2],
+                    'lost_amino_acids' : lost_amino, 
+                    'permitted' : codon.is_edit_permitted(config)
                 })
                 rows.append(copy.deepcopy(row))
 
