@@ -36,7 +36,7 @@ def run_mutator_cmd(args : dict) -> None:
     print("Length of failed_mutations list:", len(runner.failed_mutations))
 
 
-    tsv_rows = runner.as_rows()
+    tsv_rows = runner.as_rows(guide_determiner.prepare_config(args['conf']))
     tsv_path = args['out'] + '/' + OUTPUT_FILE_URL
     write_dict_list_to_csv(tsv_path, tsv_rows, tsv_rows[0].keys(), "\t")
     print('Output saved to', tsv_path)

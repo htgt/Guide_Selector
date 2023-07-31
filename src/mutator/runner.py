@@ -93,7 +93,7 @@ class Runner:
         )
         self.gene_name = data['gene_name']
 
-    def as_rows(self) -> dict:
+    def as_rows(self, config : str) -> dict:
         rows = []
         for mb in (self.mutation_builders):
             base = {
