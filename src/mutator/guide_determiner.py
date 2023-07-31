@@ -73,6 +73,7 @@ class GuideDeterminer:
         dataframe.set_index('guide_id', inplace=True)
         dataframe['guide_start'] = int(guide['start'])
         dataframe['guide_end'] = int(guide['end'])
+        dataframe['guide_strand'] = str(guide['grna_strand'])
         return dataframe
 
     def determine_frame_for_guide(self, row: pd.Series) -> str:
@@ -106,6 +107,7 @@ class GuideDeterminer:
             'cds_frame',
             'gene_name',
             'exon_number',
+            'guide_strand',
             'guide_start',
             'guide_end',
             'guide_frame',
