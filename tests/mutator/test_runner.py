@@ -60,6 +60,7 @@ class RunnerTestCase(unittest.TestCase):
 
         expected_rows = [{
             'guide_id': 123,
+            'alt': 'G',
             'chromosome': '1',
             'cds_strand': True,
             'gene_name': 'ACT',
@@ -69,7 +70,9 @@ class RunnerTestCase(unittest.TestCase):
             'window_pos': 1,
             'pos': 23,
             'ref_codon': 'TCA',
-            'ref_pos_three': 'A'
+            'ref_pos_three': 'A',
+            'lost_amino_acids': 'N/A',
+            'permitted': False,
         }]
 
         self.assertEqual(rows, expected_rows)
