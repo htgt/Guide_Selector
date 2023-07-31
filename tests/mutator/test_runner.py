@@ -1,6 +1,7 @@
 import unittest
 import copy
 from mutator.runner import Runner
+from mutator.mutation_builder import MutationBuilder
 from mutator.base_sequence import BaseSequence
 from mutator.guide import GuideSequence
 from mutator.coding_region import CodingRegion
@@ -35,19 +36,27 @@ class RunnerTestCase(unittest.TestCase):
         self.assertIsInstance(self.runner.guide, GuideSequence)
 
     def test_as_row(self):
-        self.runner.cds = BaseSequence(100, 200, True, '1', 1)
-        self.runner.window = EditWindow(150, 180, True, '1')
-        self.runner.guide = GuideSequence(
-            start=160,
-            end=170,
-            is_positive_strand=True,
-            guide_id=123,
-            chromosome='1'
+        config = {
+            "ignore_positions": [-1, 1],
+            "allow_codon_loss": True
+        }
+        mb = MutationBuilder(
+            cds=BaseSequence(100, 200, True, '1', 1),
+            guide=GuideSequence(
+                start=160,
+                end=170,
+                is_positive_strand=True,
+                guide_id=123,
+                chromosome='1'
+            )
         )
-        self.runner.gene_name = 'ACT'
-        self.runner.codons = [WindowCodon('TCA', 23, 1, True)]
+        mb.window = EditWindow(150, 180, True, '1'),
+        mb.codons = [WindowCodon('TCA', 23, 1, True)]
 
-        rows = self.runner.as_rows()
+        self.runner.gene_name = 'ACT'
+        self.runner.mutation_builders = [mb]
+
+        rows = self.runner.as_rows(config)
 
         expected_rows = [{
             'guide_id': 123,
@@ -69,6 +78,7 @@ class RunnerTestCase(unittest.TestCase):
         row = pd.Series({
             'guide_start': 160,
             'guide_end': 170,
+            'guide_strand': '+',
             'chromosome': 'chr1',
             'cds_strand': '+',
             'guide_frame': 2
