@@ -54,11 +54,11 @@ Available commands:
 - --version
 - mutator
 
-Mutator command runs the PAM mutator workflow in one command. Mutator requires the Guide Loci + ID, a reference GTF file to run. 
+Mutator command runs the PAM mutator workflow in one command. 
+Mutator requires the Guide Loci + ID, a reference GTF file to run and output directory path. 
 Custom configuration can be passed to the command for any tweaks necessary.
 Example:
 ```
-python3 src/cli.py mutator --gtf ./example.gtf --tsv guides.tsv 
 python3 src/cli.py mutator --gtf ./example.gtf --tsv guides.tsv --conf custom.conf --out ./output/
 ```
 
