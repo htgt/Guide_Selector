@@ -47,7 +47,7 @@ class Runner:
             start=row['guide_start'],
             end=row['guide_end'],
             chromosome=row['chromosome'],
-            is_positive_strand=(row['cds_strand'] == '+'),
+            is_positive_strand=(row['guide_strand'] == '+'),
             guide_id=row.name,
             frame=row['guide_frame']
         )
