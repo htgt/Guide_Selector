@@ -35,6 +35,7 @@ class TestGuideDeterminer(TestCase):
             'chr': 'chr16',
             'start': '67610855',
             'end': '67610877',
+            'grna_strand': '+'
         }
 
     def test_get_coding_region_for_guide_success(self):
@@ -98,6 +99,7 @@ class TestGuideDeterminer(TestCase):
             'exon_number': '3',
             'guide_start': 67610855,
             'guide_end': 67610877,
+            'guide_strand': '+',
         }, index=pd.Index([1139540371], name='guide_id'))
 
         # act
@@ -210,6 +212,7 @@ class TestGuideDeterminer(TestCase):
             'Frame': '0',
             'gene_name': 'CTCF',
             'exon_number': '3',
+            'guide_strand': True,
             'guide_start': 67610855,
             'guide_end': 67610877,
             'guide_frame': '2',
@@ -222,6 +225,7 @@ class TestGuideDeterminer(TestCase):
             'cds_frame': '0',
             'gene_name': 'CTCF',
             'exon_number': '3',
+            'guide_strand': True,
             'guide_start': 67610855,
             'guide_end': 67610877,
             'guide_frame': '2',

@@ -7,7 +7,7 @@ from src.mutator.base_sequence import BaseSequence
 from src.mutator.guide import GuideSequenceLoci
 from src.mutator.edit_window import EditWindow
 from src.mutator.codon import WindowCodon
-from td_utils.src.vcf_utils import read_vcf, Variants, Variant
+from tdutils.utils.vcf_utils import read_vcf, Variants, Variant
 
 
 class TestWriteVCF(TestCase):
