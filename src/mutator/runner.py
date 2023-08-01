@@ -140,25 +140,25 @@ class Runner:
         file_path.with_suffix(".vcf")
 
         variants = self.to_variants_obj()
-        write_to_vcf(file_path, variants)
+        write_to_vcf(variants, file_path)
 
         return str(file_path)
 
     def to_variants_obj(self) -> Variants:
         chrom = self.mutation_builders[0].guide.chromosome
-        sgrna_number = 1
-        variants = Variants(chrom, sgrna_number)
+        variants = Variants(chrom)
 
         for mb in self.mutation_builders:
             for codon in mb.codons:
                 if codon.is_edit_permitted(self._config):
+                    guide_id = str(mb.guide.guide_id)
                     variants.append(
                         mb.guide.chromosome,
                         codon.third_base_coord,
-                        id=mb.guide.id,
+                        id=guide_id,
                         ref=codon.third_base_on_positive_strand,
                         alt=codon.edited_third_base_on_positive_strand,
-                        info={"SGRNA": f"sgRNA_{mb.guide.id}"}
+                        info={"SGRNA": f"sgRNA_{guide_id}"}
                     )
         return variants
 
