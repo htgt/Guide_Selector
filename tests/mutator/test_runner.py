@@ -10,7 +10,10 @@ import pandas as pd
 
 class RunnerTestCase(unittest.TestCase):
     def setUp(self):
-        self.runner = Runner()
+        self.runner = Runner({
+            'ignore_positions': [-1, 1],
+            'allow_codon_loss': True,
+        })
 
     def test_build_coding_region_objects(self):
         data = {

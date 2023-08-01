@@ -1,27 +1,29 @@
 import sys
 
 from mutator.guide_determiner import GuideDeterminer
-from mutator.runner import Runner, mutator_to_dict_list
+from mutator.runner import Runner
 from utils.arguments_parser import InputArguments
-from utils.file_system import read_csv_to_list_dict, write_dict_list_to_csv
-from pprint import pprint
+from utils.config import prepare_config
+from utils.file_system import write_dict_list_to_csv
 
 
-def resolve_command(command: str, args: dict) -> None:
+def resolve_command(command: str, args: dict, config: dict) -> None:
     if command == "mutator":
-        run_mutator_cmd(args)
+        run_mutator_cmd(args, config)
 
 def main() -> None:
     parsed_input = InputArguments()
     args = parsed_input.arguments
+    config = prepare_config(args['conf'])
     command = parsed_input.command
 
-    resolve_command(command, args)
+    resolve_command(command, args, config)
 
-def run_mutator_cmd(args : dict) -> None:
+
+def run_mutator_cmd(args: dict, config: dict) -> None:
     OUTPUT_FILE_URL = 'output.tsv'
+    runner = Runner(config)
 
-    runner = Runner()
     print('Running PAM mutator')
     # Run Guide Frame Determiner
     guide_determiner = GuideDeterminer()
@@ -36,7 +38,7 @@ def run_mutator_cmd(args : dict) -> None:
     print("Length of failed_mutations list:", len(runner.failed_mutations))
 
 
-    tsv_rows = runner.as_rows(guide_determiner.prepare_config(args['conf']))
+    tsv_rows = runner.as_rows(config)
     tsv_path = args['out'] + '/' + OUTPUT_FILE_URL
     write_dict_list_to_csv(tsv_path, tsv_rows, tsv_rows[0].keys(), "\t")
     print('Output saved to', tsv_path)
