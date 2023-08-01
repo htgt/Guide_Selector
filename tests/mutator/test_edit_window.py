@@ -2,8 +2,8 @@ import unittest
 
 from parameterized import parameterized
 
-from mutator.edit_window import EditWindow, calculate_position_in_window, WindowCodon
-#from mutator.codon import WindowCodon
+from mutator.edit_window import EditWindow, calculate_position_in_window
+from mutator.codon import WindowCodon
 
 
 class TestEditWindow(unittest.TestCase):
@@ -63,7 +63,7 @@ class TestEditWindowCodonsNegative(unittest.TestCase):
 
         result_codons = window.split_window_into_codons(bases, 77696647, 77696658, False)
 
-        self.assertEqual(result_codons, expected_codons, "Incorrect split into codons")
+        self.assertEqual(list(map(vars, result_codons)),  list(map(vars, expected_codons)))
 
 
 class TestCalculatePosition(unittest.TestCase):
