@@ -136,15 +136,17 @@ class Runner:
         self.failed_mutations = failed_mutations
 
     def write_output_to_vcf(self, file_path: str) -> str:
-        variants = self.to_variants()
         file_path = Path(file_path)
         file_path.with_suffix(".vcf")
+
+        variants = self.to_variants_obj()
         write_to_vcf(file_path, variants)
+
         return str(file_path)
 
 
 
-    def to_variants(self) -> Variants:
+    def to_variants_obj(self) -> Variants:
         chrom = self.mutation_builders[0].guide.chromosome
         sgrna_number = 1
         variants = Variants(chrom, sgrna_number)
