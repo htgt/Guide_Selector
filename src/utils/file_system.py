@@ -2,7 +2,6 @@ from os import path
 import csv
 import json
 from typing import List
-
 from utils.exceptions import FileFormatError
 
 

@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from typing import List
+from pathlib import Path
 import copy
 
 from mutator.mutation_builder import MutationBuilder
@@ -8,15 +9,8 @@ from mutator.edit_window import EditWindow
 from mutator.base_sequence import BaseSequence
 from mutator.guide import GuideSequence
 from mutator.coding_region import CodingRegion
-from td_utils.vcf_utils import Variants
+from tdutils.utils.vcf_utils import Variants, write_to_vcf
 
-EDIT_CONFIG = {"ignore_positions": [-1, 1], "allow_codon_loss": True}
-
-
-
-
-
-from pprint import pprint
 import pandas as pd
 
 @dataclass
@@ -29,7 +23,8 @@ class Runner:
     mutation_builders: List[MutationBuilder]
     failed_mutations: List[MutationBuilder]
 
-    def __init__(self) -> None:
+    def __init__(self, config: dict) -> None:
+        self._config = config
         self.cds = None
         self.window = None
         self.codons = None
@@ -52,7 +47,7 @@ class Runner:
             start=row['guide_start'],
             end=row['guide_end'],
             chromosome=row['chromosome'],
-            is_positive_strand=(row['cds_strand'] == '+'),
+            is_positive_strand=(row['guide_strand'] == '+'),
             guide_id=row.name,
             frame=row['guide_frame']
         )
@@ -98,27 +93,33 @@ class Runner:
         )
         self.gene_name = data['gene_name']
 
-    def as_rows(self) -> dict:
+    def as_rows(self, config : str) -> dict:
         rows = []
-        base = {
-            'guide_id' : self.guide.guide_id,
-            'chromosome' : self.cds.chromosome,
-            'cds_strand' : self.cds.is_positive_strand,
-            'gene_name' : self.gene_name,
-            'guide_strand' : self.guide.is_positive_strand,
-            'guide_start' : self.guide.start,
-            'guide_end' : self.guide.end,
-        }
+        for mb in (self.mutation_builders):
+            base = {
+                'guide_id' : mb.guide.guide_id,
+                'chromosome' : mb.cds.chromosome,
+                'cds_strand' : mb.cds.is_positive_strand,
+                'gene_name' : self.gene_name,
+                'guide_strand' : mb.guide.is_positive_strand,
+                'guide_start' : mb.guide.start,
+                'guide_end' : mb.guide.end,
+            }
 
-        for codon in (self.codons):
-            row = base
-            row.update({
-                'window_pos' : codon.third_base_pos,
-                'pos' : codon.third_base_coord,
-                'ref_codon' : codon.bases,
-                'ref_pos_three' : codon.third_base_on_positive_strand
-            })
-            rows.append(copy.deepcopy(row))
+            for codon in (mb.codons):
+                row = base
+                lost_amino = ','.join(codon.amino_acids_lost_from_edit) if codon.amino_acids_lost_from_edit else 'N/A'
+
+                row.update({
+                    'window_pos' : codon.third_base_pos,
+                    'pos' : codon.third_base_coord,
+                    'ref_codon' : codon.bases,
+                    'ref_pos_three' : codon.bases[2],
+                    'alt' : codon.edited_bases[2],
+                    'lost_amino_acids' : lost_amino, 
+                    'permitted' : codon.is_edit_permitted(config)
+                })
+                rows.append(copy.deepcopy(row))
 
         return rows
     
@@ -134,21 +135,30 @@ class Runner:
 
         self.failed_mutations = failed_mutations
 
+    def write_output_to_vcf(self, file_path: str) -> str:
+        variants = self.to_variants()
+        file_path = Path(file_path)
+        file_path.with_suffix(".vcf")
+        write_to_vcf(file_path, variants)
+        return str(file_path)
+
+
+
     def to_variants(self) -> Variants:
-        chrom = self.mutation_builder[0].guide.chromosome
+        chrom = self.mutation_builders[0].guide.chromosome
         sgrna_number = 1
         variants = Variants(chrom, sgrna_number)
 
-        for mb in self.mutation_builder:
+        for mb in self.mutation_builders:
             for codon in mb.codons:
-                if codon.is_edit_permitted(EDIT_CONFIG):
+                if codon.is_edit_permitted(self._config):
                     variants.append(
                         mb.guide.chromosome,
                         codon.third_base_coord,
-                        ID=mb.guide.id,
-                        REF=codon.third_base_on_positive_strand,
-                        ALT=codon.edited_third_base_on_positive_strand,
-                        INFO={"SGRNA": f"sgRNA_{mb.guide.id}"}
+                        id=mb.guide.id,
+                        ref=codon.third_base_on_positive_strand,
+                        alt=codon.edited_third_base_on_positive_strand,
+                        info={"SGRNA": f"sgRNA_{mb.guide.id}"}
                     )
         return variants
 

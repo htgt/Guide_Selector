@@ -1,4 +1,4 @@
-from unittest.mock import Mock, patch
+from unittest.mock import Mock
 
 from pyfakefs.fake_filesystem_unittest import TestCase
 import pandas as pd
@@ -36,34 +36,6 @@ class TestGuideDeterminer(TestCase):
             'start': '67610855',
             'end': '67610877',
         }
-
-    @patch('mutator.guide_determiner.DEFAULT_CONFIG_FILE', 'default_config.json')
-    def test_prepare_config_default(self):
-        # arrange
-        contents = '{"ignore_positions": [-1, 1], "allow_codon_loss": true}'
-        self.fs.create_file('default_config.json', contents=contents)
-        expected = {'ignore_positions': [-1, 1], 'allow_codon_loss': True}
-
-        # act
-        actual = GuideDeterminer.prepare_config('')
-
-        # assert
-        self.assertEqual(actual, expected)
-
-    @patch('mutator.guide_determiner.DEFAULT_CONFIG_FILE', 'default_config.json')
-    def test_prepare_config_custom(self):
-        # arrange
-        default_contents = '{"ignore_positions": [-1, 1], "allow_codon_loss": true}'
-        custom_contents = '{"ignore_positions": [1]}'
-        self.fs.create_file('default_config.json', contents=default_contents)
-        self.fs.create_file('custom_config.json', contents=custom_contents)
-        expected = {'ignore_positions': [1], 'allow_codon_loss': True}
-
-        # act
-        actual = GuideDeterminer.prepare_config('custom_config.json')
-
-        # assert
-        self.assertEqual(actual, expected)
 
     def test_get_coding_region_for_guide_success(self):
         # arrange

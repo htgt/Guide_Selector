@@ -37,9 +37,20 @@ class InputArguments:
         parser_mutator.add_argument('--tsv', type=str,
             help='Path to Guide Locus as TSV file. Required columns: guide start, end, strand and id')
         parser_mutator.add_argument('--gtf', type=str, help='Path to reference GTF file')
-        parser_mutator.add_argument('--conf', type=str, help='Path to custom configuration file')
-        parser_mutator.add_argument('--out', type=str, nargs='?', const='./out/',
-            help='Desired output path (Default: ./out)')
+        parser_mutator.add_argument(
+            '--conf',
+            type=str,
+            help='Path to custom configuration file',
+            default='',
+        )
+        parser_mutator.add_argument(
+            '--out',
+            type=str,
+            nargs='?',
+            const='.',
+            default='./',
+            help='Desired output path (Default: ./)'
+        )
 
     def _add_window_command_parser(self, subparsers: _SubParsersAction) -> None:
         parser_window = subparsers.add_parser('window', help='Window command help')
