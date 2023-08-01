@@ -58,7 +58,7 @@ class TestEditWindowCodonsNegative(unittest.TestCase):
         WindowCodon('GAT', 77696647, 9, False)]),
     ])
 
-    def testsplit_window_into_codons_negative(self, bases, expected_codons):
+    def test_split_window_into_codons_negative(self, bases, expected_codons):
         window = EditWindow(77696647, 77696658, False, 'X')
 
         result_codons = window.split_window_into_codons(bases, 77696647, 77696658, False)
