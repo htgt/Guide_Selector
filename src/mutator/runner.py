@@ -24,7 +24,8 @@ class Runner:
     mutation_builders: List[MutationBuilder]
     failed_mutations: List[MutationBuilder]
 
-    def __init__(self) -> None:
+    def __init__(self, config: dict) -> None:
+        self._config = config
         self.cds = None
         self.window = None
         self.codons = None
