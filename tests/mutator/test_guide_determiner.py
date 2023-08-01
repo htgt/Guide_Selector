@@ -127,6 +127,7 @@ class TestGuideDeterminer(TestCase):
             'exon_number': '3',
             'guide_start': 67610855,
             'guide_end': 67610877,
+            'guide_strand': '+',
         }, index=pd.Index([1139540371], name='guide_id'))
 
         # act
