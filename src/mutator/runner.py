@@ -144,8 +144,6 @@ class Runner:
 
         return str(file_path)
 
-
-
     def to_variants_obj(self) -> Variants:
         chrom = self.mutation_builders[0].guide.chromosome
         sgrna_number = 1
