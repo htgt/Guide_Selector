@@ -169,10 +169,4 @@ def _booleanise_strand(strand : str) -> bool:
 def _trim_chromosome(chr : str) -> str:
     return chr[3:]
 
-def mutator_to_dict_list(runners : List[Runner]) -> List[dict]:
-    rows = []
-    for runner in runners:
-        rows.extend(runner.as_rows())
-
-    return rows
 

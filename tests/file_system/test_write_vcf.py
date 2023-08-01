@@ -6,7 +6,7 @@ from src.mutator.base_sequence import BaseSequence
 from src.mutator.guide import GuideSequenceLoci
 from src.mutator.edit_window import EditWindow
 from src.mutator.codon import WindowCodon
-from td_utils.src.vcf_utils import write_to_vcf, Variants, Variant
+from tdutils.utils.vcf_utils import write_to_vcf, Variants, Variant
 
 
 class TestWriteVCF(TestCase):
@@ -41,12 +41,12 @@ class TestWriteVCF(TestCase):
         test_runner = self.runner
         expected_result = self.variants
         # act
-        test_result = test_runner.to_variants()
+        test_result = test_runner.to_variants_obj()
         # assert
         self.assertEqual(test_result, expected_result)
 
     @unittest.mock.patch('src.utils.file_system.write_to_vcf')
-    @unittest.mock.patch('src.mutator.runner.Runner.to_variants')
+    @unittest.mock.patch('src.mutator.runner.Runner.to_variants_obj')
     def test_write_mutator_to_vcf(self, mocked_write_to_vcf, mocked_transform_mutator_to_variants):
         # arrange
         test_runner = self.runner
@@ -57,7 +57,7 @@ class TestWriteVCF(TestCase):
         mocked_transform_mutator_to_variants.return_value = self.variants
 
         # act
-        test_result = write_to_vcf(expected_file_path, test_runner.to_variants())
+        test_result = write_to_vcf(expected_file_path, test_runner.to_variants_obj())
 
         # assert
         self.assertEqual(test_result, expected_file_path)
