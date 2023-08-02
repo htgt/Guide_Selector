@@ -177,8 +177,8 @@ connect-docker-interactive:
 
 clean-docker-containers:
 	@containers=$$(docker ps -a -q)
-	if [ $$containers ]; then
-		@docker rm -f $$containers
+	if [ -z "$$containers" ]; then
+		docker rm -f $$containers
 	fi 
 
 clean-docker:
