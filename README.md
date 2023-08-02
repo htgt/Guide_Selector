@@ -59,7 +59,7 @@ Mutator requires the Guide Loci + ID, a reference GTF file to run and output dir
 Custom configuration can be passed to the command for any tweaks necessary.
 Example:
 ```
-python3 src/cli.py mutator --gtf ./example.gtf --tsv guides.tsv --conf custom.conf --out ./output/
+python3 src/cli.py mutator --gtf ./example.gtf --tsv guides.tsv --conf custom.conf --out_dir ./output/
 ```
 
 ### Run with Docker
