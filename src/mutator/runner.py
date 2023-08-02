@@ -9,37 +9,26 @@ from mutator.edit_window import EditWindow
 from mutator.guide import GuideSequence
 from mutator.coding_region import CodingRegion
 
-
-
-from pprint import pprint
 import pandas as pd
 
 @dataclass
 class Runner:
-    cds: BaseSequence
-    window: EditWindow
-    codons: List[WindowCodon]
-    guide: GuideSequence
-    gene_name: str
     mutation_builders: List[MutationBuilder]
     failed_mutations: List[MutationBuilder]
 
     def __init__(self, config: dict) -> None:
         self._config = config
-        self.cds = None
-        self.window = None
-        self.codons = None
-        self.guide = None
-        self.gene_name = None
         self.mutation_builders = None
         self.failed_mutations = None
 
     def build_mutations(self, region_data : pd.DataFrame) -> None:
         guide = self.fill_guide_sequence(region_data)
         coding_region = self.fill_coding_region(region_data)
+        gene_name = region_data['gene_name']
         mutation_builder = MutationBuilder(
             guide=guide,
-            cds=coding_region
+            cds=coding_region,
+            gene_name=gene_name,
         )
         return mutation_builder
 
@@ -70,29 +59,6 @@ class Runner:
             mutation_builder_objects.append(self.build_mutations(row))
 
         self.mutation_builders = mutation_builder_objects
-    
-    def build_coding_region_objects(self, data : dict) -> None:
-        self.cds = BaseSequence(
-            int(data['cds_start']),
-            int(data['cds_end']),
-            _booleanise_strand(data['cds_strand']),
-            _trim_chromosome(data['chromosome']),
-            int(data['cds_frame'])
-        )
-        self.window = EditWindow(
-            int(data['window_start']),
-            int(data['window_end']),
-            _booleanise_strand(data['guide_strand']),
-            _trim_chromosome(data['chromosome']),
-        )
-        self.guide = GuideSequence(
-            guide_id=int(data['guide_id']),
-            start=int(data['guide_start']),
-            end=int(data['guide_end']),
-            is_positive_strand=_booleanise_strand(data['guide_strand']),
-            chromosome=_trim_chromosome(data['chromosome']),
-        )
-        self.gene_name = data['gene_name']
 
     def as_rows(self, config : str) -> dict:
         rows = []
@@ -101,7 +67,7 @@ class Runner:
                 'guide_id' : mb.guide.guide_id,
                 'chromosome' : mb.cds.chromosome,
                 'cds_strand' : mb.cds.is_positive_strand,
-                'gene_name' : self.gene_name,
+                'gene_name' : mb.gene_name,
                 'guide_strand' : mb.guide.is_positive_strand,
                 'guide_start' : mb.guide.start,
                 'guide_end' : mb.guide.end,
@@ -121,7 +87,6 @@ class Runner:
                     'permitted' : codon.is_edit_permitted(config)
                 })
                 rows.append(copy.deepcopy(row))
-
         return rows
 
     def generate_edit_windows_for_builders(self) -> None:
