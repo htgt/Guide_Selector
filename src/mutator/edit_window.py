@@ -68,7 +68,7 @@ class EditWindow(BaseSequence):
         if is_positive_strand:
             return start + i + 2
         else:
-            return end - i - 3
+            return end - i - 2
 
     def _get_base_window_position(self, coordinate: int) -> int:
         return calculate_position_in_window(self.start, coordinate, self.guide_strand)

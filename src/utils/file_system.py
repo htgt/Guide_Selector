@@ -4,8 +4,7 @@ import json
 from typing import List
 from pathlib import Path
 from mutator.runner import Runner
-from td_utils.src.utils.vcf_utils import write_to_vcf, Variants
-
+from tdutils.utils.vcf_utils import write_to_vcf, Variants
 from utils.exceptions import FileFormatError
 
 

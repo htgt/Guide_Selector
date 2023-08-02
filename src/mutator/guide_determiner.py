@@ -1,30 +1,13 @@
 from typing import Tuple, List
-from pathlib import Path
 
 import pyranges as pr
 import pandas as pd
 
-from utils.file_system import read_csv_to_list_dict, parse_json
+from utils.file_system import read_csv_to_list_dict
 from utils.exceptions import GuideDeterminerError
-
-DEFAULT_CONFIG_FILE = Path(__file__).parent / '../../config/mutator_default_config.json'
 
 
 class GuideDeterminer:
-    def __init__(self, config_file: str = '') -> None:
-        self._config = self.prepare_config(config_file)
-
-    @staticmethod
-    def prepare_config(config_file: str) -> dict:
-        default_config = parse_json(DEFAULT_CONFIG_FILE)
-        if config_file:
-            config = parse_json(config_file)
-            for field in default_config.keys():
-                config.setdefault(field, default_config[field])
-        else:
-            config = default_config
-        return config
-
     def parse_loci(self, gtf: str, guide_tsv: str) -> None:
         gtf_data, guide_data = self.read_input_files(gtf, guide_tsv)
         coding_regions = self.get_coding_regions_for_all_guides(gtf_data, guide_data)
@@ -73,6 +56,7 @@ class GuideDeterminer:
         dataframe.set_index('guide_id', inplace=True)
         dataframe['guide_start'] = int(guide['start'])
         dataframe['guide_end'] = int(guide['end'])
+        dataframe['guide_strand'] = str(guide['grna_strand'])
         return dataframe
 
     def determine_frame_for_guide(self, row: pd.Series) -> str:
@@ -106,6 +90,7 @@ class GuideDeterminer:
             'cds_frame',
             'gene_name',
             'exon_number',
+            'guide_strand',
             'guide_start',
             'guide_end',
             'guide_frame',

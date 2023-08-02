@@ -1,4 +1,4 @@
-from unittest.mock import Mock, patch
+from unittest.mock import Mock
 
 from pyfakefs.fake_filesystem_unittest import TestCase
 import pandas as pd
@@ -35,35 +35,8 @@ class TestGuideDeterminer(TestCase):
             'chr': 'chr16',
             'start': '67610855',
             'end': '67610877',
+            'grna_strand': '+'
         }
-
-    @patch('mutator.guide_determiner.DEFAULT_CONFIG_FILE', 'default_config.json')
-    def test_prepare_config_default(self):
-        # arrange
-        contents = '{"ignore_positions": [-1, 1], "allow_codon_loss": true}'
-        self.fs.create_file('default_config.json', contents=contents)
-        expected = {'ignore_positions': [-1, 1], 'allow_codon_loss': True}
-
-        # act
-        actual = GuideDeterminer.prepare_config('')
-
-        # assert
-        self.assertEqual(actual, expected)
-
-    @patch('mutator.guide_determiner.DEFAULT_CONFIG_FILE', 'default_config.json')
-    def test_prepare_config_custom(self):
-        # arrange
-        default_contents = '{"ignore_positions": [-1, 1], "allow_codon_loss": true}'
-        custom_contents = '{"ignore_positions": [1]}'
-        self.fs.create_file('default_config.json', contents=default_contents)
-        self.fs.create_file('custom_config.json', contents=custom_contents)
-        expected = {'ignore_positions': [1], 'allow_codon_loss': True}
-
-        # act
-        actual = GuideDeterminer.prepare_config('custom_config.json')
-
-        # assert
-        self.assertEqual(actual, expected)
 
     def test_get_coding_region_for_guide_success(self):
         # arrange
@@ -126,6 +99,7 @@ class TestGuideDeterminer(TestCase):
             'exon_number': '3',
             'guide_start': 67610855,
             'guide_end': 67610877,
+            'guide_strand': '+',
         }, index=pd.Index([1139540371], name='guide_id'))
 
         # act
@@ -238,6 +212,7 @@ class TestGuideDeterminer(TestCase):
             'Frame': '0',
             'gene_name': 'CTCF',
             'exon_number': '3',
+            'guide_strand': True,
             'guide_start': 67610855,
             'guide_end': 67610877,
             'guide_frame': '2',
@@ -250,6 +225,7 @@ class TestGuideDeterminer(TestCase):
             'cds_frame': '0',
             'gene_name': 'CTCF',
             'exon_number': '3',
+            'guide_strand': True,
             'guide_start': 67610855,
             'guide_end': 67610877,
             'guide_frame': '2',

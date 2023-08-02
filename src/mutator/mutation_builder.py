@@ -10,11 +10,10 @@ from utils.exceptions import PamNotFoundError
 
 
 class MutationBuilder:
-    def __init__(self, guide: GuideSequence, cds: CodingRegion) -> None:
+    def __init__(self, guide: GuideSequence, cds: CodingRegion, gene_name: str) -> None:
         self.guide = self._build_guide_sequence(guide)
         self.cds = self._build_coding_region(cds)
-        self.cds = cds
-
+        self.gene_name = gene_name
         self.window = EditWindow(0,0)
         self.codons = []
 
