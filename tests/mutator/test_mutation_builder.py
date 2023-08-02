@@ -21,7 +21,7 @@ class TestGuideSequence(TestCase):
             WindowCodon('CAA', 67626592, -1, True),
         ]
 
-        builder = MutationBuilder(guide, cds)
+        builder = MutationBuilder(guide, cds, 'BRCA1')
         window = builder.build_edit_window()
         codons = window.get_window_codons()
 
@@ -63,7 +63,7 @@ class TestGuideSequence(TestCase):
             WindowCodon('CCT', 77696647, -1, False),
         ]
 
-        builder = MutationBuilder(guide, cds)
+        builder = MutationBuilder(guide, cds, 'BRCA1')
         window = builder.build_edit_window()
         codons = window.get_window_codons()
 
