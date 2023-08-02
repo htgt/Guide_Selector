@@ -1,13 +1,15 @@
 import unittest
-import copy
-from mutator.runner import Runner
-from mutator.mutation_builder import MutationBuilder
-from mutator.base_sequence import BaseSequence
-from mutator.guide import GuideSequence
-from mutator.coding_region import CodingRegion
-from mutator.edit_window import EditWindow
-from mutator.codon import WindowCodon
+from src.mutator.runner import Runner
+from src.mutator.mutation_builder import MutationBuilder
+from src.mutator.base_sequence import BaseSequence
+from src.mutator.guide import GuideSequence
+from src.mutator.coding_region import CodingRegion
+from src.mutator.edit_window import EditWindow
+from src.mutator.codon import WindowCodon
 import pandas as pd
+from pyfakefs.fake_filesystem_unittest import TestCase as pyfkfs_TestCase
+from pathlib import Path
+from tdutils.utils.vcf_utils import write_to_vcf, Variants, Variant
 
 class RunnerTestCase(unittest.TestCase):
     def setUp(self):
@@ -118,6 +120,63 @@ class RunnerTestCase(unittest.TestCase):
         self.assertEqual(coding_region.is_positive_strand, True)
         self.assertEqual(coding_region.exon_number, 1)
         self.assertEqual(coding_region.frame, 1)
+
+
+class TestWriteVCF(pyfkfs_TestCase):
+    test_dir = '/test_dir'
+
+    def setUp(self):
+        self.runner = Runner()
+        self.setUpPyfakefs()
+        self.fs.create_dir(self.test_dir)
+        self.runner.cds = BaseSequence(100, 200, True, '1', 1)
+        self.runner.window = EditWindow(150, 180, True, '1')
+        self.runner.guide = GuideSequence(
+            guide_id=123,
+            start=160,
+            end=170,
+            isPositiveStrand=True,
+            chromosome='1'
+        )
+        self.runner.gene_name = 'ACT'
+        self.runner.codons = [WindowCodon('TCA', 23, 1, True)]
+        self.variant = Variant(
+            CHROM=self.runner.guide.chromosome,
+            POS=self.runner.codons[0].third.coordinate,
+            REF=self.runner.codons[0].third.base,
+            ALT='G',
+            INFO={'SGRNA': "sGRNA_XXXXX"}
+        )
+        self.variants = Variants([self.variant], self.runner.guide.chromosome)
+        
+    def test_to_variants_obj(self):
+        # arrange
+        test_runner = self.runner
+        expected_result = self.variants
+        # act
+        test_result = test_runner.to_variants_obj()
+        # assert
+        self.assertEqual(test_result, expected_result)
+
+    @unittest.mock.patch('src.mutator.runner.write_to_vcf')
+    @unittest.mock.patch('src.mutator.runner.Runner.to_variants_obj')
+    def test_write_output_to_vcf(self, mocked_write_to_vcf, mocked_transform_mutator_to_variants):
+        # arrange
+        test_runner = self.runner
+        expected_file_name = 'test_file'
+        expected_file = expected_file_name + '.vcf'
+        expected_file_path = Path(self.test_dir) / expected_file
+        mocked_write_to_vcf.return_value = expected_file_path
+        mocked_transform_mutator_to_variants.return_value = self.variants
+
+        # act
+        test_result = write_to_vcf(expected_file_path, test_runner.to_variants_obj())
+
+        # assert
+        self.assertEqual(test_result, expected_file_path)
+        assert mocked_write_to_vcf.called()
+        assert mocked_transform_mutator_to_variants.called()
+
 
 if __name__ == '__main__':
     unittest.main()
