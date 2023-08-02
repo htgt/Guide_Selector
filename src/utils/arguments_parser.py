@@ -44,7 +44,7 @@ class InputArguments:
             default='',
         )
         parser_mutator.add_argument(
-            '--out',
+            '--out_dir',
             type=str,
             nargs='?',
             const='.',
