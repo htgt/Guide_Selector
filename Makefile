@@ -159,15 +159,15 @@ build-docker:
 build-docker-test: build-docker
 	docker build --cache-from="${DOCKER_IMAGE_NAME}" -t "${DOCKER_IMAGE_NAME}" --target unittest .;
 
-run-docker: build-docker
+run-docker: build-docker clean-docker-containers
 	@echo "Running Docker image =  $(DOCKER_IMAGE_NAME)"
 	docker run --name "${DOCKER_NAME}" -p ${DOCKER_PORT}:${DOCKER_PORT} -t "${DOCKER_IMAGE_NAME}"
 
-run-docker-test: build-docker
+run-docker-test: build-docker clean-docker-containers
 	@echo "Running Docker image =  $(DOCKER_IMAGE_NAME)"
 	@docker run --name "${DOCKER_NAME}" -p ${DOCKER_PORT}:${DOCKER_PORT} -t "${DOCKER_IMAGE_NAME}" make test
 
-run-docker-interactive: build-docker
+run-docker-interactive: build-docker clean-docker-containers
 	@echo "Running Docker image =  $(DOCKER_IMAGE_NAME)"
 	@docker run -i --name "${DOCKER_NAME}" -t "${DOCKER_IMAGE_NAME}" bash
 
@@ -176,7 +176,10 @@ connect-docker-interactive:
 	@docker exec -it ${DOCKER_NAME} bash
 
 clean-docker-containers:
-	@docker rm -f $$(docker ps -a -q)
+	@containers=$$(docker ps -a -q)
+	if [ $$containers ]; then
+		@docker rm -f $$containers
+	fi 
 
 clean-docker:
 	@docker builder prune -af
