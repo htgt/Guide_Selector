@@ -1,3 +1,0 @@
-[submodule "td_utils"]
-	path = td_utils
-	url = git@gitlab.internal.sanger.ac.uk:sci/td_utils.git
