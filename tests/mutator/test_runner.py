@@ -7,12 +7,11 @@ from src.mutator.coding_region import CodingRegion
 from src.mutator.edit_window import EditWindow
 from src.mutator.codon import WindowCodon
 import pandas as pd
-from pyfakefs.fake_filesystem_unittest import TestCase
 from pathlib import Path
 from tdutils.utils.vcf_utils import write_to_vcf, Variants, Variant
 from copy import copy
 
-class RunnerTestCase(TestCase):
+class RunnerTestCase(unittest.TestCase):
     def setUp(self):
         self.runner = Runner({
             'ignore_positions': [-1, 1],
@@ -24,8 +23,6 @@ class RunnerTestCase(TestCase):
         self.third_base = 'A'
         self.alt_third_base = 'G'
         self.test_dir = '/test_dir'
-        self.setUpPyfakefs()
-        self.fs.create_dir(self.test_dir)
 
     def test_build_coding_region_objects(self):
         data = {
