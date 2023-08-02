@@ -7,16 +7,25 @@ from src.mutator.coding_region import CodingRegion
 from src.mutator.edit_window import EditWindow
 from src.mutator.codon import WindowCodon
 import pandas as pd
-from pyfakefs.fake_filesystem_unittest import TestCase as pyfkfs_TestCase
+from pyfakefs.fake_filesystem_unittest import TestCase
 from pathlib import Path
 from tdutils.utils.vcf_utils import write_to_vcf, Variants, Variant
+from copy import copy
 
-class RunnerTestCase(unittest.TestCase):
+class RunnerTestCase(TestCase):
     def setUp(self):
         self.runner = Runner({
             'ignore_positions': [-1, 1],
             'allow_codon_loss': True,
         })
+        
+        self.chrom = 'chr1'
+        self.pos = 23
+        self.third_base = 'A'
+        self.alt_third_base = 'G'
+        self.test_dir = '/test_dir'
+        self.setUpPyfakefs()
+        self.fs.create_dir(self.test_dir)
 
     def test_build_coding_region_objects(self):
         data = {
@@ -120,39 +129,30 @@ class RunnerTestCase(unittest.TestCase):
         self.assertEqual(coding_region.is_positive_strand, True)
         self.assertEqual(coding_region.exon_number, 1)
         self.assertEqual(coding_region.frame, 1)
-
-
-class TestWriteVCF(pyfkfs_TestCase):
-    test_dir = '/test_dir'
-
-    def setUp(self):
-        self.runner = Runner()
-        self.setUpPyfakefs()
-        self.fs.create_dir(self.test_dir)
-        self.runner.cds = BaseSequence(100, 200, True, '1', 1)
-        self.runner.window = EditWindow(150, 180, True, '1')
-        self.runner.guide = GuideSequence(
+        
+    def test_to_variants_obj(self):
+        # arrange
+        test_runner = copy(self.runner)
+        test_runner.cds = BaseSequence(100, 200, True, '1', 1)
+        test_runner.window = EditWindow(150, 180, True, '1')
+        test_runner.guide = GuideSequence(
             guide_id=123,
             start=160,
             end=170,
             isPositiveStrand=True,
-            chromosome='1'
+            chromosome=self.chrom
         )
-        self.runner.gene_name = 'ACT'
-        self.runner.codons = [WindowCodon('TCA', 23, 1, True)]
-        self.variant = Variant(
-            CHROM=self.runner.guide.chromosome,
-            POS=self.runner.codons[0].third.coordinate,
-            REF=self.runner.codons[0].third.base,
-            ALT='G',
+        test_runner.gene_name = 'ACT'
+        test_runner.codons = [WindowCodon('TCA', self.pos, 1, True)]
+        test_variant = Variant(
+            CHROM=self.chrom,
+            POS=self.pos,
+            REF=self.third_base,
+            ALT=self.alt_third_base,
             INFO={'SGRNA': "sGRNA_XXXXX"}
         )
-        self.variants = Variants([self.variant], self.runner.guide.chromosome)
-        
-    def test_to_variants_obj(self):
-        # arrange
-        test_runner = self.runner
-        expected_result = self.variants
+        test_variants = Variants([test_variant], self.chrom)
+        expected_result = test_variants
         # act
         test_result = test_runner.to_variants_obj()
         # assert
@@ -161,13 +161,34 @@ class TestWriteVCF(pyfkfs_TestCase):
     @unittest.mock.patch('src.mutator.runner.write_to_vcf')
     @unittest.mock.patch('src.mutator.runner.Runner.to_variants_obj')
     def test_write_output_to_vcf(self, mocked_write_to_vcf, mocked_transform_mutator_to_variants):
+        test_runner = copy(self.runner)
+        test_runner.cds = BaseSequence(100, 200, True, '1', 1)
+        test_runner.window = EditWindow(150, 180, True, '1')
+        test_runner.guide = GuideSequence(
+            guide_id=123,
+            start=160,
+            end=170,
+            isPositiveStrand=True,
+            chromosome=self.chrom
+        )
+        test_runner.gene_name = 'ACT'
+        test_runner.codons = [WindowCodon('TCA', self.pos, 1, True)]
+
+        test_variant = Variant(
+            CHROM=self.chrom,
+            POS=self.pos,
+            REF=self.third_base,
+            ALT=self.alt_third_base,
+            INFO={'SGRNA': "sGRNA_XXXXX"}
+        )
+        test_variants = Variants([test_variant], self.chrom)
+
         # arrange
-        test_runner = self.runner
         expected_file_name = 'test_file'
         expected_file = expected_file_name + '.vcf'
         expected_file_path = Path(self.test_dir) / expected_file
         mocked_write_to_vcf.return_value = expected_file_path
-        mocked_transform_mutator_to_variants.return_value = self.variants
+        mocked_transform_mutator_to_variants.return_value = test_variants
 
         # act
         test_result = write_to_vcf(expected_file_path, test_runner.to_variants_obj())
