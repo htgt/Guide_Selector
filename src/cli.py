@@ -25,7 +25,7 @@ def run_mutator_cmd(args: dict, config: dict) -> None:
     OUTPUT_VCF_FILE = 'output.vcf'
     runner = Runner(config)
 
-    print('Running PAM mutator')
+    print('Running PAM & Protospacer mutator')
     # Run Guide Frame Determiner
     guide_determiner = GuideDeterminer()
     guide_data_df = guide_determiner.parse_loci(args['gtf'], args['tsv'])
