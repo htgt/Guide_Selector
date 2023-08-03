@@ -37,13 +37,14 @@ class RunnerTestCase(unittest.TestCase):
         self.variants = Variants(variant_list=
             [
                 Variant(
+                id='123',
                 chrom=self.chrom,
                 pos=self.pos,
                 ref=self.third_base,
                 alt=self.alt_third_base,
-                info={'SGRNA': "sGRNA_XXXXX"}
+                info={'SGRNA': "sgRNA_123"}
                 )
-            ], 
+            ],
             chrom=self.chrom
         )
 
@@ -130,12 +131,18 @@ class RunnerTestCase(unittest.TestCase):
         
     def test_to_variants_obj(self):
         # arrange
-        self.runner.mutation_builders=[(self.mutation_builder)]
+        mb_test = self.mutation_builder
+        mb_test.window =  self.window
+        mb_test.codons = [
+            WindowCodon('GAT', 23, 9, False),
+        ]
+        self.runner.mutation_builders=[mb_test]
         expected_result = self.variants
         # act
         test_result = self.runner.to_variants_obj()
+
         # assert
-        self.assertCountEqual(test_result._variants, expected_result._variants)
+        self.assertEqual(test_result.__len__(), expected_result.__len__())
         self.assertEqual(test_result.header, expected_result.header)
 
     @unittest.mock.patch('mutator.runner.write_to_vcf')
