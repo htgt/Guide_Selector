@@ -1,13 +1,15 @@
 from dataclasses import dataclass
 from typing import List
+from pathlib import Path
 import copy
 
 from mutator.mutation_builder import MutationBuilder
 from mutator.codon import WindowCodon
-from mutator.base_sequence import BaseSequence
 from mutator.edit_window import EditWindow
+from mutator.base_sequence import BaseSequence
 from mutator.guide import GuideSequence
 from mutator.coding_region import CodingRegion
+from tdutils.utils.vcf_utils import Variants, write_to_vcf
 
 import pandas as pd
 
@@ -88,7 +90,7 @@ class Runner:
                 })
                 rows.append(copy.deepcopy(row))
         return rows
-
+    
     def generate_edit_windows_for_builders(self) -> None:
         failed_mutations = []
         for mb in self.mutation_builders:
@@ -100,6 +102,33 @@ class Runner:
                 mb.build_window_codons()
 
         self.failed_mutations = failed_mutations
+
+    def write_output_to_vcf(self, file_path: str) -> str:
+        file_path = Path(file_path)
+        file_path.with_suffix(".vcf")
+
+        variants = self.to_variants_obj()
+        write_to_vcf(variants, file_path)
+
+        return str(file_path)
+
+    def to_variants_obj(self) -> Variants:
+        chrom = self.mutation_builders[0].guide.chromosome
+        variants = Variants(chrom)
+
+        for mb in self.mutation_builders:
+            for codon in mb.codons:
+                if codon.is_edit_permitted(self._config):
+                    guide_id = str(mb.guide.guide_id)
+                    variants.append(
+                        mb.guide.chromosome,
+                        codon.third_base_coord,
+                        id=guide_id,
+                        ref=codon.third_base_on_positive_strand,
+                        alt=codon.edited_third_base_on_positive_strand,
+                        info={"SGRNA": f"sgRNA_{guide_id}"}
+                    )
+        return variants
 
 
 def _booleanise_strand(strand : str) -> bool:

@@ -1,5 +1,4 @@
 import unittest
-import copy
 from mutator.runner import Runner
 from mutator.mutation_builder import MutationBuilder
 from mutator.base_sequence import BaseSequence
@@ -8,6 +7,9 @@ from mutator.coding_region import CodingRegion
 from mutator.edit_window import EditWindow
 from mutator.codon import WindowCodon
 import pandas as pd
+from pathlib import Path
+from tdutils.utils.vcf_utils import write_to_vcf, Variants, Variant
+from copy import copy
 
 class RunnerTestCase(unittest.TestCase):
     def setUp(self):
@@ -15,28 +17,35 @@ class RunnerTestCase(unittest.TestCase):
             'ignore_positions': [-1, 1],
             'allow_codon_loss': True,
         })
-
-    def test_build_coding_region_objects(self):
-        data = {
-            'cds_start': 100,
-            'cds_end': 200,
-            'cds_strand': '+',
-            'chromosome': 'chr1',
-            'cds_frame': 1,
-            'window_start': 150,
-            'window_end': 180,
-            'guide_strand': '+',
-            'guide_id': 123,
-            'guide_start': 160,
-            'guide_end': 170,
-            'gene_name': 'ACT'
-        }
-
-        self.runner.build_coding_region_objects(data)
-
-        self.assertIsInstance(self.runner.cds, BaseSequence)
-        self.assertIsInstance(self.runner.window, EditWindow)
-        self.assertIsInstance(self.runner.guide, GuideSequence)
+        self.chrom = 'chr1'
+        self.pos = 23
+        self.third_base = 'A'
+        self.alt_third_base = 'G'
+        self.test_dir = '/test_dir'
+        self.cds = BaseSequence(100, 200, True, '1', 1)
+        self.window = EditWindow(150, 180, True, '1')
+        self.guide = GuideSequence(
+            guide_id=123,
+            start=160,
+            end=170,
+            is_positive_strand=True,
+            chromosome=self.chrom
+        )
+        self.gene_name = 'ACT'
+        # self.codons = [WindowCodon('TCA', self.pos, 1, True)]
+        self.mutation_builder=MutationBuilder(self.guide, self.cds, self.gene_name)
+        self.variants = Variants(variant_list=
+            [
+                Variant(
+                chrom=self.chrom,
+                pos=self.pos,
+                ref=self.third_base,
+                alt=self.alt_third_base,
+                info={'SGRNA': "sGRNA_XXXXX"}
+                )
+            ], 
+            chrom=self.chrom
+        )
 
     def test_as_row(self):
         config = {
@@ -51,12 +60,12 @@ class RunnerTestCase(unittest.TestCase):
                 is_positive_strand=True,
                 guide_id=123,
                 chromosome='1'
-            )
+            ),
+            gene_name='ACT'
         )
         mb.window = EditWindow(150, 180, True, '1'),
         mb.codons = [WindowCodon('TCA', 23, 1, True)]
 
-        self.runner.gene_name = 'ACT'
         self.runner.mutation_builders = [mb]
 
         rows = self.runner.as_rows(config)
@@ -118,6 +127,35 @@ class RunnerTestCase(unittest.TestCase):
         self.assertEqual(coding_region.is_positive_strand, True)
         self.assertEqual(coding_region.exon_number, 1)
         self.assertEqual(coding_region.frame, 1)
+        
+    def test_to_variants_obj(self):
+        # arrange
+        self.runner.mutation_builders=[(self.mutation_builder)]
+        expected_result = self.variants
+        # act
+        test_result = self.runner.to_variants_obj()
+        # assert
+        self.assertCountEqual(test_result._variants, expected_result._variants)
+        self.assertEqual(test_result.header, expected_result.header)
+
+    @unittest.mock.patch('mutator.runner.write_to_vcf')
+    @unittest.mock.patch('mutator.runner.Runner.to_variants_obj')
+    def test_write_output_to_vcf(self, mocked_write_to_vcf, mocked_transform_mutator_to_variants):
+        # arrange
+        expected_file_name = 'test_file'
+        expected_file = expected_file_name + '.vcf'
+        expected_file_path = Path(self.test_dir) / expected_file
+        mocked_write_to_vcf.return_value = expected_file_path
+        mocked_transform_mutator_to_variants.return_value = self.variants
+
+        # act
+        test_result = self.runner.write_output_to_vcf(expected_file_path)
+
+        # assert
+        self.assertEqual(test_result, str(expected_file_path))
+        assert mocked_write_to_vcf.called
+        assert mocked_transform_mutator_to_variants.called
+
 
 if __name__ == '__main__':
     unittest.main()
