@@ -24,7 +24,7 @@ def run_mutator_cmd(args: dict, config: dict) -> None:
     OUTPUT_FILE_URL = 'output.tsv'
     runner = Runner(config)
 
-    print('Running PAM mutator')
+    print('Running PAM & Protospacer mutator')
     # Run Guide Frame Determiner
     guide_determiner = GuideDeterminer()
     guide_data_df = guide_determiner.parse_loci(args['gtf'], args['tsv'])
@@ -39,7 +39,7 @@ def run_mutator_cmd(args: dict, config: dict) -> None:
 
 
     tsv_rows = runner.as_rows(config)
-    tsv_path = args['out'] + '/' + OUTPUT_FILE_URL
+    tsv_path = args['out_dir'] + '/' + OUTPUT_FILE_URL
     write_dict_list_to_csv(tsv_path, tsv_rows, tsv_rows[0].keys(), "\t")
     print('Output saved to', tsv_path)
 
