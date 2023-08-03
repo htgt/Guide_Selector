@@ -177,13 +177,8 @@ connect-docker-interactive:
 
 clean-docker-containers:
 	@containers=$$(docker ps -a -q)
-<<<<<<< Updated upstream
-	if [ -z "$$containers" ]; then
-		docker rm -f $$containers
-=======
 	if [ ! -z "$$containers" ]; then
 		@docker rm -f $$containers
->>>>>>> Stashed changes
 	fi 
 
 clean-docker:
