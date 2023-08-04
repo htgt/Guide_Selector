@@ -68,9 +68,9 @@ class Runner:
             base = {
                 'guide_id' : mb.guide.guide_id,
                 'chromosome' : mb.cds.chromosome,
-                'cds_strand' : mb.cds.is_positive_strand,
+                'cds_strand' : _get_char_for_bool(mb.cds.is_positive_strand),
                 'gene_name' : mb.gene_name,
-                'guide_strand' : mb.guide.is_positive_strand,
+                'guide_strand' : _get_char_for_bool(mb.guide.is_positive_strand),
                 'guide_start' : mb.guide.start,
                 'guide_end' : mb.guide.end,
             }
@@ -133,6 +133,9 @@ class Runner:
 
 def _booleanise_strand(strand : str) -> bool:
     return strand == '+'
+
+def _get_char_for_bool(isTrue : bool) -> str:
+    return "+" if isTrue else "-"
 
 def _trim_chromosome(chr : str) -> str:
     return chr[3:]
