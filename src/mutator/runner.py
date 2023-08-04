@@ -113,8 +113,9 @@ class Runner:
         return str(file_path)
 
     def to_variants_obj(self) -> Variants:
-        chrom = self.mutation_builders[0].guide.chromosome
-        variants = Variants(chrom)
+        chroms = map(_get_chromosome, self.mutation_builders)
+        chroms = list(set(chroms))
+        variants = Variants(chroms)
 
         for mb in self.mutation_builders:
             for codon in mb.codons:
@@ -137,4 +138,5 @@ def _booleanise_strand(strand : str) -> bool:
 def _trim_chromosome(chr : str) -> str:
     return chr[3:]
 
-
+def _get_chromosome(mb : MutationBuilder) -> str:
+    return mb.cds.chromosome
