@@ -1,10 +1,30 @@
 # SGE guide selection
 
+Guide selection tool.
+
+[[_TOC_]]
+
 ## Installation
 Dependencies:
 Build-essential and Python (3.8), Python-venv (3.8)
 Change python command to point to Python (3.8), ubuntu expects python3 to be a specific version for compatibility.
 
+```sh
+make
+make install
+make setup-venv
+```
+```make``` sets up the git hooks that run unittests and pycodestyle on /src and /tests on ```git push```.
+```make install``` installs dependancies below.
+```make setup-venv``` creates a venv at ./venv and installs requirements.txt(s)
+
+Or **manually**:
+Update the githook path to the repo folder and authorise.
+```sh
+git config core.hooksPath .githooks
+chmod +x .githooks/*
+```
+Install python and dependencies.
 ```sh
 sudo apt-get update \
 && sudo apt-get -y install build-essential python3.8-dev python3.8-venv \
@@ -75,7 +95,14 @@ docker run sge-guide-selection --version
 ```
 
 ### Run tests
+With makefile (direct or in docker container):
+```sh
+make test
+~~OR~~
+make run-docker-test
 ```
+Or manually:
+```sh
 source venv/bin/activate
 
 python -m unittest -v
