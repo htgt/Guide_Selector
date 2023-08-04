@@ -22,7 +22,7 @@ class RunnerTestCase(unittest.TestCase):
         self.third_base = 'A'
         self.alt_third_base = 'G'
         self.test_dir = '/test_dir'
-        self.cds = BaseSequence(100, 200, True, '1', 1)
+        self.cds = BaseSequence(100, 200, True, 'chr1', 1)
         self.window = EditWindow(150, 180, True, '1')
         self.guide = GuideSequence(
             guide_id=123,
@@ -45,7 +45,7 @@ class RunnerTestCase(unittest.TestCase):
                 info={'SGRNA': "sgRNA_123"}
                 )
             ],
-            chrom=self.chrom
+            chroms=[self.chrom]
         )
 
     def test_as_row(self):
@@ -138,6 +138,7 @@ class RunnerTestCase(unittest.TestCase):
         ]
         self.runner.mutation_builders=[mb_test]
         expected_result = self.variants
+
         # act
         test_result = self.runner.to_variants_obj()
 

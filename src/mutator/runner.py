@@ -122,7 +122,7 @@ class Runner:
                 if codon.is_edit_permitted(self._config):
                     guide_id = str(mb.guide.guide_id)
                     variants.append(
-                        mb.guide.chromosome,
+                        mb.cds.chromosome,
                         codon.third_base_coord,
                         id=guide_id,
                         ref=codon.third_base_on_positive_strand,
