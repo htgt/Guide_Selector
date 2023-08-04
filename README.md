@@ -5,20 +5,12 @@ Guide selection tool.
 [[_TOC_]]
 
 ## Installation
+Designed to run in Linux, it's possible to install manually, with Makefile and into a docker container (with Makefile).
 Dependencies:
 Build-essential and Python (3.8), Python-venv (3.8)
 Change python command to point to Python (3.8), ubuntu expects python3 to be a specific version for compatibility.
 
-```sh
-make
-make install
-make setup-venv
-```
-```make``` sets up the git hooks that run unittests and pycodestyle on /src and /tests on ```git push```.
-```make install``` installs dependancies below.
-```make setup-venv``` creates a venv at ./venv and installs requirements.txt(s)
-
-Or **manually**:
+**manually**:
 Update the githook path to the repo folder and authorise.
 ```sh
 git config core.hooksPath .githooks
@@ -31,6 +23,39 @@ sudo apt-get update \
 && sudo update-alternatives --install /usr/bin/python python /usr/bin/python3.8 2  \
 && sudo update-alternatives --config python
 ```
+
+***Makefile**
+```sh
+make
+``` 
+sets up the git hooks that run unittests and pycodestyle on /src and /tests on ```git push```.
+```sh
+make install
+``` 
+installs dependancies below.
+```sh
+make setup-venv
+``` 
+creates a venv at ./venv and installs requirements.txt(s)
+
+***Docker***
+Dependencies: Docker desktop or Docker engine
+
+```sh
+make install
+make run-docker-interactive
+```
+The docker image will be built according to the Dockerfile, the venv will be created and it will launch into interactive mode in the currently open terminal.
+
+To delete containers:
+```sh
+make clean-docker-containers
+```
+To delete containers and images:
+```sh
+make clean-docker
+```
+
 
 ### Githooks
 There are two githooks, pre-push and prepare-commit-msg.
@@ -93,13 +118,18 @@ python3 src/cli.py mutator --gtf ./example.gtf --tsv guides.tsv --conf custom.co
 ### Run with Docker
 
 Build image 
-```
+```sh
 docker build -t sge-guide-selection .
 ```
 
 Run container with command (example `--version` command)
-```
+```sh
 docker run sge-guide-selection --version
+```
+
+Or with Makefile:
+```sh
+make run-docker-interactive
 ```
 
 ### Run tests
