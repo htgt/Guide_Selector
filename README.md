@@ -32,6 +32,14 @@ sudo apt-get update \
 && sudo update-alternatives --config python
 ```
 
+### Githooks
+There are two githooks, pre-push and prepare-commit-msg.
+The first runs tests and checks linting before push.
+The second prefixes the commit message with the ticket or first word (ended by "_"), e.g. TD-434: 
+To skip pre-push:
+```sh
+git push --no-verify
+```
 
 ### Python3
 Check Python3 (base) and Python (updated) version
