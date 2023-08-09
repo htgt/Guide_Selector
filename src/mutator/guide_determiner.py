@@ -29,7 +29,6 @@ class GuideDeterminer:
     ) -> pd.DataFrame:
         coding_regions = pd.DataFrame()
         for guide in guide_data:
-            coding_region = pd.DataFrame()
             try:
                 coding_region = self.get_coding_region_for_guide(gtf_data, guide)
             except GuideDeterminerError as e:
