@@ -29,9 +29,18 @@ class GuideDeterminer:
     ) -> pd.DataFrame:
         coding_regions = pd.DataFrame()
         for guide in guide_data:
-            coding_region = self.get_coding_region_for_guide(gtf_data, guide)
+            coding_region = pd.DataFrame()
+            try:
+                coding_region = self.get_coding_region_for_guide(gtf_data, guide)
+            except GuideDeterminerError as e:
+                print(e)
+                continue
             coding_region = self.add_guide_data_to_dataframe(coding_region, guide)
             coding_regions = pd.concat([coding_regions, coding_region])
+        if coding_regions.empty:
+            raise GuideDeterminerError(
+                f'No coding regions found for any guides given.'
+            )
         return coding_regions
 
     def get_coding_region_for_guide(self, gtf_data: pd.DataFrame, guide: dict) -> pd.DataFrame:
@@ -40,6 +49,7 @@ class GuideDeterminer:
         start_cond = gtf_data['Start'] <= int(guide['end'])
         end_cond = gtf_data['End'] >= int(guide['start'])
         coding_region = gtf_data[feature_cond & chrom_cond & start_cond & end_cond].copy()
+
         if coding_region.empty:
             raise GuideDeterminerError(
                 f'Guide {guide["guide_id"]} does not overlap with any coding regions'
