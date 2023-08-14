@@ -64,7 +64,7 @@ class InputArguments:
         parser_retrieve.add_argument(
             '--region',
             type=str,
-            help='Target region specified in format like chr1:1-10001'
+            help='Target region specified in format chr1:1-10001'
         )
 
 

@@ -20,10 +20,10 @@ class TestParseTargetRegion(unittest.TestCase):
         input_str = "chr1300350"
 
         with self.assertRaises(ParseStringToTargetRegionError):
-            result = parse_str_to_target_region(input_str)
+            parse_str_to_target_region(input_str)
 
     def test_fail_to_read_corrdinates_for_target_region(self):
         input_str = "chr1:300350"
 
         with self.assertRaises(ParseStringToTargetRegionError):
-            result = parse_str_to_target_region(input_str)
+            parse_str_to_target_region(input_str)

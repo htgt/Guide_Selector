@@ -9,6 +9,7 @@ class TargetRegion:
     id: str = ""
 
 
+## Input string format is "chr1:100-150"
 def parse_str_to_target_region(str) -> TargetRegion:
     if ":" not in str:
         raise ParseStringToTargetRegionError("Chromosome should be separated by ':'")

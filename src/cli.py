@@ -1,5 +1,6 @@
 import sys
 
+from mutator.target_region import parse_str_to_target_region, TargetRegion
 from mutator.guide_determiner import GuideDeterminer
 from mutator.runner import Runner
 from utils.arguments_parser import InputArguments
@@ -7,9 +8,12 @@ from utils.config import prepare_config
 from utils.file_system import write_dict_list_to_csv
 
 
+
 def resolve_command(command: str, args: dict, config: dict) -> None:
     if command == "mutator":
         run_mutator_cmd(args, config)
+    if command == "retrieve":
+        run_retrieve_cmd(args, config)
 
 def main() -> None:
     parsed_input = InputArguments()
@@ -20,9 +24,13 @@ def main() -> None:
     resolve_command(command, args, config)
 
 def run_retrieve_cmd(args: dict, config: dict) -> None:
+    region_string = args['region']
+    
     print('Retrieve data from WGE')
 
-
+    region = parse_str_to_target_region(region_string)
+    print('Target Region data: ', region)
+    
 
 def run_mutator_cmd(args: dict, config: dict) -> None:
     OUTPUT_TSV_FILE = 'output.tsv'
