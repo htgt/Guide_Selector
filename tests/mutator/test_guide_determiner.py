@@ -26,7 +26,7 @@ class TestGuideDeterminer(TestCase):
             'Start': 67610833,
             'End': 67611613,
             'Strand': '+',
-            'Frame': '0',
+            'Frame': 0,
             'gene_name': 'CTCF',
             'exon_number': '3',
         }, index=[0])
@@ -94,7 +94,7 @@ class TestGuideDeterminer(TestCase):
             'Start': 67610833,
             'End': 67611613,
             'Strand': '+',
-            'Frame': '0',
+            'Frame': 0,
             'gene_name': 'CTCF',
             'exon_number': '3',
             'guide_start': 67610855,
@@ -117,7 +117,7 @@ class TestGuideDeterminer(TestCase):
             'Start': 67610833,
             'End': 67611613,
             'Strand': '+',
-            'Frame': '0',
+            'Frame': 0,
             'gene_name': 'CTCF',
             'exon_number': '3',
             'guide_start': 67610855,
@@ -140,13 +140,13 @@ class TestGuideDeterminer(TestCase):
             'Start': 67610856,
             'End': 67611613,
             'Strand': '+',
-            'Frame': '0',
+            'Frame': 0,
             'gene_name': 'CTCF',
             'exon_number': '3',
             'guide_start': 67610855,
             'guide_end': 67610877,
         }, name=1139540371)
-        expected = '0'
+        expected = 0
 
         # act
         actual = GuideDeterminer.determine_frame_for_guide(mock_object, test_row)
@@ -209,7 +209,7 @@ class TestGuideDeterminer(TestCase):
             'Start': 67610833,
             'End': 67611613,
             'Strand': '+',
-            'Frame': '0',
+            'Frame': 0,
             'gene_name': 'CTCF',
             'exon_number': '3',
             'guide_strand': True,
@@ -222,7 +222,7 @@ class TestGuideDeterminer(TestCase):
             'cds_start': 67610833,
             'cds_end': 67611613,
             'cds_strand': '+',
-            'cds_frame': '0',
+            'cds_frame': 0,
             'gene_name': 'CTCF',
             'exon_number': '3',
             'guide_strand': True,
