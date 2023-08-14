@@ -61,6 +61,12 @@ class InputArguments:
     @staticmethod
     def _add_retrieve_command_parser(subparsers: _SubParsersAction) -> None:
         parser_retrieve = subparsers.add_parser('retrieve', help='Retrieve command help')
+        parser_retrieve.add_argument(
+            '--region',
+            type=str,
+            help='Target region specified in format like chr1:1-10001'
+        )
+
 
 
 
