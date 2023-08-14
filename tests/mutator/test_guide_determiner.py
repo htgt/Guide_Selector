@@ -169,7 +169,7 @@ class TestGuideDeterminer(TestCase):
             'guide_start': 3791982,
             'guide_end': 3792004,
         }, name=1133146650)
-        expected = '2'
+        expected = 2
 
         # act
         actual = GuideDeterminer.determine_frame_for_guide(mock_object, test_row)
@@ -192,7 +192,7 @@ class TestGuideDeterminer(TestCase):
             'guide_start': 3791982,
             'guide_end': 3792004,
         }, name=1133146650)
-        expected = '2'
+        expected = 2
 
         # act
         actual = GuideDeterminer.determine_frame_for_guide(mock_object, test_row)
@@ -215,7 +215,7 @@ class TestGuideDeterminer(TestCase):
             'guide_strand': True,
             'guide_start': 67610855,
             'guide_end': 67610877,
-            'guide_frame': '2',
+            'guide_frame': 2,
         }, index=pd.Index([1139540371], name='guide_id'))
         expected = pd.DataFrame({
             'chromosome': 'chr16',
@@ -228,7 +228,7 @@ class TestGuideDeterminer(TestCase):
             'guide_strand': True,
             'guide_start': 67610855,
             'guide_end': 67610877,
-            'guide_frame': '2',
+            'guide_frame': 2,
         }, index=pd.Index([1139540371], name='guide_id'))
 
         # act
