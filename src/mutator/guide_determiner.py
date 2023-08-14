@@ -24,7 +24,7 @@ class GuideDeterminer:
         gtf_data = pr.read_gtf(gtf, as_df=True)
         gtf_data['Start'] += 1  # pyranges uses 0-based coords
         guide_data = read_csv_to_list_dict(guide_tsv, delimiter="\t")
-       
+
         for guide in guide_data:
             guide['chr'] = add_chr_prefix(guide['chr'])
 
@@ -112,8 +112,8 @@ class GuideDeterminer:
             'guide_frame',
         ]
         return coding_regions[required_cols].copy()
-    
-def add_chr_prefix(chromosome):
+
+def add_chr_prefix(chromosome : str) -> str:
     if not chromosome.startswith('chr'):
         return 'chr' + chromosome
     return chromosome
