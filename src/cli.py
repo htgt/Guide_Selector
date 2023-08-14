@@ -19,6 +19,10 @@ def main() -> None:
 
     resolve_command(command, args, config)
 
+def run_retrieve_cmd(args: dict, config: dict) -> None:
+    print('Retrieve data from WGE')
+
+
 
 def run_mutator_cmd(args: dict, config: dict) -> None:
     OUTPUT_TSV_FILE = 'output.tsv'
