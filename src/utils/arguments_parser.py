@@ -18,19 +18,24 @@ class InputArguments:
             prog='Guide Selection'
         )
 
-        subparsers = parser.add_subparsers(dest='command')
-
-        self._add_mutator_command_parser(subparsers)
-        self._add_window_command_parser(subparsers)
+        self._add_subparsers(parser)
 
         parser.add_argument(
             '--version',
             action='version',
             version='%(prog)s 0.0.1'
         )
+
+
         parser = add_input_args(parser)
 
         self.set_args(vars(parser.parse_args()))
+
+    def _add_subparsers(self, parser) -> None:
+        subparsers = parser.add_subparsers(dest='command')
+
+        self._add_mutator_command_parser(subparsers)
+        self._add_retrieve_command_parser(subparsers)
 
     def _add_mutator_command_parser(self, subparsers: _SubParsersAction) -> None:
         parser_mutator = subparsers.add_parser('mutator', help='Mutator command help')
@@ -52,13 +57,8 @@ class InputArguments:
             help='Desired output path (Default: ./)'
         )
 
-    def _add_window_command_parser(self, subparsers: _SubParsersAction) -> None:
-        parser_window = subparsers.add_parser('window', help='Window command help')
-        parser_window.add_argument('--file', type=str, help='Input file')
-        parser_window.add_argument('--seq', type=str, help='Input sequence')
-        parser_window.add_argument('--strand', type=str, help='Guide strand')
-        parser_window.add_argument('--window_length', type=int, default=12, required=False,
-            choices=range(12, 23), help='Length of mutable window')
+    def _add_retrieve_command_parser(self, subparsers: _SubParsersAction) -> None:
+        parser_retrieve = subparsers.add_parser('retrieve', help='Retrieve command help')
 
 
 def add_input_args(parser) -> ArgumentParser:
