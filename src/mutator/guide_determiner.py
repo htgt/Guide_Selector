@@ -6,6 +6,7 @@ import pandas as pd
 
 from utils.file_system import read_csv_to_list_dict
 from utils.exceptions import GuideDeterminerError
+from utils.file_system import write_dict_list_to_csv
 
 
 class GuideDeterminer:
