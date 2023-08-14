@@ -21,7 +21,7 @@ class InputArguments:
         subparsers = parser.add_subparsers(dest='command')
 
         self._add_mutator_command_parser(subparsers)
-        self._add_window_command_parser(subparsers)
+        self._add_wge_command_parser(subparsers)
 
         parser.add_argument(
             '--version',
@@ -52,13 +52,22 @@ class InputArguments:
             help='Desired output path (Default: ./)'
         )
 
-    def _add_window_command_parser(self, subparsers: _SubParsersAction) -> None:
-        parser_window = subparsers.add_parser('window', help='Window command help')
-        parser_window.add_argument('--file', type=str, help='Input file')
-        parser_window.add_argument('--seq', type=str, help='Input sequence')
-        parser_window.add_argument('--strand', type=str, help='Guide strand')
-        parser_window.add_argument('--window_length', type=int, default=12, required=False,
-            choices=range(12, 23), help='Length of mutable window')
+    def _add_wge_command_parser(self, subparsers: _SubParsersAction) -> None:
+        parser_wge = subparsers.add_parser('wge', help='WGE command help')
+        parser_wge.add_argument(
+            '--conf',
+            type=str,
+            help='Path to custom configuration file',
+            default='',
+        )
+        parser_wge.add_argument(
+            '--out_dir',
+            type=str,
+            nargs='?',
+            const='.',
+            default='./',
+            help='Desired output path (Default: ./)'
+        )
 
 
 def add_input_args(parser) -> ArgumentParser:

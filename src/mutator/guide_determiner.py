@@ -1,10 +1,12 @@
 from typing import Tuple, List
 
+import gffutils
 import pyranges as pr
 import pandas as pd
 
 from utils.file_system import read_csv_to_list_dict
 from utils.exceptions import GuideDeterminerError
+from utils.file_system import write_dict_list_to_csv
 
 
 class GuideDeterminer:
@@ -33,9 +35,17 @@ class GuideDeterminer:
     ) -> pd.DataFrame:
         coding_regions = pd.DataFrame()
         for guide in guide_data:
-            coding_region = self.get_coding_region_for_guide(gtf_data, guide)
+            try:
+                coding_region = self.get_coding_region_for_guide(gtf_data, guide)
+            except GuideDeterminerError as e:
+                print(e)
+                continue
             coding_region = self.add_guide_data_to_dataframe(coding_region, guide)
             coding_regions = pd.concat([coding_regions, coding_region])
+        if coding_regions.empty:
+            raise GuideDeterminerError(
+                f'No coding regions found for any guides given.'
+            )
         return coding_regions
 
     def get_coding_region_for_guide(self, gtf_data: pd.DataFrame, guide: dict) -> pd.DataFrame:
@@ -44,6 +54,7 @@ class GuideDeterminer:
         start_cond = gtf_data['Start'] <= int(guide['end'])
         end_cond = gtf_data['End'] >= int(guide['start'])
         coding_region = gtf_data[feature_cond & chrom_cond & start_cond & end_cond].copy()
+
         if coding_region.empty:
             raise GuideDeterminerError(
                 f'Guide {guide["guide_id"]} does not overlap with any coding regions'
@@ -72,8 +83,9 @@ class GuideDeterminer:
             if row['guide_end'] > row['End']:
                 return row['Frame']
             difference = row['End'] - row['guide_end']
-        frames = ('0', '2', '1')
-        return frames[(difference + int(frames.index(row['Frame']))) % 3]
+        frames = (0, 2, 1)
+
+        return frames[(difference + int( frames.index( int(row['Frame']) ) )) % 3]
 
     def adjust_columns_for_output(self, coding_regions: pd.DataFrame) -> pd.DataFrame:
         coding_regions.rename(
@@ -105,3 +117,37 @@ def add_chr_prefix(chromosome : str) -> str:
     if not chromosome.startswith('chr'):
         return 'chr' + chromosome
     return chromosome
+
+def parse_gff(gff_data):
+    db = gffutils.create_db(data=gff_data, dbfn=':memory:', from_string=True)
+    entries = []
+
+    for feature in db.features_of_type('Crispr'):
+        print(feature.attributes)
+        chr = 'chr' + feature.seqid
+        entry = {
+            'guide_id' : feature.attributes['Name'][0],
+            'chr' : chr,
+            'start' : int(feature.start),
+            'end' : int(feature.end),
+            'grna_strand' : feature.strand,
+            'ot_summary' : feature.attributes['Name'][0],
+            'seq': feature.attributes['CopySequence'][0],
+        }
+        
+        entries.append(entry)
+
+    return entries
+
+def write_gff_to_input_tsv(file : str, gff : List[dict]) -> None:
+    headers = ['guide_id', 'chr', 'start', 'end', 'grna_strand']
+
+    tsv_rows = []
+    for entry in gff:
+        entry_copy = entry.copy()
+        del entry_copy['ot_summary']
+        del entry_copy['seq']
+        tsv_rows.append(entry_copy)
+
+    write_dict_list_to_csv(file, tsv_rows, headers, "\t")
+    print(f'Data written to {file}')
