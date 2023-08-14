@@ -137,3 +137,16 @@ def parse_gff(gff_data):
         entries.append(entry)
 
     return entries
+
+def write_gff_to_input_tsv(file : str, gff : List[dict]) -> None:
+    headers = ['guide_id', 'chr', 'start', 'end', 'grna_strand']
+
+    tsv_rows = []
+    for entry in guide_dicts:
+        entry_copy = entry.copy()
+        del entry_copy['ot_summary']
+        del entry_copy['seq']
+        tsv_rows.append(entry_copy)
+
+    write_dict_list_to_csv(file, tsv_rows, headers, "\t")
+    print(f'Data written to {file}')

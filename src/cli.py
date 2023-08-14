@@ -1,6 +1,6 @@
 import sys
-
-from mutator.guide_determiner import GuideDeterminer, parse_gff
+from typing import List
+from mutator.guide_determiner import GuideDeterminer, parse_gff, write_gff_to_input_tsv
 from mutator.runner import Runner
 from utils.arguments_parser import InputArguments
 from utils.config import prepare_config
@@ -62,17 +62,10 @@ def run_wge_cmd(args: dict, config: dict) -> None:
         print(entry)
 
     output_file = 'wge.tsv'
-    headers = ['guide_id', 'chr', 'start', 'end', 'grna_strand']
+    write_gff_to_input_tsv(output_file, guide_dicts)
 
-    tsv_rows = []
-    for entry in guide_dicts:
-        entry_copy = entry.copy()
-        del entry_copy['ot_summary']
-        del entry_copy['seq']
-        tsv_rows.append(entry_copy)
 
-    write_dict_list_to_csv(output_file, tsv_rows, headers, "\t")
-    print(f'Data written to {output_file}')
+
 
 if __name__ == '__main__':
     main()
