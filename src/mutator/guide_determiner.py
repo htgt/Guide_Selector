@@ -142,7 +142,7 @@ def write_gff_to_input_tsv(file : str, gff : List[dict]) -> None:
     headers = ['guide_id', 'chr', 'start', 'end', 'grna_strand']
 
     tsv_rows = []
-    for entry in guide_dicts:
+    for entry in gff:
         entry_copy = entry.copy()
         del entry_copy['ot_summary']
         del entry_copy['seq']
