@@ -247,13 +247,13 @@ X	WGE	CDS	48900478	48900480	.	-	.	ID=PAM_285858433;Parent=C_285858433;Name=28585
 
         expected_entries = [
             {
-                'guide_id': '285858433',  # Corrected guide_id
-                'chr': 'chrX',  # Corrected chromosome
+                'guide_id': '285858433',
+                'chr': 'chrX',
                 'start': 48900478,
                 'end': 48900500,
                 'grna_strand': '-',
                 'ot_summary': '285858433',
-                'seq': 'GCACCTAAGGAATCCGGCAGTGG'  # Corrected sequence
+                'seq': 'GCACCTAAGGAATCCGGCAGTGG'
             }
         ]
 
