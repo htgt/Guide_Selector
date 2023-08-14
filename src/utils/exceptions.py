@@ -1,3 +1,6 @@
+class ParseStringToTargetRegionError(Exception):
+    pass
+
 class GuideDeterminerError(Exception):
     pass
 
