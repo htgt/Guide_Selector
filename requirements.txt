@@ -1,5 +1,5 @@
 --extra-index-url https://gitlab.internal.sanger.ac.uk/api/v4/projects/4318/packages/pypi/simple
-tdutils==0.1.6
+tdutils==0.1.5
 biopython==1.81
 pandas==2.0.3
 parameterized==0.9.0
@@ -8,4 +8,4 @@ pycodestyle==2.10.0
 pyfakefs==5.2.2
 pyranges==0.0.129
 requests==2.30.0
-
+gffutils

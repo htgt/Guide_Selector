@@ -1,6 +1,6 @@
 import sys
 
-from mutator.guide_determiner import GuideDeterminer
+from mutator.guide_determiner import GuideDeterminer, parse_gff
 from mutator.runner import Runner
 from utils.arguments_parser import InputArguments
 from utils.config import prepare_config
@@ -10,6 +10,10 @@ from utils.file_system import write_dict_list_to_csv
 def resolve_command(command: str, args: dict, config: dict) -> None:
     if command == "mutator":
         run_mutator_cmd(args, config)
+
+    # Temporary for sprint 23. Delete after
+    if command == "wge":
+        run_wge_cmd(args, config)
 
 def main() -> None:
     parsed_input = InputArguments()
@@ -46,6 +50,29 @@ def run_mutator_cmd(args: dict, config: dict) -> None:
     runner.write_output_to_vcf(vcf_path)
     print('Output saved to', vcf_path)
 
+
+# Temporary for sprint 23. Delete after. 
+def run_wge_cmd(args: dict, config: dict) -> None:
+    gff = ''
+    with open('examples/test_guidesX.gff', 'r') as file:
+        gff = file.read()
+
+    guide_dicts = parse_gff(gff)
+    for entry in guide_dicts:
+        print(entry)
+
+    output_file = 'wge.tsv'
+    headers = ['guide_id', 'chr', 'start', 'end', 'grna_strand']
+
+    tsv_rows = []
+    for entry in guide_dicts:
+        entry_copy = entry.copy()
+        del entry_copy['ot_summary']
+        del entry_copy['seq']
+        tsv_rows.append(entry_copy)
+
+    write_dict_list_to_csv(output_file, tsv_rows, headers, "\t")
+    print(f'Data written to {output_file}')
 
 if __name__ == '__main__':
     main()

@@ -1,5 +1,6 @@
 from typing import Tuple, List
 
+import gffutils
 import pyranges as pr
 import pandas as pd
 
@@ -33,6 +34,7 @@ class GuideDeterminer:
     ) -> pd.DataFrame:
         coding_regions = pd.DataFrame()
         for guide in guide_data:
+            coding_region = pd.DataFrame()
             try:
                 coding_region = self.get_coding_region_for_guide(gtf_data, guide)
             except GuideDeterminerError as e:
@@ -81,8 +83,9 @@ class GuideDeterminer:
             if row['guide_end'] > row['End']:
                 return row['Frame']
             difference = row['End'] - row['guide_end']
-        frames = ('0', '2', '1')
-        return frames[(difference + int(frames.index(row['Frame']))) % 3]
+        frames = (0, 2, 1)
+
+        return frames[(difference + int( frames.index( int(row['Frame']) ) )) % 3]
 
     def adjust_columns_for_output(self, coding_regions: pd.DataFrame) -> pd.DataFrame:
         coding_regions.rename(
@@ -114,3 +117,24 @@ def add_chr_prefix(chromosome):
     if not chromosome.startswith('chr'):
         return 'chr' + chromosome
     return chromosome
+
+def parse_gff(gff_data):
+    db = gffutils.create_db(data=gff_data, dbfn=':memory:', from_string=True)
+    entries = []
+
+    for feature in db.features_of_type('Crispr'):
+        print(feature.attributes)
+        chr = 'chr' + feature.seqid
+        entry = {
+            'guide_id' : feature.attributes['Name'][0],
+            'chr' : chr,
+            'start' : int(feature.start),
+            'end' : int(feature.end),
+            'grna_strand' : feature.strand,
+            'ot_summary' : feature.attributes['Name'][0],
+            'seq': feature.attributes['CopySequence'][0],
+        }
+        
+        entries.append(entry)
+
+    return entries
