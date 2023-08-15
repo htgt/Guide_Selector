@@ -74,18 +74,15 @@ class GuideDeterminer:
         dataframe['guide_strand'] = str(guide['grna_strand'])
         return dataframe
 
-    def determine_frame_for_guide(self, row: pd.Series) -> str:
+    def determine_frame_for_guide(self, row: pd.Series) -> int:
         if row['Strand'] == '+':
-            if row['guide_start'] < row['Start']:
-                return row['Frame']
             difference = row['guide_start'] - row['Start']
         else:
-            if row['guide_end'] > row['End']:
-                return row['Frame']
             difference = row['End'] - row['guide_end']
+
         frames = (0, 2, 1)
 
-        return frames[(difference + int( frames.index( int(row['Frame']) ) )) % 3]
+        return frames[(difference + int(frames.index(int(row['Frame'])))) % 3]
 
     def adjust_columns_for_output(self, coding_regions: pd.DataFrame) -> pd.DataFrame:
         coding_regions.rename(
