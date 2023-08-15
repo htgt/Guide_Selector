@@ -7,6 +7,7 @@ from mutator.runner import Runner
 from utils.arguments_parser import InputArguments
 from utils.config import prepare_config
 from utils.file_system import write_dict_list_to_csv
+from utils.get_data.wge import get_data_from_wge_by_coords
 
 
 def resolve_command(command: str, args: dict, config: dict) -> None:
@@ -31,9 +32,20 @@ def main() -> None:
 def run_retrieve_cmd(args: dict, config: dict) -> None:
     region_string = args['region']
     
-    print('Retrieve data from WGE')
+    print('Retrieve data for Target Region')
 
     region = parse_str_to_target_region(region_string)
+
+    print('Get guides from WGE')
+    gff_data = get_data_from_wge_by_coords(
+        chromosome=region.chromosome,
+        start=region.start,
+        end=region.end,
+        species_id=config['species_id'],
+        assembly=config['assembly'],
+    )
+    print(gff_data)
+
     print('Target Region data: ', region)
     
 

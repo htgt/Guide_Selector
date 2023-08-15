@@ -7,7 +7,7 @@ class TestParseTargetRegion(unittest.TestCase):
         input_str = "chr1:300-350"
 
         expected_region = TargetRegion(
-            chromosome="chr1",
+            chromosome="1",
             start=300,
             end=350,
         )
