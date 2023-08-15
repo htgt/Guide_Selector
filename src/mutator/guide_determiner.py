@@ -67,7 +67,7 @@ class GuideDeterminer:
 
     def add_guide_data_to_dataframe(self, dataframe: pd.DataFrame, guide: dict) -> pd.DataFrame:
         dataframe = dataframe.copy()
-        dataframe['guide_id'] = int(guide['guide_id'])
+        dataframe['guide_id'] = guide['guide_id']
         dataframe.set_index('guide_id', inplace=True)
         dataframe['guide_start'] = int(guide['start'])
         dataframe['guide_end'] = int(guide['end'])

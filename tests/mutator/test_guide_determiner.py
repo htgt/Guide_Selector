@@ -100,7 +100,7 @@ class TestGuideDeterminer(TestCase):
             'guide_start': 67610855,
             'guide_end': 67610877,
             'guide_strand': '+',
-        }, index=pd.Index([1139540371], name='guide_id'))
+        }, index=pd.Index(['1139540371'], name='guide_id'))
 
         # act
         actual = GuideDeterminer.add_guide_data_to_dataframe(mock_object, self.coding_region, self.guide_data)
@@ -122,7 +122,7 @@ class TestGuideDeterminer(TestCase):
             'exon_number': '3',
             'guide_start': 67610855,
             'guide_end': 67610877,
-        }, name=1139540371)
+        }, name='1139540371')
         expected = 2
 
         # act
@@ -145,7 +145,7 @@ class TestGuideDeterminer(TestCase):
             'exon_number': '3',
             'guide_start': 67610855,
             'guide_end': 67610877,
-        }, name=1139540371)
+        }, name='1139540371')
         expected = 1
 
         # act
@@ -168,7 +168,7 @@ class TestGuideDeterminer(TestCase):
             'exon_number': '5',
             'guide_start': 3791982,
             'guide_end': 3792004,
-        }, name=1133146650)
+        }, name='1133146650')
         expected = 2
 
         # act
@@ -191,7 +191,7 @@ class TestGuideDeterminer(TestCase):
             'exon_number': '5',
             'guide_start': 3791982,
             'guide_end': 3792004,
-        }, name=1133146650)
+        }, name='1133146650')
         expected = 0
 
         # act
@@ -216,7 +216,7 @@ class TestGuideDeterminer(TestCase):
             'guide_start': 67610855,
             'guide_end': 67610877,
             'guide_frame': 2,
-        }, index=pd.Index([1139540371], name='guide_id'))
+        }, index=pd.Index(['1139540371'], name='guide_id'))
         expected = pd.DataFrame({
             'chromosome': 'chr16',
             'cds_start': 67610833,
@@ -229,7 +229,7 @@ class TestGuideDeterminer(TestCase):
             'guide_start': 67610855,
             'guide_end': 67610877,
             'guide_frame': 2,
-        }, index=pd.Index([1139540371], name='guide_id'))
+        }, index=pd.Index(['1139540371'], name='guide_id'))
 
         # act
         actual = GuideDeterminer.adjust_columns_for_output(mock_object, data)
