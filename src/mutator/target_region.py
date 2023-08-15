@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from utils.exceptions import ParseStringToTargetRegionError
 
+
 @dataclass
 class TargetRegion:
     chromosome: str
@@ -18,7 +19,7 @@ def parse_str_to_target_region(str) -> TargetRegion:
 
     if "-" not in data_split_by_chr[1]:
         raise ParseStringToTargetRegionError("Start and end coordinates should be separated by '-'")
-    
+
     data_split_by_coords = data_split_by_chr[1].split("-")
 
     region = TargetRegion(
@@ -28,6 +29,3 @@ def parse_str_to_target_region(str) -> TargetRegion:
     )
 
     return region
-
-
-
