@@ -1,13 +1,16 @@
 import sys
+import os.path
 
 from typing import List
-from mutator.target_region import parse_str_to_target_region, TargetRegion
-from mutator.guide_determiner import GuideDeterminer, parse_gff, write_gff_to_input_tsv
+from mutator.guide_determiner import GuideDeterminer
 from mutator.runner import Runner
+from mutator.retrieve import \
+    retrieve_data_for_region, \
+    get_regions_data, \
+    get_guides_data, \
+    write_gff_to_input_tsv
 from utils.arguments_parser import InputArguments
 from utils.config import prepare_config
-from utils.file_system import write_dict_list_to_csv
-from utils.get_data.wge import get_data_from_wge_by_coords
 
 
 def resolve_command(command: str, args: dict, config: dict) -> None:
@@ -29,24 +32,18 @@ def main() -> None:
 
     resolve_command(command, args, config)
 
+
 def run_retrieve_cmd(args: dict, config: dict) -> None:
-    region_string = args['region']
-    
-    print('Retrieve data for Target Region')
+    OUTPUT_FILE = 'wge.tsv'
 
-    region = parse_str_to_target_region(region_string)
+    regions = get_regions_data(args)
 
-    print('Get guides from WGE')
-    gff_data = get_data_from_wge_by_coords(
-        chromosome=region.chromosome,
-        start=region.start,
-        end=region.end,
-        species_id=config['species_id'],
-        assembly=config['assembly'],
-    )
-    print(gff_data)
+    guide_dicts = get_guides_data(regions, config)
 
-    print('Target Region data: ', region)
+    output_path = os.path.join(args['out_dir'], OUTPUT_FILE)
+    write_gff_to_input_tsv(output_path, guide_dicts)
+
+    print('Output saved to: ', output_path)
     
 
 def run_mutator_cmd(args: dict, config: dict) -> None:
@@ -88,6 +85,7 @@ def run_wge_cmd(args: dict, config: dict) -> None:
 
     output_file = 'wge.tsv'
     write_gff_to_input_tsv(output_file, guide_dicts)
+
 
 
 if __name__ == '__main__':

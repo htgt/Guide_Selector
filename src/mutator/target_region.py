@@ -18,8 +18,8 @@ def parse_str_to_target_region(str) -> TargetRegion:
 
     data_split_by_chr = str.split(":")
 
-    chromosome_pattern = r'chr(..)'
-    chromosome = re.search(chromosome_pattern, data_split_by_chr[0]).group(1)
+    chromosome_pattern = r'chr(.{1,2})'
+    chromosome = re.search(chromosome_pattern, data_split_by_chr[0])
 
     if "-" not in data_split_by_chr[1]:
         raise ParseStringToTargetRegionError("Start and end coordinates should be separated by '-'")
@@ -27,7 +27,7 @@ def parse_str_to_target_region(str) -> TargetRegion:
     data_split_by_coords = data_split_by_chr[1].split("-")
 
     region = TargetRegion(
-        chromosome=chromosome,
+        chromosome=chromosome.group(1),
         start=int(data_split_by_coords[0]),
         end=int(data_split_by_coords[1]),
     )

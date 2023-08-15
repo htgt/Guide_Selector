@@ -1,12 +1,10 @@
 from typing import Tuple, List
 
-import gffutils
 import pyranges as pr
 import pandas as pd
 
-from utils.file_system import read_csv_to_list_dict
+from utils.file_system import read_csv_to_list_dict, write_dict_list_to_csv
 from utils.exceptions import GuideDeterminerError
-from utils.file_system import write_dict_list_to_csv
 
 
 class GuideDeterminer:
@@ -117,37 +115,3 @@ def add_chr_prefix(chromosome : str) -> str:
     if not chromosome.startswith('chr'):
         return 'chr' + chromosome
     return chromosome
-
-def parse_gff(gff_data):
-    db = gffutils.create_db(data=gff_data, dbfn=':memory:', from_string=True)
-    entries = []
-
-    for feature in db.features_of_type('Crispr'):
-        print(feature.attributes)
-        chr = 'chr' + feature.seqid
-        entry = {
-            'guide_id' : feature.attributes['Name'][0],
-            'chr' : chr,
-            'start' : int(feature.start),
-            'end' : int(feature.end),
-            'grna_strand' : feature.strand,
-            'ot_summary' : feature.attributes['Name'][0],
-            'seq': feature.attributes['CopySequence'][0],
-        }
-        
-        entries.append(entry)
-
-    return entries
-
-def write_gff_to_input_tsv(file : str, gff : List[dict]) -> None:
-    headers = ['guide_id', 'chr', 'start', 'end', 'grna_strand']
-
-    tsv_rows = []
-    for entry in gff:
-        entry_copy = entry.copy()
-        del entry_copy['ot_summary']
-        del entry_copy['seq']
-        tsv_rows.append(entry_copy)
-
-    write_dict_list_to_csv(file, tsv_rows, headers, "\t")
-    print(f'Data written to {file}')

@@ -68,6 +68,11 @@ class InputArguments:
             type=str,
             help='Target region specified in format chr1:1-10001'
         )
+        parser_retrieve.add_argument(
+            '--file',
+            type=str,
+            help='Path to the input file with data for Target Regions'
+        )
 
     def _add_wge_command_parser(self, subparsers: _SubParsersAction) -> None:
         parser_wge = subparsers.add_parser('wge', help='WGE command help')
