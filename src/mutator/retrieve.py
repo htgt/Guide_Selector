@@ -52,7 +52,7 @@ def parse_gff(gff_data):
     entries = []
 
     for feature in db.features_of_type('Crispr'):
-        chr = 'chr' + feature.seqid
+        chr = 'chr' + feature.seqid.strip()
         entry = {
             'guide_id' : feature.attributes['Name'][0],
             'chr' : chr,
