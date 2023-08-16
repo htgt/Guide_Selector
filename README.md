@@ -118,8 +118,8 @@ Shared arguments (not required):
 Shared arguments should be specified before command
 
 ## Retrieve command
-Retrieve command gets data from WGE and writes a tsv file that can serve an input for mutator command. 
-Command requires the Target region ID and
+Retrieve command gets data from WGE and writes a tsv file that can serve as an input for mutator command. 
+Command requires the Target region ID and Loci.
 
 Uses shared input arguments: output directory and config file.
 
