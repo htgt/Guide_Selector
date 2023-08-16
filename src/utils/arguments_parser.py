@@ -18,8 +18,8 @@ class InputArguments:
             prog='Guide Selection'
         )
 
-        self._add_subparsers(parser)
         self._add_input_args(parser)
+        self._add_subparsers(parser)
 
         self.set_args(vars(parser.parse_args()))
 
