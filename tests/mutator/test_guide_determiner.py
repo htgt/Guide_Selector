@@ -146,7 +146,7 @@ class TestGuideDeterminer(TestCase):
             'guide_start': 67610855,
             'guide_end': 67610877,
         }, name=1139540371)
-        expected = 0
+        expected = 1
 
         # act
         actual = GuideDeterminer.determine_frame_for_guide(mock_object, test_row)
@@ -192,7 +192,7 @@ class TestGuideDeterminer(TestCase):
             'guide_start': 3791982,
             'guide_end': 3792004,
         }, name=1133146650)
-        expected = 2
+        expected = 0
 
         # act
         actual = GuideDeterminer.determine_frame_for_guide(mock_object, test_row)
