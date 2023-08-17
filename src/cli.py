@@ -31,7 +31,7 @@ def main() -> None:
 
 
 def run_retrieve_cmd(args: dict, config: dict) -> None:
-    OUTPUT_FILE = 'wge.tsv'
+    OUTPUT_FILE = 'guides.tsv'
 
     regions = get_regions_data(args)
 
@@ -61,11 +61,11 @@ def run_mutator_cmd(args: dict, config: dict) -> None:
 
     # Write to VCF
     tsv_rows = runner.as_rows(config)
-    tsv_path = args['out_dir'] + '/' + OUTPUT_TSV_FILE
+    tsv_path = os.path.join(args['out_dir'], OUTPUT_TSV_FILE)
     write_dict_list_to_csv(tsv_path, tsv_rows, tsv_rows[0].keys(), "\t")
     print('Output saved to', tsv_path)
 
-    vcf_path = args['out_dir'] + '/' + OUTPUT_VCF_FILE
+    vcf_path = os.path.join(args['out_dir'], OUTPUT_VCF_FILE)
     runner.write_output_to_vcf(vcf_path)
     print('Output saved to', vcf_path)
 
