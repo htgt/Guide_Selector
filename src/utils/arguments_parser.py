@@ -51,8 +51,6 @@ class InputArguments:
         self._add_mutator_command_parser(subparsers)
         self._add_retrieve_command_parser(subparsers)
 
-        self._add_wge_command_parser(subparsers)
-
     @staticmethod
     def _add_mutator_command_parser(subparsers: _SubParsersAction) -> None:
         parser_mutator = subparsers.add_parser('mutator', help='Mutator command help')
@@ -73,7 +71,3 @@ class InputArguments:
             type=str,
             help='Path to the input file with data for Target Regions'
         )
-
-    def _add_wge_command_parser(self, subparsers: _SubParsersAction) -> None:
-        parser_wge = subparsers.add_parser('wge', help='WGE command help')
-

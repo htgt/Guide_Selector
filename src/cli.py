@@ -11,6 +11,7 @@ from mutator.retrieve import \
     write_gff_to_input_tsv
 from utils.arguments_parser import InputArguments
 from utils.config import prepare_config
+from utils.file_system import write_dict_list_to_csv
 
 
 def resolve_command(command: str, args: dict, config: dict) -> None:
