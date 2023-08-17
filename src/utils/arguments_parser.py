@@ -50,15 +50,43 @@ class InputArguments:
 
         self._add_mutator_command_parser(subparsers)
         self._add_retrieve_command_parser(subparsers)
-
-        self._add_wge_command_parser(subparsers)
+        self._add_guide_selector_command_parser(subparsers)
 
     @staticmethod
     def _add_mutator_command_parser(subparsers: _SubParsersAction) -> None:
         parser_mutator = subparsers.add_parser('mutator', help='Mutator command help')
-        parser_mutator.add_argument('--tsv', type=str,
-            help='Path to Guide Locus as TSV file. Required columns: guide start, end, strand and id')
-        parser_mutator.add_argument('--gtf', type=str, help='Path to reference GTF file')
+        parser_mutator.add_argument(
+            '--tsv',
+            type=str,
+            help='Path to Guide Locus as TSV file. Required columns: guide start, end, strand and id'
+        )
+        parser_mutator.add_argument(
+            '--gtf',
+            type=str,
+            help='Path to reference GTF file'
+        )
+
+    @staticmethod
+    def _add_guide_selector_command_parser(subparsers: _SubParsersAction) -> None:
+        parser_guide_selector = subparsers.add_parser(
+            'guide_selector',
+            help='Guide Selector command to run retrieve->mutator together'
+        )
+        parser_guide_selector.add_argument(
+            '--region',
+            type=str,
+            help='Target region specified in format chr1:1-10001'
+        )
+        parser_guide_selector.add_argument(
+            '--file',
+            type=str,
+            help='Path to the input file with data for Target Regions'
+        )
+        parser_guide_selector.add_argument(
+            '--gtf',
+            type=str,
+            help='Path to reference GTF file'
+        )
 
     @staticmethod
     def _add_retrieve_command_parser(subparsers: _SubParsersAction) -> None:
@@ -73,7 +101,4 @@ class InputArguments:
             type=str,
             help='Path to the input file with data for Target Regions'
         )
-
-    def _add_wge_command_parser(self, subparsers: _SubParsersAction) -> None:
-        parser_wge = subparsers.add_parser('wge', help='WGE command help')
 

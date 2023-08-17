@@ -11,6 +11,7 @@ from mutator.retrieve import \
     write_gff_to_input_tsv
 from utils.arguments_parser import InputArguments
 from utils.config import prepare_config
+from utils.file_system import write_dict_list_to_csv
 
 
 def resolve_command(command: str, args: dict, config: dict) -> None:
@@ -18,6 +19,8 @@ def resolve_command(command: str, args: dict, config: dict) -> None:
         run_mutator_cmd(args, config)
     if command == "retrieve":
         run_retrieve_cmd(args, config)
+    if command == "guide_selector":
+        run_guide_selector_cmd(args, config)
 
 
 def main() -> None:
@@ -29,8 +32,17 @@ def main() -> None:
     resolve_command(command, args, config)
 
 
-def run_retrieve_cmd(args: dict, config: dict) -> None:
+def run_guide_selector_cmd(args: dict, config: dict) -> None:
+    tsv_path = run_retrieve_cmd(args, config)
+
+    args["tsv"] = tsv_path
+    run_mutator_cmd(args, config)
+
+
+def run_retrieve_cmd(args: dict, config: dict) -> str:
     OUTPUT_FILE = 'wge.tsv'
+
+    print('Run retrieve command with config:', config)
 
     regions = get_regions_data(args)
 
@@ -40,6 +52,8 @@ def run_retrieve_cmd(args: dict, config: dict) -> None:
     write_gff_to_input_tsv(output_path, guide_dicts)
 
     print('Output saved to: ', output_path)
+
+    return output_path
 
 
 def run_mutator_cmd(args: dict, config: dict) -> None:
@@ -60,11 +74,11 @@ def run_mutator_cmd(args: dict, config: dict) -> None:
 
     # Write to VCF
     tsv_rows = runner.as_rows(config)
-    tsv_path = args['out_dir'] + '/' + OUTPUT_TSV_FILE
+    tsv_path = os.path.join(args['out_dir'], OUTPUT_TSV_FILE)
     write_dict_list_to_csv(tsv_path, tsv_rows, tsv_rows[0].keys(), "\t")
     print('Output saved to', tsv_path)
 
-    vcf_path = args['out_dir'] + '/' + OUTPUT_VCF_FILE
+    vcf_path = os.path.join(args['out_dir'], OUTPUT_VCF_FILE)
     runner.write_output_to_vcf(vcf_path)
     print('Output saved to', vcf_path)
 
