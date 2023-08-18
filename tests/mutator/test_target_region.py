@@ -1,5 +1,5 @@
 import unittest
-from mutator.target_region import parse_str_to_target_region, TargetRegion
+from mutator.target_region import parse_string_to_target_region, TargetRegion
 from utils.exceptions import ParseStringToTargetRegionError
 
 class TestParseTargetRegion(unittest.TestCase):
@@ -12,7 +12,7 @@ class TestParseTargetRegion(unittest.TestCase):
             end=350,
         )
 
-        result = parse_str_to_target_region(input_str)
+        result = parse_string_to_target_region(input_str)
 
         self.assertEqual(result, expected_region)
 
@@ -20,10 +20,10 @@ class TestParseTargetRegion(unittest.TestCase):
         input_str = "chr1300350"
 
         with self.assertRaises(ParseStringToTargetRegionError):
-            parse_str_to_target_region(input_str)
+            parse_string_to_target_region(input_str)
 
     def test_fail_to_read_corrdinates_for_target_region(self):
         input_str = "chr1:300350"
 
         with self.assertRaises(ParseStringToTargetRegionError):
-            parse_str_to_target_region(input_str)
+            parse_string_to_target_region(input_str)
