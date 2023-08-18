@@ -181,6 +181,6 @@ python -m unittest -v
 
 ### Run code style linting
 ```sh
-pycodestyle src
+pycodestyle src tests
 ```
 

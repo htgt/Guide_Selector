@@ -54,8 +54,11 @@ class InputArguments:
     @staticmethod
     def _add_mutator_command_parser(subparsers: _SubParsersAction) -> None:
         parser_mutator = subparsers.add_parser('mutator', help='Mutator command help')
-        parser_mutator.add_argument('--tsv', type=str,
-            help='Path to Guide Locus as TSV file. Required columns: guide start, end, strand and id')
+        parser_mutator.add_argument(
+            '--tsv',
+            type=str,
+            help='Path to Guide Locus as TSV file. Required columns: guide start, end, chr, strand and id'
+        )
         parser_mutator.add_argument('--gtf', type=str, help='Path to reference GTF file')
 
     @staticmethod
