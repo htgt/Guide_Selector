@@ -12,19 +12,19 @@ class TargetRegion:
 
 
 ## Input string format is "chr1:100-150"
-def parse_str_to_target_region(str) -> TargetRegion:
-    if ":" not in str:
-        raise ParseStringToTargetRegionError("Chromosome should be separated by ':'")
+def parse_string_to_target_region(region_string: str) -> TargetRegion:
+    CHROMOSOME_PATTERN = r'chr(.{1,2})'
 
-    data_split_by_chr = str.split(":")
+    if ":" not in region_string:
+        raise ParseStringToTargetRegionError("Chromosome and Region should be separated by ':'")
 
-    chromosome_pattern = r'chr(.{1,2})'
-    chromosome = re.search(chromosome_pattern, data_split_by_chr[0])
+    data_split_by_chromosome = region_string.split(":")
+    chromosome = re.search(CHROMOSOME_PATTERN, data_split_by_chromosome[0])
 
-    if "-" not in data_split_by_chr[1]:
+    if "-" not in data_split_by_chromosome[1]:
         raise ParseStringToTargetRegionError("Start and end coordinates should be separated by '-'")
 
-    data_split_by_coords = data_split_by_chr[1].split("-")
+    data_split_by_coords = data_split_by_chromosome[1].split("-")
 
     region = TargetRegion(
         chromosome=chromosome.group(1),

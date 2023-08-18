@@ -2,7 +2,7 @@ from unittest import TestCase
 from unittest.mock import Mock, patch, call
 from mutator.retrieve import get_guides_data, retrieve_data_for_region, parse_gff
 
-class RetrieveModule(TestCase):
+class TestRetrieveModule(TestCase):
 
     @patch('mutator.retrieve.retrieve_data_for_region')
     def test_get_guides_data(self, mock_retrieve_data_for_region):

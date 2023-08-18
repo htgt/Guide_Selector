@@ -40,7 +40,7 @@ def run_guide_selector_cmd(args: dict, config: dict) -> None:
 
 
 def run_retrieve_cmd(args: dict, config: dict) -> str:
-    OUTPUT_FILE = 'wge.tsv'
+    OUTPUT_FILE = 'guides.tsv'
 
     print('Run retrieve command with config:', config)
 
