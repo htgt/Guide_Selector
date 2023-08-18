@@ -3,6 +3,7 @@ import gffutils
 from utils.file_system import read_csv_to_list_dict, write_dict_list_to_csv
 from utils.get_data.wge import get_data_from_wge_by_coords
 from mutator.target_region import parse_string_to_target_region, TargetRegion
+from utils.exceptions import GetDataFromWGEError
 
 
 def get_regions_data(args: dict) -> List[str]:
@@ -21,8 +22,12 @@ def get_guides_data(regions: List[str], config: dict) -> List[dict]:
         print('Retrieve data for Target Region',
               line["id"] if "id" in line else "")
 
-        data = retrieve_data_for_region(line["region"], config)
-        guide_dicts.extend(data)
+        try:
+            data = retrieve_data_for_region(line["region"], config)
+            guide_dicts.extend(data)
+
+        except GetDataFromWGEError:
+            pass
 
     return guide_dicts
 
@@ -30,7 +35,6 @@ def get_guides_data(regions: List[str], config: dict) -> List[dict]:
 def retrieve_data_for_region(region_string: str, config: dict) -> dict:
     region = parse_string_to_target_region(region_string)
 
-    print('Get guides from WGE...')
     gff_data = get_data_from_wge_by_coords(
         chromosome=region.chromosome,
         start=region.start,
@@ -44,7 +48,8 @@ def retrieve_data_for_region(region_string: str, config: dict) -> dict:
         return guide_dicts
 
     except Exception:
-        print('No data from WGE for given coordinates')
+        print(f'No data from WGE for given region: {region_string}')
+        raise GetDataFromWGEError()
 
 
 def parse_gff(gff_data: dict):
