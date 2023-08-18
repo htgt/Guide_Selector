@@ -10,8 +10,8 @@ def get_regions_data(args: dict) -> List[str]:
     if args['region']:
         return [{"region": args['region']}]
     else:
-        if args['file']:
-            return read_csv_to_list_dict(args['file'], delimiter="\t")
+        if args['regions_file']:
+            return read_csv_to_list_dict(args['regions_file'], delimiter="\t")
         else:
             raise ValueError('No input data for Target Regions')
 
