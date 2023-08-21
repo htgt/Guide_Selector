@@ -23,8 +23,8 @@ def parse_string_to_target_region(region_string: str) -> TargetRegion:
 
     region = TargetRegion(
         chromosome=chromosome,
-        start=start,
-        end=end,
+        start=int(start),
+        end=int(end),
     )
 
     return region
