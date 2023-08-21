@@ -40,6 +40,7 @@ def run_retrieve_cmd(args: dict, config: dict) -> None:
     output_path = os.path.join(args['out_dir'], OUTPUT_FILE)
     write_gff_to_input_tsv(output_path, guide_dicts)
 
+    print('Guides retrieved: ', len(guide_dicts))
     print('Output saved to: ', output_path)
 
 

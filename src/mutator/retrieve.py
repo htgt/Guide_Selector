@@ -59,6 +59,9 @@ def parse_gff(gff_data: dict):
     entries = []
 
     for feature in db.features_of_type('Crispr'):
+        print('Feature::', feature)
+        print('==================')
+
         chromosome = 'chr' + feature.seqid.strip()
         entry = {
             'guide_id' : feature.attributes['Name'][0],
@@ -66,7 +69,7 @@ def parse_gff(gff_data: dict):
             'start' : int(feature.start),
             'end' : int(feature.end),
             'grna_strand' : feature.strand,
-            'ot_summary' : feature.attributes['Name'][0],
+            'ot_summary' : feature.attributes['OT_Summary'],
             'seq': feature.attributes['CopySequence'][0],
         }
 
@@ -76,14 +79,14 @@ def parse_gff(gff_data: dict):
 
 
 def write_gff_to_input_tsv(file : str, gff : List[dict]) -> None:
-    headers = ['guide_id', 'chr', 'start', 'end', 'grna_strand']
+    headers = ['guide_id', 'chr', 'start', 'end', 'grna_strand', 'ot_summary']
 
     tsv_rows = []
     for entry in gff:
         entry_copy = entry.copy()
-        del entry_copy['ot_summary']
         del entry_copy['seq']
         tsv_rows.append(entry_copy)
 
+    print('TSV Rows', tsv_rows)
+
     write_dict_list_to_csv(file, tsv_rows, headers, "\t")
-    #print(f'Data written to {file}')
