@@ -10,8 +10,8 @@ def get_regions_data(args: dict) -> List[str]:
     if args['region']:
         return [{"region": args['region']}]
     else:
-        if args['file']:
-            return read_csv_to_list_dict(args['file'], delimiter="\t")
+        if args['regions_file']:
+            return read_csv_to_list_dict(args['regions_file'], delimiter="\t")
         else:
             raise ValueError('No input data for Target Regions')
 
@@ -84,4 +84,4 @@ def write_gff_to_input_tsv(file : str, gff : List[dict]) -> None:
         tsv_rows.append(entry_copy)
 
     write_dict_list_to_csv(file, tsv_rows, headers, "\t")
-    print(f'Data written to {file}')
+    #print(f'Data written to {file}')
