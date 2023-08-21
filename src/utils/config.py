@@ -2,7 +2,7 @@ from pathlib import Path
 
 from utils.file_system import parse_json
 
-DEFAULT_CONFIG_FILE = Path(__file__).parent / '../../config/mutator_default_config.json'
+DEFAULT_CONFIG_FILE = Path(__file__).parent / '../../config/default_config.json'
 
 
 def prepare_config(config_file: str) -> dict:
