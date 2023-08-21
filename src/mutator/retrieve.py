@@ -20,7 +20,9 @@ def get_guides_data(regions: List[str], config: dict) -> List[dict]:
     guide_dicts = []
     for line in regions:
         print('Retrieve data for Target Region',
-              line["id"] if "id" in line else "")
+              line["id"] if "id" in line else "",
+              line["region"]
+        )
 
         try:
             data = retrieve_data_for_region(line["region"], config)
