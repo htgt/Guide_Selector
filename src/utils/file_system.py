@@ -2,7 +2,9 @@ from os import path
 import csv
 import json
 from typing import List
+
 from utils.exceptions import FileFormatError
+from src.mutator.mutation_builder import MutationBuilder
 
 
 # copied from targeton-designer- need to make a shared repo
@@ -33,6 +35,11 @@ def write_dict_list_to_csv(file_name, dict_list, headers=None, delimiter=',') ->
         writer = csv.DictWriter(file, delimiter=delimiter, fieldnames=headers)
         writer.writeheader()
         writer.writerows(dict_list)
+
+
+def write_json_failed_guides(file_path: str, failed_mutations: List[MutationBuilder]) -> None:
+    with open(file_path, 'w') as json_file:
+        json.dump(failed_mutations, json_file, default=lambda x: x.__dict__, indent=4)
 
 
 def parse_json(file_path: str) -> dict:

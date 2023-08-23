@@ -27,7 +27,6 @@ class GuideSequence(BaseSequence):
             frame: int = 0,
         ) -> None:
 
-        self.id = id
         self.start = start
         self.end  = end
         self.guide_id = guide_id
