@@ -1,7 +1,8 @@
-import sys
-from typing import List
+import os
+
 from mutator.guide_determiner import GuideDeterminer, parse_gff, write_gff_to_input_tsv
 from mutator.runner import Runner
+from src.utils.file_system import write_json_failed_guides
 from utils.arguments_parser import InputArguments
 from utils.config import prepare_config
 from utils.file_system import write_dict_list_to_csv
@@ -15,6 +16,7 @@ def resolve_command(command: str, args: dict, config: dict) -> None:
     if command == "wge":
         run_wge_cmd(args, config)
 
+
 def main() -> None:
     parsed_input = InputArguments()
     args = parsed_input.arguments
@@ -25,8 +27,6 @@ def main() -> None:
 
 
 def run_mutator_cmd(args: dict, config: dict) -> None:
-    OUTPUT_TSV_FILE = 'output.tsv'
-    OUTPUT_VCF_FILE = 'output.vcf'
     runner = Runner(config)
 
     print('Running PAM & Protospacer mutator')
@@ -40,18 +40,23 @@ def run_mutator_cmd(args: dict, config: dict) -> None:
     print("Length of mutation_builders list:", len(runner.mutation_builders))
     print("Length of failed_mutations list:", len(runner.failed_mutations))
 
-    # Write to VCF
+    # Write Output Files
     tsv_rows = runner.as_rows(config)
-    tsv_path = args['out_dir'] + '/' + OUTPUT_TSV_FILE
+    tsv_path = os.path.join(args['out_dir'], 'output.tsv')
     write_dict_list_to_csv(tsv_path, tsv_rows, tsv_rows[0].keys(), "\t")
     print('Output saved to', tsv_path)
 
-    vcf_path = args['out_dir'] + '/' + OUTPUT_VCF_FILE
+    vcf_path = os.path.join(args['out_dir'], 'output.vcf')
     runner.write_output_to_vcf(vcf_path)
     print('Output saved to', vcf_path)
 
+    if runner.failed_mutations:
+        failed_guides_path = os.path.join(args['out_dir'], 'failed_guides.json')
+        write_json_failed_guides(failed_guides_path, runner.failed_mutations)
+        print('Failed guides saved to', failed_guides_path)
 
-# Temporary for sprint 23. Delete after. 
+
+# Temporary for sprint 23. Delete after.
 def run_wge_cmd(args: dict, config: dict) -> None:
     gff = ''
     with open('examples/test_guidesX.gff', 'r') as file:
@@ -63,8 +68,6 @@ def run_wge_cmd(args: dict, config: dict) -> None:
 
     output_file = 'wge.tsv'
     write_gff_to_input_tsv(output_file, guide_dicts)
-
-
 
 
 if __name__ == '__main__':
