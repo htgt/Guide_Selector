@@ -99,6 +99,6 @@ class InputArguments:
         region_group.add_argument(
             '--regions_file',
             type=str,
-            help='Path to the input file with data for Target Regions'
+            help='Path to the input file with data for Target Regions separated by new line'
         )
 
