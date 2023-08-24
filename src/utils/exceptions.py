@@ -1,3 +1,6 @@
+class NoTargetRegionDataError(Exception):
+    pass
+
 class GetDataFromWGEError(Exception):
     pass
 

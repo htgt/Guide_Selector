@@ -3,7 +3,7 @@ import gffutils
 from utils.file_system import read_csv_to_list_dict, write_dict_list_to_csv
 from utils.get_data.wge import get_data_from_wge_by_coords
 from mutator.target_region import parse_string_to_target_region, TargetRegion
-from utils.exceptions import GetDataFromWGEError
+from utils.exceptions import GetDataFromWGEError, NoTargetRegionDataError
 
 
 def get_regions_data(region: str = None, regions_file: str = None) -> List[str]:
@@ -13,7 +13,7 @@ def get_regions_data(region: str = None, regions_file: str = None) -> List[str]:
         if regions_file:
             return read_csv_to_list_dict(regions_file, delimiter='\t')
         else:
-            raise ValueError('No input data for Target Regions')
+            raise NoTargetRegionDataError('No input data for Target Regions')
 
 
 def get_target_regions(region: str = None, regions_file: str = None) -> List[TargetRegion]:
