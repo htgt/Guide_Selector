@@ -160,6 +160,17 @@ python3 src/cli.py --conf custom.conf --out_dir ./output/ mutator --gtf ./exampl
 ```
 
 
+## Guide selector command
+Runs retrieve-mutator steps together, accepts region (or file with regions) and gtf reference as arguments
+
+
+| Argument       | Description                                               |
+|----------------|-----------------------------------------------------------|
+| --region       | String with region data, example: chr19:50398851-50399053 |
+| --regions_file | Path tsv file with regions                                |
+| --gtf          | Path to reference gtf file                                |
+
+
 ### Run with Docker
 
 Build image 
