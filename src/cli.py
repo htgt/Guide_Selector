@@ -10,6 +10,7 @@ from mutator.retrieve import \
     get_regions_data, \
     get_guides_data, \
     write_gff_to_input_tsv
+from utils.file_system import write_json_failed_guides
 from utils.arguments_parser import InputArguments
 from utils.config import prepare_config
 from utils.file_system import write_dict_list_to_csv
@@ -20,6 +21,7 @@ def resolve_command(command: str, args: dict, config: dict) -> None:
         run_mutator_cmd(args, config)
     if command == "retrieve":
         run_retrieve_cmd(args, config)
+
 
 
 def main() -> None:
@@ -62,7 +64,7 @@ def run_mutator_cmd(args: dict, config: dict) -> None:
     print("Length of mutation_builders list:", len(runner.mutation_builders))
     print("Length of failed_mutations list:", len(runner.failed_mutations))
 
-    # Write to VCF
+    # Write Output Files
     tsv_rows = runner.as_rows(config)
     tsv_path = os.path.join(args['out_dir'], OUTPUT_TSV_FILE)
     write_dict_list_to_csv(tsv_path, tsv_rows, tsv_rows[0].keys(), "\t")
@@ -71,6 +73,11 @@ def run_mutator_cmd(args: dict, config: dict) -> None:
     vcf_path = os.path.join(args['out_dir'], OUTPUT_VCF_FILE)
     runner.write_output_to_vcf(vcf_path)
     print('Output saved to', vcf_path)
+
+    if runner.failed_mutations:
+        failed_guides_path = os.path.join(args['out_dir'], 'failed_guides.json')
+        write_json_failed_guides(failed_guides_path, runner.failed_mutations)
+        print('Failed guides saved to', failed_guides_path)
 
 
 if __name__ == '__main__':

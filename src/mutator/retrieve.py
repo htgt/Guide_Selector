@@ -85,7 +85,7 @@ def parse_gff(gff_data: dict):
             'start' : int(feature.start),
             'end' : int(feature.end),
             'grna_strand' : feature.strand,
-            'ot_summary' : feature.attributes['OT_Summary'],
+            'ot_summary' : str(feature.attributes['OT_Summary']),
             'seq': feature.attributes['CopySequence'][0],
         }
 
@@ -100,6 +100,7 @@ def write_gff_to_input_tsv(file : str, gff : List[dict]) -> None:
     tsv_rows = []
     for entry in gff:
         entry_copy = entry.copy()
+        del entry_copy['ot_summary']
         del entry_copy['seq']
         tsv_rows.append(entry_copy)
 

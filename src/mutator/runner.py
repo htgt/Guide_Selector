@@ -120,7 +120,7 @@ class Runner:
         for mb in self.mutation_builders:
             for codon in mb.codons:
                 if codon.is_edit_permitted(self._config):
-                    guide_id = str(mb.guide.guide_id)
+                    guide_id = mb.guide.guide_id
                     variants.append(
                         mb.cds.chromosome,
                         codon.third_base_coord,
