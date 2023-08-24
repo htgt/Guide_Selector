@@ -21,13 +21,12 @@ class GuideSequence(BaseSequence):
             start: int,
             end: int,
             is_positive_strand: bool = True,
-            guide_id: int = 0,
+            guide_id: str = '',
             window_length: int = 12,
             chromosome: Optional[str] = None,
             frame: int = 0,
         ) -> None:
 
-        self.id = id
         self.start = start
         self.end  = end
         self.guide_id = guide_id

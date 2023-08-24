@@ -25,7 +25,7 @@ class RunnerTestCase(unittest.TestCase):
         self.cds = BaseSequence(100, 200, True, 'chr1', 1)
         self.window = EditWindow(150, 180, True, '1')
         self.guide = GuideSequence(
-            guide_id=123,
+            guide_id='123',
             start=160,
             end=170,
             is_positive_strand=True,
@@ -59,7 +59,7 @@ class RunnerTestCase(unittest.TestCase):
                 start=160,
                 end=170,
                 is_positive_strand=True,
-                guide_id=123,
+                guide_id='123',
                 chromosome='1'
             ),
             gene_name='ACT'
@@ -72,7 +72,7 @@ class RunnerTestCase(unittest.TestCase):
         rows = self.runner.as_rows(config)
 
         expected_rows = [{
-            'guide_id': 123,
+            'guide_id': '123',
             'alt': 'G',
             'chromosome': '1',
             'cds_strand': "+",

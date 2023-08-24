@@ -147,7 +147,6 @@ python3 src/cli.py --conf custom.conf --out_dir ./output/ mutator --gtf ./exampl
 ```
 
 
-
 ### Run with Docker
 
 Build image 

@@ -4,7 +4,7 @@ def get_data_from_wge_by_coords(
         chromosome: str,
         start: int,
         end: int,
-        species_id: str='Human',
+        species_id: str='Grch38',
         assembly: str='GRCh38'
 ):
     base_url = "https://wge.stemcell.sanger.ac.uk/api/crisprs_in_region"

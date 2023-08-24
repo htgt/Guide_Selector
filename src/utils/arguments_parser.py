@@ -72,16 +72,9 @@ class InputArguments:
             'guide_selector',
             help='Guide Selector command to run retrieve->mutator together'
         )
-        parser_guide_selector.add_argument(
-            '--region',
-            type=str,
-            help='Target region specified in format chr1:1-10001'
-        )
-        parser_guide_selector.add_argument(
-            '--regions_file',
-            type=str,
-            help='Path to the input file with data for Target Regions'
-        )
+
+        self._add_region_group(parser_guide_selector)
+        
         parser_guide_selector.add_argument(
             '--gtf',
             type=str,
@@ -89,15 +82,21 @@ class InputArguments:
         )
 
 
-    @staticmethod
-    def _add_retrieve_command_parser(subparsers: _SubParsersAction) -> None:
+    def _add_retrieve_command_parser(self, subparsers: _SubParsersAction) -> None:
         parser_retrieve = subparsers.add_parser('retrieve', help='Retrieve command help')
-        parser_retrieve.add_argument(
+        self._add_region_group(parser_retrieve)
+        
+
+    @staticmethod
+    def _add_region_group(parser: ArgumentParser):
+        region_group = parser.add_mutually_exclusive_group()
+
+        region_group.add_argument(
             '--region',
             type=str,
             help='Target region specified in format chr1:1-10001'
         )
-        parser_retrieve.add_argument(
+        region_group.add_argument(
             '--regions_file',
             type=str,
             help='Path to the input file with data for Target Regions'
