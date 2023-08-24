@@ -1,35 +1,24 @@
 from unittest import TestCase
 from unittest.mock import Mock, patch, call
-from mutator.retrieve import get_guides_data, retrieve_data_for_region, parse_gff
+from mutator.target_region import TargetRegion
+from mutator.retrieve import parse_dicts_to_target_regions, retrieve_data_for_region, parse_gff
 
 class TestRetrieveModule(TestCase):
 
-    @patch('mutator.retrieve.retrieve_data_for_region')
-    def test_get_guides_data(self, mock_retrieve_data_for_region):
+    def test_parse_dicts_to_target_regions(self):
         region1 = "chr19:111-222"
         region2 = "chr2:123-155"
         regions = [ {"id": "AAA", "region": region1}, {"id": "BBB", "region": region2} ]
-        config = {}
 
-        def return_function(region, config):
-            if region == region1:
-                return {'guide_id': '263969621', 'chr': 'chr19', 'start': 50398851, 'end': 50398873, 'grna_strand': '+', 'ot_summary': ['{0: 2}'], 'seq': 'TGGGATGAAAAACGTGGGACAGG'},
-            if region == region2:
-                return {'guide_id': '22222', 'chr': 'chr2', 'start': 133, 'end': 150, 'grna_strand': '-', 'ot_summary': ['{0: 1}'], 'seq': 'TGGGAT'},
-
-        mock_retrieve_data_for_region.side_effect = return_function
-
-        result = get_guides_data(regions, config)
+        result = parse_dicts_to_target_regions(regions)
 
         expected_result = [
-            {'guide_id': '263969621', 'chr': 'chr19', 'start': 50398851, 'end': 50398873, 'grna_strand': '+', 'ot_summary': ['{0: 2}'], 'seq': 'TGGGATGAAAAACGTGGGACAGG'},
-            {'guide_id': '22222', 'chr': 'chr2', 'start': 133, 'end' : 150, 'grna_strand': '-', 'ot_summary': ['{0: 1}'], 'seq': 'TGGGAT'},
+            TargetRegion(id="AAA", chromosome="19", start=111, end=222),
+            TargetRegion(id="BBB", chromosome="2", start=123, end=155),
         ]
 
         self.assertEqual(result, expected_result)
 
-        calls = [call(region1, config), call(region2, config)]
-        mock_retrieve_data_for_region.assert_has_calls(calls)
 
     def test_parse_gff(self):
         gff_data = """##gff-version 3
@@ -45,7 +34,7 @@ class TestRetrieveModule(TestCase):
             'start': 48900478,
             'end' : 48900500,
             'grna_strand': '-',
-            'ot_summary': ['{0: 1', ' 1: 0', ' 2: 1', ' 3: 8', ' 4: 98}'],
+            'ot_summary': "['{0: 1', ' 1: 0', ' 2: 1', ' 3: 8', ' 4: 98}']",
             'seq': 'GCACCTAAGGAATCCGGCAGTGG',
         }]
 

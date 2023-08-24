@@ -3,21 +3,21 @@ import gffutils
 from utils.file_system import read_csv_to_list_dict, write_dict_list_to_csv
 from utils.get_data.wge import get_data_from_wge_by_coords
 from mutator.target_region import parse_string_to_target_region, TargetRegion
-from utils.exceptions import GetDataFromWGEError
+from utils.exceptions import GetDataFromWGEError, NoTargetRegionDataError
 
 
-def get_regions_data(args: dict) -> List[str]:
-    if args['region']:
-        return [{"region": args['region']}]
+def get_regions_data(region: str = None, regions_file: str = None) -> List[str]:
+    if region:
+        return [{'region': region}]
     else:
-        if args['regions_file']:
-            return read_csv_to_list_dict(args['regions_file'], delimiter="\t")
+        if regions_file:
+            return read_csv_to_list_dict(regions_file, delimiter='\t')
         else:
-            raise ValueError('No input data for Target Regions')
+            raise NoTargetRegionDataError('No input data for Target Regions')
 
 
-def get_target_regions(args:dict) -> List[TargetRegion]:
-    region_strings = get_regions_data(args)
+def get_target_regions(region: str = None, regions_file: str = None) -> List[TargetRegion]:
+    region_strings = get_regions_data(region, regions_file)
     regions = parse_dicts_to_target_regions(region_strings)
 
     return regions
@@ -28,7 +28,7 @@ def parse_dicts_to_target_regions(data: List[dict]) -> List[TargetRegion]:
 
     for line in data:
         region = parse_string_to_target_region(line["region"])
-        region.id = line["id"]  if "id" in line else "ID",
+        region.id = line["id"]  if "id" in line else "ID"
         target_regions.append(region)
 
     return target_regions

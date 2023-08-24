@@ -125,9 +125,22 @@ Uses shared input arguments: output directory and config file.
 
 Configs used for retrieve command: ``species_id`` (set to ``Human`` by default) and ``assembly`` (set to ``GRCh38`` by default)
 
+Possible arguments for retrieve:
+
+| Argument       | Description                                               |
+|----------------|-----------------------------------------------------------|
+| --region       | String with region data, example: chr19:50398851-50399053 |
+| --regions_file | Path tsv file with regions                                |
+
 Example:
 ```
-python3 src/cli.py --out_dir my_output retrieve --file examples/target_regions.tsv
+python3 src/cli.py --out_dir my_output retrieve --region chr19:50398851-50399053
+```
+
+or
+
+```
+python3 src/cli.py --out_dir my_output retrieve --regions_file examples/target_regions.tsv
 ```
 
 
