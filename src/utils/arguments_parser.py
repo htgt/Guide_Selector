@@ -66,8 +66,8 @@ class InputArguments:
             help='Path to reference GTF file'
         )
 
-    @staticmethod
-    def _add_guide_selector_command_parser(subparsers: _SubParsersAction) -> None:
+ 
+    def _add_guide_selector_command_parser(self, subparsers: _SubParsersAction) -> None:
         parser_guide_selector = subparsers.add_parser(
             'guide_selector',
             help='Guide Selector command to run retrieve->mutator together'
