@@ -10,10 +10,13 @@ class TargetRegion:
     end: int
     id: str = ""
 
+    def __repr__(self):
+        return f'chr{self.chromosome}:{self.start}-{self.end}'
+
 
 ## Input string format is "chr1:100-150"
 def parse_string_to_target_region(region_string: str) -> TargetRegion:
-    REGION_PATTERN = r'(chr?){0,1}(.{1,2}):(\d+)-(\d+)'
+    REGION_PATTERN = r'(chr?)?(.{1,2}):(\d+)-(\d+)'
 
     match = re.match(REGION_PATTERN, region_string)
     if match:

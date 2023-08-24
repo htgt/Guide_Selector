@@ -6,6 +6,7 @@ from mutator.guide_determiner import GuideDeterminer
 from mutator.runner import Runner
 from mutator.retrieve import \
     retrieve_data_for_region, \
+    get_target_regions, \
     get_regions_data, \
     get_guides_data, \
     write_gff_to_input_tsv
@@ -33,13 +34,14 @@ def main() -> None:
 def run_retrieve_cmd(args: dict, config: dict) -> None:
     OUTPUT_FILE = 'guides.tsv'
 
-    regions = get_regions_data(args)
+    regions = get_target_regions(args)
 
     guide_dicts = get_guides_data(regions, config)
 
     output_path = os.path.join(args['out_dir'], OUTPUT_FILE)
     write_gff_to_input_tsv(output_path, guide_dicts)
 
+    print('====================================')
     print('Guides retrieved: ', len(guide_dicts))
     print('Output saved to: ', output_path)
 
