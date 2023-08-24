@@ -36,7 +36,7 @@ def main() -> None:
 def run_retrieve_cmd(args: dict, config: dict) -> None:
     OUTPUT_FILE = 'guides.tsv'
 
-    regions = get_target_regions(args)
+    regions = get_target_regions(region=args['region'], regions_file=args['region_file'])
 
     guide_dicts = get_guides_data(regions, config)
 
