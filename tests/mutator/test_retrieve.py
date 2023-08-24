@@ -13,17 +13,17 @@ class TestRetrieveModule(TestCase):
 
         def return_function(region, config):
             if region == region1:
-                return {'guide_id': '263969621', 'chr': 'chr19', 'start': 50398851, 'end': 50398873, 'grna_strand': '+', 'ot_summary': '263969621', 'seq': 'TGGGATGAAAAACGTGGGACAGG'},
+                return {'guide_id': '263969621', 'chr': 'chr19', 'start': 50398851, 'end': 50398873, 'grna_strand': '+', 'ot_summary': ['{0: 2}'], 'seq': 'TGGGATGAAAAACGTGGGACAGG'},
             if region == region2:
-                return {'guide_id': '22222', 'chr': 'chr2', 'start': 133, 'end': 150, 'grna_strand': '-', 'ot_summary': '1111', 'seq': 'TGGGAT'},
+                return {'guide_id': '22222', 'chr': 'chr2', 'start': 133, 'end': 150, 'grna_strand': '-', 'ot_summary': ['{0: 1}'], 'seq': 'TGGGAT'},
 
         mock_retrieve_data_for_region.side_effect = return_function
 
         result = get_guides_data(regions, config)
 
         expected_result = [
-            {'guide_id': '263969621', 'chr': 'chr19', 'start': 50398851, 'end': 50398873, 'grna_strand': '+', 'ot_summary': '263969621', 'seq': 'TGGGATGAAAAACGTGGGACAGG'},
-            {'guide_id': '22222', 'chr': 'chr2', 'start': 133, 'end' : 150, 'grna_strand': '-', 'ot_summary': '1111', 'seq': 'TGGGAT'},
+            {'guide_id': '263969621', 'chr': 'chr19', 'start': 50398851, 'end': 50398873, 'grna_strand': '+', 'ot_summary': ['{0: 2}'], 'seq': 'TGGGATGAAAAACGTGGGACAGG'},
+            {'guide_id': '22222', 'chr': 'chr2', 'start': 133, 'end' : 150, 'grna_strand': '-', 'ot_summary': ['{0: 1}'], 'seq': 'TGGGAT'},
         ]
 
         self.assertEqual(result, expected_result)
@@ -39,10 +39,15 @@ class TestRetrieveModule(TestCase):
     X	WGE	CDS	48900480	48900500	.	-	.	ID=Cr_285858433;Parent=C_285858433;Name=285858433;color=#45A825;Sequence=GCACCTAAGGAATCCGGCAGTGG;
     X	WGE	CDS	48900478	48900480	.	-	.	ID=PAM_285858433;Parent=C_285858433;Name=285858433;color=#1A8599;Sequence=GCACCTAAGGAATCCGGCAGTGG"""
 
-        expected_entries = [
-            {'guide_id'     : '285858433', 'chr': 'chrX', 'start': 48900478,
-                'end'       : 48900500, 'grna_strand': '-',
-                'ot_summary': '285858433', 'seq': 'GCACCTAAGGAATCCGGCAGTGG'}]
+        expected_entries = [{
+            'guide_id': '285858433',
+            'chr': 'chrX',
+            'start': 48900478,
+            'end' : 48900500,
+            'grna_strand': '-',
+            'ot_summary': ['{0: 1', ' 1: 0', ' 2: 1', ' 3: 8', ' 4: 98}'],
+            'seq': 'GCACCTAAGGAATCCGGCAGTGG',
+        }]
 
         parsed_entries = parse_gff(gff_data)
         self.assertCountEqual(parsed_entries, expected_entries)
