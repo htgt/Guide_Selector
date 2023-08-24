@@ -4,7 +4,7 @@ import json
 from typing import List
 
 from utils.exceptions import FileFormatError
-from src.mutator.mutation_builder import MutationBuilder
+from mutator.mutation_builder import MutationBuilder
 
 
 # copied from targeton-designer- need to make a shared repo

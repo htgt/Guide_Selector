@@ -1,8 +1,16 @@
-import os
+import sys
+import os.path
 
-from mutator.guide_determiner import GuideDeterminer, parse_gff, write_gff_to_input_tsv
+from typing import List
+from mutator.guide_determiner import GuideDeterminer
 from mutator.runner import Runner
-from src.utils.file_system import write_json_failed_guides
+from mutator.retrieve import \
+    retrieve_data_for_region, \
+    get_target_regions, \
+    get_regions_data, \
+    get_guides_data, \
+    write_gff_to_input_tsv
+from utils.file_system import write_json_failed_guides
 from utils.arguments_parser import InputArguments
 from utils.config import prepare_config
 from utils.file_system import write_dict_list_to_csv
@@ -11,10 +19,9 @@ from utils.file_system import write_dict_list_to_csv
 def resolve_command(command: str, args: dict, config: dict) -> None:
     if command == "mutator":
         run_mutator_cmd(args, config)
+    if command == "retrieve":
+        run_retrieve_cmd(args, config)
 
-    # Temporary for sprint 23. Delete after
-    if command == "wge":
-        run_wge_cmd(args, config)
 
 
 def main() -> None:
@@ -26,7 +33,24 @@ def main() -> None:
     resolve_command(command, args, config)
 
 
+def run_retrieve_cmd(args: dict, config: dict) -> None:
+    OUTPUT_FILE = 'guides.tsv'
+
+    regions = get_target_regions(region=args['region'], regions_file=args['region_file'])
+
+    guide_dicts = get_guides_data(regions, config)
+
+    output_path = os.path.join(args['out_dir'], OUTPUT_FILE)
+    write_gff_to_input_tsv(output_path, guide_dicts)
+
+    print('====================================')
+    print('Guides retrieved: ', len(guide_dicts))
+    print('Output saved to: ', output_path)
+
+
 def run_mutator_cmd(args: dict, config: dict) -> None:
+    OUTPUT_TSV_FILE = 'output.tsv'
+    OUTPUT_VCF_FILE = 'output.vcf'
     runner = Runner(config)
 
     print('Running PAM & Protospacer mutator')
@@ -42,11 +66,11 @@ def run_mutator_cmd(args: dict, config: dict) -> None:
 
     # Write Output Files
     tsv_rows = runner.as_rows(config)
-    tsv_path = os.path.join(args['out_dir'], 'output.tsv')
+    tsv_path = os.path.join(args['out_dir'], OUTPUT_TSV_FILE)
     write_dict_list_to_csv(tsv_path, tsv_rows, tsv_rows[0].keys(), "\t")
     print('Output saved to', tsv_path)
 
-    vcf_path = os.path.join(args['out_dir'], 'output.vcf')
+    vcf_path = os.path.join(args['out_dir'], OUTPUT_VCF_FILE)
     runner.write_output_to_vcf(vcf_path)
     print('Output saved to', vcf_path)
 
@@ -54,20 +78,6 @@ def run_mutator_cmd(args: dict, config: dict) -> None:
         failed_guides_path = os.path.join(args['out_dir'], 'failed_guides.json')
         write_json_failed_guides(failed_guides_path, runner.failed_mutations)
         print('Failed guides saved to', failed_guides_path)
-
-
-# Temporary for sprint 23. Delete after.
-def run_wge_cmd(args: dict, config: dict) -> None:
-    gff = ''
-    with open('examples/test_guidesX.gff', 'r') as file:
-        gff = file.read()
-
-    guide_dicts = parse_gff(gff)
-    for entry in guide_dicts:
-        print(entry)
-
-    output_file = 'wge.tsv'
-    write_gff_to_input_tsv(output_file, guide_dicts)
 
 
 if __name__ == '__main__':

@@ -106,14 +106,60 @@ python3 src/cli.py --version
 Available commands:
 - --version
 - mutator
+- retrieve
 
+Shared arguments (not required):
+
+| Argument   | Description               |
+|------------|---------------------------|
+| --conf     | Path to config file       |
+| --out_dir  | Path to output directory  |
+
+Shared arguments should be specified before command
+
+## Retrieve command
+Retrieve command gets data from WGE and writes a tsv file that can serve as an input for mutator command. 
+Command requires the Target region ID and Loci.
+
+Uses shared input arguments: output directory and config file.
+
+Configs used for retrieve command: ``species_id`` (set to ``Human`` by default) and ``assembly`` (set to ``GRCh38`` by default)
+
+Possible arguments for retrieve:
+
+| Argument       | Description                                               |
+|----------------|-----------------------------------------------------------|
+| --region       | String with region data, example: chr19:50398851-50399053 |
+| --regions_file | Path tsv file with regions                                |
+
+Example:
+```
+python3 src/cli.py --out_dir my_output retrieve --region chr19:50398851-50399053
+```
+
+or
+
+```
+python3 src/cli.py --out_dir my_output retrieve --regions_file examples/target_regions.tsv
+```
+
+
+## Mutator command
 Mutator command runs the PAM mutator workflow in one command. 
 Mutator requires the Guide Loci + ID, a reference GTF file to run and output directory path. 
 Custom configuration can be passed to the command for any tweaks necessary.
+
+| Argument | Description                |
+|----------|----------------------------|
+| --tsv    | Path to input tsv file     |
+| --gtf    | Path to reference gtf file |
+
 Example:
 ```
-python3 src/cli.py mutator --gtf ./example.gtf --tsv guides.tsv --conf custom.conf --out_dir ./output/
+python3 src/cli.py --conf custom.conf --out_dir ./output/ mutator --gtf ./example.gtf --tsv guides.tsv 
 ```
+
+
 
 ### Run with Docker
 
@@ -144,5 +190,10 @@ Or manually:
 source venv/bin/activate
 
 python -m unittest -v
+```
+
+### Run code style linting
+```sh
+pycodestyle src tests
 ```
 
