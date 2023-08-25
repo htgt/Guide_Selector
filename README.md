@@ -127,10 +127,10 @@ Configs used for retrieve command: ``species_id`` (set to ``Human`` by default) 
 
 Possible arguments for retrieve:
 
-| Argument       | Description                                               |
-|----------------|-----------------------------------------------------------|
-| --region       | String with region data, example: chr19:50398851-50399053 |
-| --regions_file | Path tsv file with regions                                |
+| Argument      | Description                                               |
+|---------------|-----------------------------------------------------------|
+| --region      | String with region data, example: chr19:50398851-50399053 |
+| --region_file | Path tsv file with regions                                |
 
 Example:
 ```
@@ -140,7 +140,7 @@ python3 src/cli.py --out_dir my_output retrieve --region chr19:50398851-50399053
 or
 
 ```
-python3 src/cli.py --out_dir my_output retrieve --regions_file examples/target_regions.tsv
+python3 src/cli.py --out_dir my_output retrieve --region_file examples/target_regions.tsv
 ```
 
 
@@ -164,11 +164,11 @@ python3 src/cli.py --conf custom.conf --out_dir ./output/ mutator --gtf ./exampl
 Runs retrieve-mutator steps together, accepts region (or file with regions) and gtf reference as arguments
 
 
-| Argument       | Description                                               |
-|----------------|-----------------------------------------------------------|
-| --region       | String with region data, example: chr19:50398851-50399053 |
-| --regions_file | Path tsv file with regions                                |
-| --gtf          | Path to reference gtf file                                |
+| Argument      | Description                                               |
+|---------------|-----------------------------------------------------------|
+| --region      | String with region data, example: chr19:50398851-50399053 |
+| --region_file | Path tsv file with regions                                |
+| --gtf         | Path to reference gtf file                                |
 
 
 ### Run with Docker

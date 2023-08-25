@@ -66,7 +66,6 @@ class InputArguments:
             help='Path to reference GTF file'
         )
 
- 
     def _add_guide_selector_command_parser(self, subparsers: _SubParsersAction) -> None:
         parser_guide_selector = subparsers.add_parser(
             'guide_selector',
@@ -74,18 +73,16 @@ class InputArguments:
         )
 
         self._add_region_group(parser_guide_selector)
-        
+
         parser_guide_selector.add_argument(
             '--gtf',
             type=str,
             help='Path to reference GTF file'
         )
 
-
     def _add_retrieve_command_parser(self, subparsers: _SubParsersAction) -> None:
         parser_retrieve = subparsers.add_parser('retrieve', help='Retrieve command help')
         self._add_region_group(parser_retrieve)
-        
 
     @staticmethod
     def _add_region_group(parser: ArgumentParser):
@@ -97,7 +94,7 @@ class InputArguments:
             help='Target region specified in format chr1:1-10001'
         )
         region_group.add_argument(
-            '--regions_file',
+            '--region_file',
             type=str,
             help='Path to the input file with data for Target Regions separated by new line'
         )

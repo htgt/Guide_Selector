@@ -89,4 +89,4 @@ class GuideSequence(BaseSequence):
             window_end = pam.end + self.window_length - 1
 
         return window_start, window_end
-
+    

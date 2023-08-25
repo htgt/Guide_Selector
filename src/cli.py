@@ -38,7 +38,7 @@ def main() -> None:
 def run_guide_selector_cmd(args: dict, config: dict) -> None:
     tsv_path = run_retrieve_cmd(args, config)
 
-    args["tsv"] = tsv_path
+    args['tsv'] = tsv_path
     run_mutator_cmd(args, config)
 
 
@@ -46,7 +46,8 @@ def run_retrieve_cmd(args: dict, config: dict) -> str:
     OUTPUT_FILE = 'guides.tsv'
     print('Run retrieve command with config:', config)
 
-    regions = get_target_regions(region=args["region"], regions_file=args["regions_file"])
+    print(args)
+    regions = get_target_regions(region=args['region'], region_file=args['region_file'])
 
     guide_dicts = get_guides_data(regions, config)
 
