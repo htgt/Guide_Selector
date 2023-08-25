@@ -7,7 +7,6 @@ from mutator.runner import Runner
 from mutator.retrieve import \
     retrieve_data_for_region, \
     get_target_regions, \
-    get_regions_data, \
     get_guides_data, \
     write_gff_to_input_tsv
 from utils.file_system import write_json_failed_guides
@@ -49,7 +48,12 @@ def run_retrieve_cmd(args: dict, config: dict) -> str:
     print(args)
     regions = get_target_regions(region=args['region'], region_file=args['region_file'])
 
-    guide_dicts = get_guides_data(regions, config)
+    request_options = {
+        'species_id': config['species_id'],
+        'assembly': config['assembly']
+
+    }
+    guide_dicts = get_guides_data(regions, request_options)
 
     output_path = os.path.join(args['out_dir'], OUTPUT_FILE)
     write_gff_to_input_tsv(output_path, guide_dicts)
