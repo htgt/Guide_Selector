@@ -24,7 +24,6 @@ def resolve_command(command: str, args: dict, config: dict) -> None:
         run_guide_selector_cmd(args, config)
 
 
-
 def main() -> None:
     parsed_input = InputArguments()
     args = parsed_input.arguments
@@ -45,7 +44,6 @@ def run_retrieve_cmd(args: dict, config: dict) -> str:
     OUTPUT_FILE = 'guides.tsv'
     print('Run retrieve command with config:', config)
 
-    print(args)
     regions = get_target_regions(region=args['region'], region_file=args['region_file'])
 
     request_options = {
