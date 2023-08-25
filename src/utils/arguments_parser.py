@@ -50,6 +50,7 @@ class InputArguments:
 
         self._add_mutator_command_parser(subparsers)
         self._add_retrieve_command_parser(subparsers)
+        self._add_guide_selector_command_parser(subparsers)
 
     @staticmethod
     def _add_mutator_command_parser(subparsers: _SubParsersAction) -> None:
@@ -57,16 +58,31 @@ class InputArguments:
         parser_mutator.add_argument(
             '--tsv',
             type=str,
-            help='Path to Guide Locus as TSV file. Required columns: guide start, end, chr, strand and id'
+            help='Path to Guide Locus as TSV file. Required columns: guide start, end, strand and id'
         )
-        parser_mutator.add_argument('--gtf', type=str, help='Path to reference GTF file')
+        parser_mutator.add_argument(
+            '--gtf',
+            type=str,
+            help='Path to reference GTF file'
+        )
 
+    def _add_guide_selector_command_parser(self, subparsers: _SubParsersAction) -> None:
+        parser_guide_selector = subparsers.add_parser(
+            'guide_selector',
+            help='Guide Selector command to run retrieve->mutator together'
+        )
 
+        self._add_region_group(parser_guide_selector)
+
+        parser_guide_selector.add_argument(
+            '--gtf',
+            type=str,
+            help='Path to reference GTF file'
+        )
 
     def _add_retrieve_command_parser(self, subparsers: _SubParsersAction) -> None:
         parser_retrieve = subparsers.add_parser('retrieve', help='Retrieve command help')
         self._add_region_group(parser_retrieve)
-        
 
     @staticmethod
     def _add_region_group(parser: ArgumentParser):
@@ -78,8 +94,8 @@ class InputArguments:
             help='Target region specified in format chr1:1-10001'
         )
         region_group.add_argument(
-            '--regions_file',
+            '--region_file',
             type=str,
-            help='Path to the input file with data for Target Regions'
+            help='Path to the input file with data for Target Regions separated by new line'
         )
 

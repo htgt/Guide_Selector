@@ -7,7 +7,6 @@ from mutator.runner import Runner
 from mutator.retrieve import \
     retrieve_data_for_region, \
     get_target_regions, \
-    get_regions_data, \
     get_guides_data, \
     write_gff_to_input_tsv
 from utils.file_system import write_json_failed_guides
@@ -21,7 +20,8 @@ def resolve_command(command: str, args: dict, config: dict) -> None:
         run_mutator_cmd(args, config)
     if command == "retrieve":
         run_retrieve_cmd(args, config)
-
+    if command == "guide_selector":
+        run_guide_selector_cmd(args, config)
 
 
 def main() -> None:
@@ -33,12 +33,25 @@ def main() -> None:
     resolve_command(command, args, config)
 
 
-def run_retrieve_cmd(args: dict, config: dict) -> None:
+def run_guide_selector_cmd(args: dict, config: dict) -> None:
+    tsv_path = run_retrieve_cmd(args, config)
+
+    args['tsv'] = tsv_path
+    run_mutator_cmd(args, config)
+
+
+def run_retrieve_cmd(args: dict, config: dict) -> str:
     OUTPUT_FILE = 'guides.tsv'
+    print('Run retrieve command with config:', config)
 
-    regions = get_target_regions(region=args['region'], regions_file=args['region_file'])
+    regions = get_target_regions(region=args['region'], region_file=args['region_file'])
 
-    guide_dicts = get_guides_data(regions, config)
+    request_options = {
+        'species_id': config['species_id'],
+        'assembly': config['assembly']
+
+    }
+    guide_dicts = get_guides_data(regions, request_options)
 
     output_path = os.path.join(args['out_dir'], OUTPUT_FILE)
     write_gff_to_input_tsv(output_path, guide_dicts)
@@ -46,6 +59,8 @@ def run_retrieve_cmd(args: dict, config: dict) -> None:
     print('====================================')
     print('Guides retrieved: ', len(guide_dicts))
     print('Output saved to: ', output_path)
+
+    return output_path
 
 
 def run_mutator_cmd(args: dict, config: dict) -> None:

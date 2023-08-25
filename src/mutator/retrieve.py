@@ -6,21 +6,21 @@ from mutator.target_region import parse_string_to_target_region, TargetRegion
 from utils.exceptions import GetDataFromWGEError, NoTargetRegionDataError
 
 
-def get_regions_data(region: str = None, regions_file: str = None) -> List[str]:
-    if region:
-        return [{'region': region}]
-    else:
-        if regions_file:
-            return read_csv_to_list_dict(regions_file, delimiter='\t')
-        else:
-            raise NoTargetRegionDataError('No input data for Target Regions')
-
-
-def get_target_regions(region: str = None, regions_file: str = None) -> List[TargetRegion]:
-    region_strings = get_regions_data(region, regions_file)
+def get_target_regions(region: str = None, region_file: str = None) -> List[TargetRegion]:
+    region_strings = parse_regions_data(region, region_file)
     regions = parse_dicts_to_target_regions(region_strings)
 
     return regions
+
+
+def parse_regions_data(region: str = None, region_file: str = None) -> List[str]:
+    if region:
+        return [{'region': region}]
+    else:
+        if region_file:
+            return read_csv_to_list_dict(region_file, delimiter='\t')
+        else:
+            raise NoTargetRegionDataError('No input data for Target Regions')
 
 
 def parse_dicts_to_target_regions(data: List[dict]) -> List[TargetRegion]:
@@ -34,7 +34,7 @@ def parse_dicts_to_target_regions(data: List[dict]) -> List[TargetRegion]:
     return target_regions
 
 
-def get_guides_data(regions: List[TargetRegion], config: dict) -> List[dict]:
+def get_guides_data(regions: List[TargetRegion], request_options: dict) -> List[dict]:
     guide_dicts = []
     for item in regions:
         print('Retrieve data for Target Region',
@@ -43,10 +43,8 @@ def get_guides_data(regions: List[TargetRegion], config: dict) -> List[dict]:
         )
 
         try:
-            data = retrieve_data_for_region(item, config)
+            data = retrieve_data_for_region(item, request_options)
             guide_dicts.extend(data)
-
-            print('Region id:', item.id)
 
         except GetDataFromWGEError:
             pass
@@ -54,13 +52,13 @@ def get_guides_data(regions: List[TargetRegion], config: dict) -> List[dict]:
     return guide_dicts
 
 
-def retrieve_data_for_region(region: TargetRegion, config: dict) -> dict:
+def retrieve_data_for_region(region: TargetRegion, request_options: dict) -> dict:
     gff_data = get_data_from_wge_by_coords(
         chromosome=region.chromosome,
         start=region.start,
         end=region.end,
-        species_id=config['species_id'],
-        assembly=config['assembly'],
+        species_id=request_options['species_id'],
+        assembly=request_options['assembly'],
     )
 
     try:
