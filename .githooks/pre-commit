@@ -1,0 +1,24 @@
+#!/bin/bash
+
+BLUE=$(tput setaf 4)
+GREEN=$(tput setaf 2)
+RESET=$(tput sgr0)
+
+# Redirect output to stderr.
+exec 1>&2
+
+# Run pycodestyle on the staged Python files.
+pycodestyle --exclude=venv,.git --filename=*.py --max-line-length=100 $(git diff --cached --name-only --diff-filter=ACM | grep '\.py$')
+
+# Save the exit status of pycodestyle.
+pycodestyle_exit_status=$?
+
+# Display a message indicating whether pycodestyle found issues.
+if [ $pycodestyle_exit_status -eq 0 ]; then
+    echo "${GREEN}pycodestyle: No issues found.${RESET}"
+else
+    echo "${RED}pycodestyle: Style violations found. Check the output for details.${RESET}"
+fi
+
+# Continue with the commit regardless of pycodestyle results.
+exit 0
