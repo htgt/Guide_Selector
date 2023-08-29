@@ -9,3 +9,5 @@ pyfakefs==5.2.2
 pyranges==0.0.129
 requests==2.30.0
 gffutils==0.12
+black==23.7.0
+isort==5.12.0
