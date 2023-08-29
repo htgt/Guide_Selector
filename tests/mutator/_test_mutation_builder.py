@@ -11,7 +11,7 @@ from mutator.codon import WindowCodon
 
 class TestGuideSequence(TestCase):
     def test_get_window_frame_plus_plus(self):
-        guide = GuideSequence(67626572, 67626594, is_positive_strand=True, chromosome='16', frame=0)
+        guide = GuideSequence('16', 67626572, 67626594, is_positive_strand=True, frame=0)
         cds = CodingRegion(67626555, 67626715, is_positive_strand=True, chromosome='16', frame=2)
 
         control_codons = [
@@ -29,8 +29,7 @@ class TestGuideSequence(TestCase):
         #self.assertEqual(codons, control_codons)
 
     def test_get_window_frame_CTCF(self):
-        guide = GuideSequence(67610855, 67610877, is_positive_strand=True,
-                              chromosome='16', frame=0)
+        guide = GuideSequence('16', 67610855, 67610877, is_positive_strand=True, frame=0)
         cds = CodingRegion(676108336, 67611613, is_positive_strand=True,
                            chromosome='16', frame=0)
 
@@ -51,8 +50,7 @@ class TestGuideSequence(TestCase):
     #    self.assertEqual(codons, control_codons)
 
     def test_get_window_frame_ATRX(self):
-        guide = GuideSequence(77696636, 77696658, is_positive_strand=True,
-                              chromosome='X', frame=0)
+        guide = GuideSequence('X', 77696636, 77696658, is_positive_strand=True, frame=0)
         cds = CodingRegion(77696577, 77696704, is_positive_strand=False,
                            chromosome='X', frame=0)
 
@@ -95,7 +93,9 @@ class TestGetWindow(TestCase):
                 'get_sequence_by_coords',
                 side_effect=mock_get_sequence_by_coords
         ):
-            guide = GuideSequence(guide_start, guide_end, is_positive_strand=True, chromosome='X', frame=guide_frame)
+            guide = GuideSequence(
+                'X', guide_start, guide_end, is_positive_strand=True, frame=guide_frame
+            )
             result_window = get_window(guide, coding_region)
 
     #    self.assertEqual(result_window, window)

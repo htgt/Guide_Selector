@@ -1,16 +1,14 @@
 from typing import Tuple, List
 
-import pyranges as pr
 import pandas as pd
 
-from utils.file_system import read_csv_to_list_dict, write_dict_list_to_csv
 from utils.exceptions import GuideDeterminerError
+from mutator.guide import GuideSequence
 
 
 class GuideDeterminer:
-    def parse_loci(self, gtf: str, guide_tsv: str) -> None:
-        gtf_data, guide_data = self.read_input_files(gtf, guide_tsv)
-        coding_regions = self.get_coding_regions_for_all_guides(gtf_data, guide_data)
+    def parse_loci(self, gtf_data: pd.DataFrame, guide_sequences: List[GuideSequence]) -> None:
+        coding_regions = self.get_coding_regions_for_all_guides(gtf_data, guide_sequences)
         coding_regions['guide_frame'] = coding_regions.apply(
             self.determine_frame_for_guide, axis=1
         )
@@ -18,21 +16,11 @@ class GuideDeterminer:
         print(guide_frame_df)
         return guide_frame_df
 
-    def read_input_files(self, gtf: str, guide_tsv: str) -> Tuple[List[dict], pd.DataFrame]:
-        gtf_data = pr.read_gtf(gtf, as_df=True)
-        gtf_data['Start'] += 1  # pyranges uses 0-based coords
-        guide_data = read_csv_to_list_dict(guide_tsv, delimiter="\t")
-
-        for guide in guide_data:
-            guide['chr'] = add_chr_prefix(guide['chr'])
-
-        return (gtf_data, guide_data)
-
     def get_coding_regions_for_all_guides(
-        self, gtf_data: pd.DataFrame, guide_data: List[dict]
+        self, gtf_data: pd.DataFrame, guide_sequences: List[GuideSequence]
     ) -> pd.DataFrame:
         coding_regions = pd.DataFrame()
-        for guide in guide_data:
+        for guide in guide_sequences:
             try:
                 coding_region = self.get_coding_region_for_guide(gtf_data, guide)
             except GuideDeterminerError as e:
@@ -46,30 +34,34 @@ class GuideDeterminer:
             )
         return coding_regions
 
-    def get_coding_region_for_guide(self, gtf_data: pd.DataFrame, guide: dict) -> pd.DataFrame:
+    def get_coding_region_for_guide(
+        self, gtf_data: pd.DataFrame, guide: GuideSequence
+    ) -> pd.DataFrame:
         feature_cond = gtf_data['Feature'] == 'CDS'
-        chrom_cond = gtf_data['Chromosome'] == guide['chr']
-        start_cond = gtf_data['Start'] <= int(guide['end'])
-        end_cond = gtf_data['End'] >= int(guide['start'])
+        chrom_cond = gtf_data['Chromosome'] == guide.chromosome
+        start_cond = gtf_data['Start'] <= guide.end
+        end_cond = gtf_data['End'] >= guide.start
         coding_region = gtf_data[feature_cond & chrom_cond & start_cond & end_cond].copy()
 
         if coding_region.empty:
             raise GuideDeterminerError(
-                f'Guide {guide["guide_id"]} does not overlap with any coding regions'
+                f'Guide {guide.guide_id} does not overlap with any coding regions'
             )
         if len(coding_region) > 1:
             raise GuideDeterminerError(
-                f'Guide {guide["guide_id"]} overlaps with multiple coding regions'
+                f'Guide {guide.guide_id} overlaps with multiple coding regions'
             )
         return coding_region
 
-    def add_guide_data_to_dataframe(self, dataframe: pd.DataFrame, guide: dict) -> pd.DataFrame:
+    def add_guide_data_to_dataframe(
+        self, dataframe: pd.DataFrame, guide: GuideSequence
+    ) -> pd.DataFrame:
         dataframe = dataframe.copy()
-        dataframe['guide_id'] = guide['guide_id']
+        dataframe['guide_id'] = guide.guide_id
         dataframe.set_index('guide_id', inplace=True)
-        dataframe['guide_start'] = int(guide['start'])
-        dataframe['guide_end'] = int(guide['end'])
-        dataframe['guide_strand'] = str(guide['grna_strand'])
+        dataframe['guide_start'] = guide.start
+        dataframe['guide_end'] = guide.end
+        dataframe['guide_strand'] = guide.strand_symbol
         return dataframe
 
     def determine_frame_for_guide(self, row: pd.Series) -> int:
@@ -107,8 +99,3 @@ class GuideDeterminer:
             'guide_frame',
         ]
         return coding_regions[required_cols].copy()
-
-def add_chr_prefix(chromosome : str) -> str:
-    if not chromosome.startswith('chr'):
-        return 'chr' + chromosome
-    return chromosome

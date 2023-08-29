@@ -3,6 +3,9 @@ import csv
 import json
 from typing import List
 
+import pandas as pd
+import pyranges as pr
+
 from utils.exceptions import FileFormatError
 from mutator.mutation_builder import MutationBuilder
 
@@ -50,3 +53,9 @@ def parse_json(file_path: str) -> dict:
             raise FileFormatError
 
     return result
+
+
+def read_gtf_to_df(gtf: str) -> pd.DataFrame:
+    gtf_df = pr.read_gtf(gtf, as_df=True)
+    gtf_df['Start'] += 1  # pyranges uses 0-based coords
+    return gtf_df

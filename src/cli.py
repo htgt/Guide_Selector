@@ -2,6 +2,7 @@ import sys
 import os.path
 
 from typing import List
+
 from mutator.guide_determiner import GuideDeterminer
 from mutator.runner import Runner
 from mutator.retrieve import \
@@ -12,7 +13,9 @@ from mutator.retrieve import \
 from utils.file_system import write_json_failed_guides
 from utils.arguments_parser import InputArguments
 from utils.config import prepare_config
-from utils.file_system import write_dict_list_to_csv
+from utils.file_system import write_dict_list_to_csv, read_gtf_to_df
+from adaptors.parsers.parse_guide_tsv import read_guide_tsv_to_guide_sequences
+from adaptors.parsers.parse_wge_gff import read_wge_gff_to_guide_sequences
 
 
 def resolve_command(command: str, args: dict, config: dict) -> None:
@@ -70,8 +73,10 @@ def run_mutator_cmd(args: dict, config: dict) -> None:
 
     print('Running PAM & Protospacer mutator')
     # Run Guide Frame Determiner
+    gtf_data = read_gtf_to_df(args['gtf'])
+    guide_sequences = read_guide_tsv_to_guide_sequences(args['tsv'])
     guide_determiner = GuideDeterminer()
-    guide_data_df = guide_determiner.parse_loci(args['gtf'], args['tsv'])
+    guide_data_df = guide_determiner.parse_loci(gtf_data, guide_sequences)
     runner.parse_coding_regions(guide_data_df)
 
     # Determine Window and Mutations
