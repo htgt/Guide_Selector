@@ -6,6 +6,9 @@ from utils.config import prepare_config
 
 
 class TestPrepareConfig(TestCase):
+    def setUp(self):
+        self.setUpPyfakefs()
+
     @patch('utils.config.DEFAULT_CONFIG_FILE', 'default_config.json')
     def test_prepare_config_default(self):
         # arrange
@@ -17,7 +20,7 @@ class TestPrepareConfig(TestCase):
         actual = prepare_config('')
 
         # assert
-        self.assertEqual(actual, expected)
+        self.assertEqual(expected, actual)
 
     @patch('utils.config.DEFAULT_CONFIG_FILE', 'default_config.json')
     def test_prepare_config_custom(self):
@@ -32,4 +35,4 @@ class TestPrepareConfig(TestCase):
         actual = prepare_config('custom_config.json')
 
         # assert
-        self.assertEqual(actual, expected)
+        self.assertEqual(expected, actual)

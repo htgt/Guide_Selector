@@ -30,13 +30,13 @@ class TestGuideDeterminer(TestCase):
             'gene_name': 'CTCF',
             'exon_number': '3',
         }, index=[0])
-        self.guide_data = {
-            'guide_id': '1139540371',
-            'chr': 'chr16',
-            'start': '67610855',
-            'end': '67610877',
-            'grna_strand': '+'
-        }
+        self.guide_sequence = Mock(
+            guide_id='1139540371',
+            chromosome='chr16',
+            start=67610855,
+            end=67610877,
+            strand_symbol='+',
+        )
 
     def test_get_coding_region_for_guide_success(self):
         # arrange
@@ -44,7 +44,9 @@ class TestGuideDeterminer(TestCase):
         expected = self.coding_region
 
         # act
-        actual = GuideDeterminer.get_coding_region_for_guide(mock_object, self.gtf_data, self.guide_data)
+        actual = GuideDeterminer.get_coding_region_for_guide(
+            mock_object, self.gtf_data, self.guide_sequence
+        )
 
         # assert
         pd.testing.assert_frame_equal(actual, expected, check_exact=True)
@@ -52,17 +54,17 @@ class TestGuideDeterminer(TestCase):
     def test_get_coding_region_for_guide_raises_error_when_no_region_found(self):
         # arrange
         mock_object = Mock()
-        guide_data = {
-            'guide_id': '1139541475',
-            'chr': 'chr16',
-            'start': '67620712',
-            'end': '67620734',
-        }
+        guide_sequence = Mock(
+            guide_id='1139541475',
+            chromosome='chr16',
+            start=67620712,
+            end=67620734,
+        )
         expected = 'Guide 1139541475 does not overlap with any coding regions'
 
         # act
         with self.assertRaises(GuideDeterminerError) as cm:
-            GuideDeterminer.get_coding_region_for_guide(mock_object, self.gtf_data, guide_data)
+            GuideDeterminer.get_coding_region_for_guide(mock_object, self.gtf_data, guide_sequence)
 
         # assert
         self.assertEqual(str(cm.exception), expected)
@@ -70,17 +72,17 @@ class TestGuideDeterminer(TestCase):
     def test_get_coding_region_for_guide_raises_error_when_multiple_regions_found(self):
         # arrange
         mock_object = Mock()
-        guide_data = {
-            'guide_id': '1139541055',
-            'chr': 'chr16',
-            'start': '67616774',
-            'end': '67616796'
-        }
+        guide_sequence = Mock(
+            guide_id='1139541055',
+            chromosome='chr16',
+            start=67616774,
+            end=67616796,
+        )
         expected = 'Guide 1139541055 overlaps with multiple coding regions'
 
         # act
         with self.assertRaises(GuideDeterminerError) as cm:
-            GuideDeterminer.get_coding_region_for_guide(mock_object, self.gtf_data, guide_data)
+            GuideDeterminer.get_coding_region_for_guide(mock_object, self.gtf_data, guide_sequence)
 
         # assert
         self.assertEqual(str(cm.exception), expected)
@@ -103,7 +105,9 @@ class TestGuideDeterminer(TestCase):
         }, index=pd.Index(['1139540371'], name='guide_id'))
 
         # act
-        actual = GuideDeterminer.add_guide_data_to_dataframe(mock_object, self.coding_region, self.guide_data)
+        actual = GuideDeterminer.add_guide_data_to_dataframe(
+            mock_object, self.coding_region, self.guide_sequence
+        )
 
         # assert
         pd.testing.assert_frame_equal(actual, expected, check_exact=True)
@@ -236,7 +240,3 @@ class TestGuideDeterminer(TestCase):
 
         # assert
         pd.testing.assert_frame_equal(actual, expected, check_exact=True)
-
-
-if __name__ == '__main__':
-    unittest.main()

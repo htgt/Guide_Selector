@@ -1,9 +1,10 @@
 import re
 from dataclasses import dataclass
-from typing import Tuple
+from typing import Tuple, List
+
 from mutator.base_sequence import BaseSequence
-from typing import Optional
 from utils.exceptions import PamNotFoundError
+from utils.bio_utils import add_chr_prefix
 
 PAM_POSITIVE_PATTERN = r'.GG'
 PAM_NEGATIVE_PATTERN = r'CC.'
@@ -17,23 +18,34 @@ class SequenceFragment:
 
 
 class GuideSequence(BaseSequence):
-    def __init__(self,
-            start: int,
-            end: int,
-            is_positive_strand: bool = True,
-            guide_id: str = '',
-            window_length: int = 12,
-            chromosome: Optional[str] = None,
-            frame: int = 0,
-        ) -> None:
+    def __init__(
+        self,
+        chromosome: str,
+        start: int,
+        end: int,
+        is_positive_strand: bool = True,
+        guide_id: str = '',
+        window_length: int = 12,
+        frame: int = 0,
+    ) -> None:
 
         self.start = start
-        self.end  = end
+        self.end = end
         self.guide_id = guide_id
         self.is_positive_strand = is_positive_strand
         self.window_length = window_length
-        self.chromosome = chromosome
+        self._chromosome = chromosome
         self.frame = frame
+
+    @property
+    def chromosome(self) -> str:
+        return add_chr_prefix(self._chromosome)
+
+    @property
+    def strand_symbol(self) -> str:
+        if self.is_positive_strand:
+            return '+'
+        return '-'
 
     @staticmethod
     def _define_pam_pattern(is_positive_strand: bool) -> str:
@@ -89,4 +101,3 @@ class GuideSequence(BaseSequence):
             window_end = pam.end + self.window_length - 1
 
         return window_start, window_end
-    
