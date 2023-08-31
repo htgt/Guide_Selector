@@ -55,7 +55,6 @@ def run_retrieve_cmd(args: dict, config: dict) -> str:
 
     }
     guide_dicts = get_guides_data(regions, request_options)
-
     output_path = os.path.join(args['out_dir'], OUTPUT_FILE)
     write_gff_to_input_tsv(output_path, guide_dicts)
 

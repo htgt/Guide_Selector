@@ -15,7 +15,7 @@ def get_target_regions(region: str = None, region_file: str = None) -> List[Targ
 
 def parse_regions_data(region: str = None, region_file: str = None) -> List[str]:
     if region:
-        return [{'region': region}]
+        return [{'region': region ,'id': region}]
     else:
         if region_file:
             return read_csv_to_list_dict(region_file, delimiter='\t')
@@ -37,13 +37,10 @@ def parse_dicts_to_target_regions(data: List[dict]) -> List[TargetRegion]:
 def get_guides_data(regions: List[TargetRegion], request_options: dict) -> List[dict]:
     guide_dicts = []
     for item in regions:
-        print('Retrieve data for Target Region',
-              item.id,
-              item.__repr__()
-        )
-
+        print(f'Retrieve data for Target Region: \nid = {item.id} \n{item.__repr__()}')
         try:
             data = retrieve_data_for_region(item, request_options)
+            data["target_region_id"] = item.id
             guide_dicts.extend(data)
 
         except GetDataFromWGEError:
@@ -66,7 +63,7 @@ def retrieve_data_for_region(region: TargetRegion, request_options: dict) -> dic
         return guide_dicts
 
     except Exception:
-        print(f'No data from WGE for given region: {region_string}')
+        print(f'No data from WGE for given region: {str(region)}')
         raise GetDataFromWGEError()
 
 
@@ -93,7 +90,7 @@ def parse_gff(gff_data: dict):
 
 
 def write_gff_to_input_tsv(file : str, gff : List[dict]) -> None:
-    headers = ['guide_id', 'chr', 'start', 'end', 'grna_strand', 'ot_summary']
+    headers = ['guide_id', 'chr', 'start', 'end', 'grna_strand', 'ot_summary', 'target_region_id']
 
     tsv_rows = []
     for entry in gff:

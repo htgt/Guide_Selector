@@ -27,10 +27,12 @@ class Runner:
         guide = self.fill_guide_sequence(region_data)
         coding_region = self.fill_coding_region(region_data)
         gene_name = region_data['gene_name']
+        target_region_id = region_data['target_region_id']
         mutation_builder = MutationBuilder(
             guide=guide,
             cds=coding_region,
             gene_name=gene_name,
+            target_region_id=target_region_id
         )
         return mutation_builder
 
@@ -73,6 +75,7 @@ class Runner:
                 'guide_strand' : _get_char_for_bool(mb.guide.is_positive_strand),
                 'guide_start' : mb.guide.start,
                 'guide_end' : mb.guide.end,
+                "target_region_id" : mb.guide.target_region_id
             }
 
             for codon in (mb.codons):
