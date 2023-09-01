@@ -27,7 +27,6 @@ class GuideSequence(BaseSequence):
         guide_id: str = '',
         window_length: int = 12,
         frame: int = 0,
-        target_region_id: str = ''
     ) -> None:
 
         self.start = start
@@ -37,7 +36,6 @@ class GuideSequence(BaseSequence):
         self.window_length = window_length
         self._chromosome = chromosome
         self.frame = frame
-        self.target_region_id = target_region_id
 
     @property
     def chromosome(self) -> str:

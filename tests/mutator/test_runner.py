@@ -32,8 +32,9 @@ class RunnerTestCase(unittest.TestCase):
             chromosome=self.chrom
         )
         self.gene_name = 'ACT'
+        self.target_region_id = '101'
         # self.codons = [WindowCodon('TCA', self.pos, 1, True)]
-        self.mutation_builder=MutationBuilder(self.guide, self.cds, self.gene_name)
+        self.mutation_builder=MutationBuilder(self.guide, self.cds, self.gene_name, self.target_region_id)
         self.variants = Variants(variant_list=
             [
                 Variant(
@@ -60,9 +61,10 @@ class RunnerTestCase(unittest.TestCase):
                 end=170,
                 is_positive_strand=True,
                 guide_id='123',
-                chromosome='1'
+                chromosome='1',
             ),
-            gene_name='ACT'
+            gene_name='ACT',
+            target_region_id='101'
         )
         mb.window = EditWindow(150, 180, True, '1'),
         mb.codons = [WindowCodon('TCA', 23, 1, True)]
@@ -77,6 +79,7 @@ class RunnerTestCase(unittest.TestCase):
             'chromosome': '1',
             'cds_strand': "+",
             'gene_name': 'ACT',
+            'target_region_id': '101',
             'guide_strand': "+",
             'guide_start': 160,
             'guide_end': 170,

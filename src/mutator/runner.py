@@ -75,7 +75,7 @@ class Runner:
                 'guide_strand' : _get_char_for_bool(mb.guide.is_positive_strand),
                 'guide_start' : mb.guide.start,
                 'guide_end' : mb.guide.end,
-                "target_region_id" : mb.guide.target_region_id
+                "target_region_id" : mb.target_region_id
             }
 
             for codon in (mb.codons):
