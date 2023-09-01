@@ -40,7 +40,6 @@ def get_guides_data(regions: List[TargetRegion], request_options: dict) -> List[
         print(f'Retrieve data for Target Region: \nid = {item.id} \n{item.__repr__()}')
         try:
             data = retrieve_data_for_region(item, request_options)
-            data["target_region_id"] = item.id
             guide_dicts.extend(data)
 
         except GetDataFromWGEError:
@@ -57,9 +56,8 @@ def retrieve_data_for_region(region: TargetRegion, request_options: dict) -> dic
         species_id=request_options['species_id'],
         assembly=request_options['assembly'],
     )
-
     try:
-        guide_dicts = parse_gff(gff_data)
+        guide_dicts = parse_gff(gff_data, region.id)
         return guide_dicts
 
     except Exception:
@@ -67,7 +65,7 @@ def retrieve_data_for_region(region: TargetRegion, request_options: dict) -> dic
         raise GetDataFromWGEError()
 
 
-def parse_gff(gff_data: dict):
+def parse_gff(gff_data: dict, target_region_id:str):
     db = gffutils.create_db(data=gff_data, dbfn=':memory:', from_string=True)
     entries = []
 
@@ -82,6 +80,7 @@ def parse_gff(gff_data: dict):
             'grna_strand' : feature.strand,
             'ot_summary' : str(feature.attributes['OT_Summary']),
             'seq': feature.attributes['CopySequence'][0],
+            'target_region_id': target_region_id
         }
 
         entries.append(entry)

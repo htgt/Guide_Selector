@@ -36,7 +36,8 @@ class TestRetrieveModule(TestCase):
             'grna_strand': '-',
             'ot_summary': "['{0: 1', ' 1: 0', ' 2: 1', ' 3: 8', ' 4: 98}']",
             'seq': 'GCACCTAAGGAATCCGGCAGTGG',
+            'target_region_id': 'chr1:1-10001'
         }]
 
-        parsed_entries = parse_gff(gff_data)
+        parsed_entries = parse_gff(gff_data, 'chr1:1-10001')
         self.assertCountEqual(parsed_entries, expected_entries)
