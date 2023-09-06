@@ -1,6 +1,6 @@
 import re
 from dataclasses import dataclass
-from typing import Tuple, List
+from typing import Tuple
 
 from mutator.base_sequence import BaseSequence
 from utils.exceptions import PamNotFoundError
@@ -19,14 +19,15 @@ class SequenceFragment:
 
 class GuideSequence(BaseSequence):
     def __init__(
-        self,
-        chromosome: str,
-        start: int,
-        end: int,
-        is_positive_strand: bool = True,
-        guide_id: str = '',
-        window_length: int = 12,
-        frame: int = 0,
+            self,
+            chromosome: str,
+            start: int,
+            end: int,
+            is_positive_strand: bool = True,
+            guide_id: str = '',
+            window_length: int = 12,
+            frame: int = 0,
+            ot_summary: dict = None
     ) -> None:
 
         self.start = start
@@ -36,6 +37,7 @@ class GuideSequence(BaseSequence):
         self.window_length = window_length
         self._chromosome = chromosome
         self.frame = frame
+        self.ot_summary = ot_summary
 
     @property
     def chromosome(self) -> str:

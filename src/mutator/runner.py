@@ -13,6 +13,7 @@ from tdutils.utils.vcf_utils import Variants, write_to_vcf
 
 import pandas as pd
 
+
 @dataclass
 class Runner:
     mutation_builders: List[MutationBuilder]
@@ -23,7 +24,7 @@ class Runner:
         self.mutation_builders = None
         self.failed_mutations = None
 
-    def build_mutations(self, region_data : pd.DataFrame) -> None:
+    def build_mutations(self, region_data: pd.DataFrame) -> None:
         guide = self.fill_guide_sequence(region_data)
         coding_region = self.fill_coding_region(region_data)
         gene_name = region_data['gene_name']
@@ -41,7 +42,8 @@ class Runner:
             chromosome=row['chromosome'],
             is_positive_strand=(row['guide_strand'] == '+'),
             guide_id=row.name,
-            frame=row['guide_frame']
+            frame=row['guide_frame'],
+            ot_summary=row.get('ot_summary', None)
         )
 
     def fill_coding_region(self, row: pd.Series) -> CodingRegion:
@@ -54,7 +56,7 @@ class Runner:
             frame=row['cds_frame']
         )
 
-    def parse_coding_regions(self, guide_data : pd.DataFrame) -> None: 
+    def parse_coding_regions(self, guide_data: pd.DataFrame) -> None:
         mutation_builder_objects = []
 
         for index, row in guide_data.iterrows():
@@ -62,35 +64,36 @@ class Runner:
 
         self.mutation_builders = mutation_builder_objects
 
-    def as_rows(self, config : str) -> dict:
+    def as_rows(self, config: str) -> dict:
         rows = []
-        for mb in (self.mutation_builders):
+        for mb in self.mutation_builders:
             base = {
-                'guide_id' : mb.guide.guide_id,
-                'chromosome' : mb.cds.chromosome,
-                'cds_strand' : _get_char_for_bool(mb.cds.is_positive_strand),
-                'gene_name' : mb.gene_name,
-                'guide_strand' : _get_char_for_bool(mb.guide.is_positive_strand),
-                'guide_start' : mb.guide.start,
-                'guide_end' : mb.guide.end,
+                'guide_id': mb.guide.guide_id,
+                'chromosome': mb.cds.chromosome,
+                'cds_strand': _get_char_for_bool(mb.cds.is_positive_strand),
+                'gene_name': mb.gene_name,
+                'guide_strand': _get_char_for_bool(mb.guide.is_positive_strand),
+                'guide_start': mb.guide.start,
+                'guide_end': mb.guide.end,
+                'ot_summary': mb.guide.ot_summary,
             }
 
-            for codon in (mb.codons):
+            for codon in mb.codons:
                 row = base
                 lost_amino = ','.join(codon.amino_acids_lost_from_edit) if codon.amino_acids_lost_from_edit else 'N/A'
 
                 row.update({
-                    'window_pos' : codon.third_base_pos,
-                    'pos' : codon.third_base_coord,
-                    'ref_codon' : codon.bases,
-                    'ref_pos_three' : codon.bases[2],
-                    'alt' : codon.edited_bases[2],
-                    'lost_amino_acids' : lost_amino, 
-                    'permitted' : codon.is_edit_permitted(config)
+                    'window_pos': codon.third_base_pos,
+                    'pos': codon.third_base_coord,
+                    'ref_codon': codon.bases,
+                    'ref_pos_three': codon.bases[2],
+                    'alt': codon.edited_bases[2],
+                    'lost_amino_acids': lost_amino,
+                    'permitted': codon.is_edit_permitted(config)
                 })
                 rows.append(copy.deepcopy(row))
         return rows
-    
+
     def generate_edit_windows_for_builders(self) -> None:
         failed_mutations = []
         for mb in self.mutation_builders:
@@ -132,14 +135,17 @@ class Runner:
         return variants
 
 
-def _booleanise_strand(strand : str) -> bool:
+def _booleanise_strand(strand: str) -> bool:
     return strand == '+'
 
-def _get_char_for_bool(isTrue : bool) -> str:
+
+def _get_char_for_bool(isTrue: bool) -> str:
     return "+" if isTrue else "-"
 
-def _trim_chromosome(chr : str) -> str:
+
+def _trim_chromosome(chr: str) -> str:
     return chr[3:]
 
-def _get_chromosome(mb : MutationBuilder) -> str:
+
+def _get_chromosome(mb: MutationBuilder) -> str:
     return mb.cds.chromosome

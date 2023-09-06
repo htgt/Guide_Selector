@@ -1,5 +1,6 @@
 from typing import List
 import gffutils
+
 from utils.file_system import read_csv_to_list_dict, write_dict_list_to_csv
 from utils.get_data.wge import get_data_from_wge_by_coords
 from mutator.target_region import parse_string_to_target_region, TargetRegion
@@ -28,7 +29,7 @@ def parse_dicts_to_target_regions(data: List[dict]) -> List[TargetRegion]:
 
     for line in data:
         region = parse_string_to_target_region(line["region"])
-        region.id = line["id"]  if "id" in line else "ID"
+        region.id = line["id"] if "id" in line else "ID"
         target_regions.append(region)
 
     return target_regions
@@ -75,15 +76,14 @@ def parse_gff(gff_data: dict):
     entries = []
 
     for feature in db.features_of_type('Crispr'):
-
         chromosome = 'chr' + feature.seqid.strip()
         entry = {
-            'guide_id' : feature.attributes['Name'][0],
-            'chr' : chromosome,
-            'start' : int(feature.start),
-            'end' : int(feature.end),
-            'grna_strand' : feature.strand,
-            'ot_summary' : str(feature.attributes['OT_Summary']),
+            'guide_id': feature.attributes['Name'][0],
+            'chr': chromosome,
+            'start': int(feature.start),
+            'end': int(feature.end),
+            'grna_strand': feature.strand,
+            'ot_summary': _OT_summary_to_dict(feature.attributes['OT_Summary']),
             'seq': feature.attributes['CopySequence'][0],
         }
 
@@ -92,14 +92,18 @@ def parse_gff(gff_data: dict):
     return entries
 
 
-def write_gff_to_input_tsv(file : str, gff : List[dict]) -> None:
+def write_gff_to_input_tsv(file: str, gff: List[dict]) -> None:
     headers = ['guide_id', 'chr', 'start', 'end', 'grna_strand', 'ot_summary']
 
     tsv_rows = []
     for entry in gff:
         entry_copy = entry.copy()
-        del entry_copy['ot_summary']
         del entry_copy['seq']
         tsv_rows.append(entry_copy)
 
     write_dict_list_to_csv(file, tsv_rows, headers, "\t")
+
+
+def _OT_summary_to_dict(entry: List) -> dict:
+    cleaned = str(entry).replace("'", "").replace("[", "").replace("]", "")
+    return eval(cleaned)
