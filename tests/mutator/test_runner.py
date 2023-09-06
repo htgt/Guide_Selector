@@ -22,9 +22,10 @@ class RunnerTestCase(unittest.TestCase):
         self.pos = 23
         self.third_base = 'A'
         self.alt_third_base = 'G'
+        self.window_length = 12
         self.test_dir = '/test_dir'
         self.cds = BaseSequence(100, 200, True, 'chr1', 1)
-        self.window = EditWindow(150, 180, True, '1')
+        self.window = EditWindow(150, 180, self.window_length, True, '1')
         self.guide = GuideSequence(
             guide_id='123',
             start=160,
@@ -34,7 +35,7 @@ class RunnerTestCase(unittest.TestCase):
         )
         self.gene_name = 'ACT'
         # self.codons = [WindowCodon('TCA', self.pos, 1, True)]
-        self.mutation_builder=MutationBuilder(self.guide, self.cds, self.gene_name)
+        self.mutation_builder=MutationBuilder(self.guide, self.cds, self.gene_name, self.window_length)
         self.variants = Variants(variant_list=
             [
                 Variant(
@@ -63,9 +64,10 @@ class RunnerTestCase(unittest.TestCase):
                 guide_id='123',
                 chromosome='1'
             ),
-            gene_name='ACT'
+            gene_name='ACT',
+            window_length=self.window_length
         )
-        mb.window = EditWindow(150, 180, True, '1'),
+        mb.window = EditWindow(150, 180, self.window_length, True, '1'),
         mb.codons = [WindowCodon('TCA', 23, 1, True)]
 
         self.runner.mutation_builders = [mb]

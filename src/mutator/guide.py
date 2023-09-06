@@ -19,22 +19,20 @@ class SequenceFragment:
 
 class GuideSequence(BaseSequence):
     def __init__(
-            self,
-            chromosome: str,
-            start: int,
-            end: int,
-            is_positive_strand: bool = True,
-            guide_id: str = '',
-            window_length: int = 12,
-            frame: int = 0,
-            ot_summary: dict = None
+        self,
+        chromosome: str,
+        start: int,
+        end: int,
+        is_positive_strand: bool = True,
+        guide_id: str = '',
+        frame: int = 0,
+        ot_summary: dict = None
     ) -> None:
 
         self.start = start
         self.end = end
         self.guide_id = guide_id
         self.is_positive_strand = is_positive_strand
-        self.window_length = window_length
         self._chromosome = chromosome
         self.frame = frame
         self.ot_summary = ot_summary
@@ -54,14 +52,14 @@ class GuideSequence(BaseSequence):
         return PAM_POSITIVE_PATTERN if is_positive_strand else PAM_NEGATIVE_PATTERN
 
     @staticmethod
-    def _check_pam_position( match: re.Match, bases: str, is_positive_strand: bool) -> bool:
+    def _check_pam_position(match: re.Match, bases: str, is_positive_strand: bool) -> bool:
         MAX_PAM_POSITION_FROM_SEQ_EDGE = 2
         is_pam = False
 
         if not is_positive_strand:
-            is_pam = ( match.start() <= MAX_PAM_POSITION_FROM_SEQ_EDGE )
+            is_pam = (match.start() <= MAX_PAM_POSITION_FROM_SEQ_EDGE)
         else:
-            is_pam = ( match.end() >= len(bases) - MAX_PAM_POSITION_FROM_SEQ_EDGE )
+            is_pam = (match.end() >= len(bases) - MAX_PAM_POSITION_FROM_SEQ_EDGE)
 
         return is_pam
 
@@ -88,7 +86,7 @@ class GuideSequence(BaseSequence):
         else:
             return PamNotFoundError('No PAM found in the sequence: ' + bases)
 
-    def define_window(self) -> Tuple[int, int]:
+    def define_window(self, window_length: int) -> Tuple[int, int]:
         bases = self.get_sequence_by_coords().upper()
         pam = self.find_pam(bases)
 
@@ -96,10 +94,10 @@ class GuideSequence(BaseSequence):
             return pam
 
         if self.is_positive_strand:
-            window_start = pam.end - self.window_length + 1
+            window_start = pam.end - window_length + 1
             window_end = pam.end
         else:
             window_start = pam.start
-            window_end = pam.end + self.window_length - 1
+            window_end = pam.end + window_length - 1
 
         return window_start, window_end
