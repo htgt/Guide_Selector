@@ -10,11 +10,11 @@ from utils.exceptions import PamNotFoundError
 
 
 class MutationBuilder:
-    def __init__(self, guide: GuideSequence, cds: CodingRegion, gene_name: str) -> None:
+    def __init__(self, guide: GuideSequence, cds: CodingRegion, gene_name: str, window_length: int) -> None:
         self.guide = self._build_guide_sequence(guide)
         self.cds = self._build_coding_region(cds)
         self.gene_name = gene_name
-        self.window = EditWindow(0,0)
+        self.window = self.build_edit_window(window_length)
         self.codons = []
 
     def __repr__(self):
@@ -26,8 +26,8 @@ class MutationBuilder:
     def _build_coding_region(self, cds: CodingRegion) -> CodingRegion:
         return copy.deepcopy(cds)
 
-    def build_edit_window(self) -> EditWindow:
-        window = get_window(self.guide, self.cds)
+    def build_edit_window(self, window_length) -> EditWindow:
+        window = get_window(self.guide, self.cds, window_length)
         self.window = window
 
         return window
@@ -39,14 +39,15 @@ class MutationBuilder:
         return codons
 
 
-def get_window(guide:GuideSequence, cds: CodingRegion) -> EditWindow:
-    window_coordinates = guide.define_window()
+def get_window(guide: GuideSequence, cds: CodingRegion, window_length: int) -> EditWindow:
+    window_coordinates = guide.define_window(window_length)
     if type(window_coordinates) == PamNotFoundError:
         return
 
     window = EditWindow(
         start=window_coordinates[0],
         end=window_coordinates[1],
+        window_length=window_length,
         is_positive_strand=cds.is_positive_strand,
         chromosome=guide.chromosome,
         frame=0,
@@ -55,5 +56,3 @@ def get_window(guide:GuideSequence, cds: CodingRegion) -> EditWindow:
 
     window.frame = get_frame(cds, window)
     return window
-
-

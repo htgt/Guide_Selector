@@ -32,6 +32,7 @@ class Runner:
             guide=guide,
             cds=coding_region,
             gene_name=gene_name,
+            window_length=self._config["window_length"]
         )
         return mutation_builder
 
@@ -97,7 +98,6 @@ class Runner:
     def generate_edit_windows_for_builders(self) -> None:
         failed_mutations = []
         for mb in self.mutation_builders:
-            mb.build_edit_window()
             if mb.window is None:
                 failed_mutations.append(mb)
                 self.mutation_builders.remove(mb)
