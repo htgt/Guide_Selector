@@ -74,8 +74,10 @@ def run_mutator_cmd(args: dict, config: dict) -> None:
     # Run Guide Frame Determiner
     gtf_data = read_gtf_to_df(args['gtf'])
     guide_sequences = read_guide_tsv_to_guide_sequences(args['tsv'])
+
     guide_determiner = GuideDeterminer()
     guide_data_df = guide_determiner.parse_loci(gtf_data, guide_sequences)
+
     runner.parse_coding_regions(guide_data_df)
 
     # Determine Window and Mutations

@@ -19,7 +19,7 @@ class MutationBuilder:
         self.codons = []
 
     def __repr__(self):
-        return f"guide: {self.guide}, cds: {self.cds}, window: {self.window}"
+        return f"guide: {self.guide}, cds: {self.cds}, window: {self.window}, target region id: {self.target_region_id}"
 
     def _build_guide_sequence(self, guide: GuideSequence) -> GuideSequence:
         return copy.deepcopy(guide)
