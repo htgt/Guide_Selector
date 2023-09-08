@@ -36,6 +36,7 @@ class TestGuideDeterminer(TestCase):
             start=67610855,
             end=67610877,
             strand_symbol='+',
+            target_region_id='1139540371',
         )
 
     def test_get_coding_region_for_guide_success(self):
@@ -102,6 +103,7 @@ class TestGuideDeterminer(TestCase):
             'guide_start': 67610855,
             'guide_end': 67610877,
             'guide_strand': '+',
+            'target_region_id': '1139540371',
         }, index=pd.Index(['1139540371'], name='guide_id'))
 
         # act

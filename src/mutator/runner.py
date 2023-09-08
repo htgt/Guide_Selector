@@ -34,6 +34,7 @@ class Runner:
             gene_name=gene_name,
             target_region_id=target_region_id
         )
+
         return mutation_builder
 
     def fill_guide_sequence(self, row: pd.Series) -> GuideSequence:
@@ -56,7 +57,7 @@ class Runner:
             frame=row['cds_frame']
         )
 
-    def parse_coding_regions(self, guide_data : pd.DataFrame) -> None: 
+    def create_mutation_builders(self, guide_data : pd.DataFrame) -> None:
         mutation_builder_objects = []
 
         for index, row in guide_data.iterrows():
@@ -66,6 +67,7 @@ class Runner:
 
     def as_rows(self, config : str) -> dict:
         rows = []
+
         for mb in (self.mutation_builders):
             base = {
                 'guide_id' : mb.guide.guide_id,
@@ -91,6 +93,8 @@ class Runner:
                     'lost_amino_acids' : lost_amino, 
                     'permitted' : codon.is_edit_permitted(config)
                 })
+
+
                 rows.append(copy.deepcopy(row))
         return rows
     
