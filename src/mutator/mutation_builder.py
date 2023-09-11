@@ -18,12 +18,13 @@ class MutationBuilder:
         window_length: int,
         target_region_id: str
     ) -> None:
-        self.guide = self._build_guide_sequence(guide)
-        self.cds = self._build_coding_region(cds)
         self.gene_name = gene_name
         self.target_region_id = target_region_id
-        self.window = self.build_edit_window(window_length)
         self.codons = []
+
+        self.guide = self._build_guide_sequence(guide)
+        self.cds = self._build_coding_region(cds)
+        self.window = self._build_edit_window(window_length)
 
     def __repr__(self):
         return f"guide: {self.guide}, cds: {self.cds}, window: {self.window}, target region id: {self.target_region_id}"
@@ -34,7 +35,7 @@ class MutationBuilder:
     def _build_coding_region(self, cds: CodingRegion) -> CodingRegion:
         return copy.deepcopy(cds)
 
-    def build_edit_window(self, window_length) -> EditWindow:
+    def _build_edit_window(self, window_length) -> EditWindow:
         window = get_window(self.guide, self.cds, window_length)
         self.window = window
 
