@@ -18,10 +18,8 @@ def get_target_regions(region: str = None, region_file: str = None) -> List[Targ
 
 
 def parse_regions_data(region: str = None, region_file: str = None) -> List[str]:
-    print('PARSE TARGET REGION:::::', region, region_file)
-
     if region:
-        return [{'region': region ,'id': region}]
+        return [{'region': region, 'id': region}]
     else:
         if region_file:
             return read_csv_to_list_dict(region_file, delimiter='\t')
