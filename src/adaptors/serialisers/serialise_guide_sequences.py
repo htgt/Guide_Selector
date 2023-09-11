@@ -14,6 +14,7 @@ def write_guide_sequences_to_tsv(path: str, guide_sequences: List[GuideSequence]
             'end': guide.end,
             'grna_strand': guide.strand_symbol,
             'ot_summary': guide.ot_summary,
+            'target_region_id': guide.target_region_id,
         })
 
     write_dict_list_to_csv(path, tsv_rows, delimiter='\t')
