@@ -1,4 +1,4 @@
-from typing import Tuple, List
+from typing import List
 
 import pandas as pd
 
@@ -7,7 +7,7 @@ from mutator.guide import GuideSequence
 
 
 class GuideDeterminer:
-    def parse_loci(self, gtf_data: pd.DataFrame, guide_sequences: List[GuideSequence]) -> None:
+    def parse_loci(self, gtf_data: pd.DataFrame, guide_sequences: List[GuideSequence]) -> pd.DataFrame:
         coding_regions = self.get_coding_regions_for_all_guides(gtf_data, guide_sequences)
         coding_regions['guide_frame'] = coding_regions.apply(
             self.determine_frame_for_guide, axis=1
@@ -63,6 +63,7 @@ class GuideDeterminer:
         dataframe['guide_end'] = guide.end
         dataframe['guide_strand'] = guide.strand_symbol
         dataframe['target_region_id'] = guide.target_region_id
+        dataframe['ot_summary'] = str(guide.ot_summary)
         return dataframe
 
     def determine_frame_for_guide(self, row: pd.Series) -> int:
@@ -98,7 +99,9 @@ class GuideDeterminer:
             'guide_start',
             'guide_end',
             'guide_frame',
+            'ot_summary',
         ] 
         if "target_region_id" in coding_regions:
             required_cols.append("target_region_id")
+
         return coding_regions[required_cols].copy()

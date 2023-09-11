@@ -34,7 +34,7 @@ class TestRetrieveModule(TestCase):
             'start': 48900478,
             'end' : 48900500,
             'grna_strand': '-',
-            'ot_summary': "['{0: 1', ' 1: 0', ' 2: 1', ' 3: 8', ' 4: 98}']",
+            'ot_summary': {0: 1, 1: 0, 2: 1, 3: 8, 4: 98},
             'seq': 'GCACCTAAGGAATCCGGCAGTGG',
             'target_region_id': 'chr1:1-10001'
         }]

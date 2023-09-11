@@ -44,7 +44,8 @@ class Runner:
             chromosome=row['chromosome'],
             is_positive_strand=(row['guide_strand'] == '+'),
             guide_id=row.name,
-            frame=row['guide_frame']
+            frame=row['guide_frame'],
+            ot_summary=row.get('ot_summary', None),
         )
 
     def fill_coding_region(self, row: pd.Series) -> CodingRegion:
@@ -77,6 +78,7 @@ class Runner:
                 'guide_strand' : _get_char_for_bool(mb.guide.is_positive_strand),
                 'guide_start' : mb.guide.start,
                 'guide_end' : mb.guide.end,
+                'ot_summary': mb.guide.ot_summary,
                 'target_region_id' : mb.target_region_id,
             }
 
@@ -139,14 +141,14 @@ class Runner:
         return variants
 
 
-def _booleanise_strand(strand : str) -> bool:
+def _booleanise_strand(strand: str) -> bool:
     return strand == '+'
 
-def _get_char_for_bool(isTrue : bool) -> str:
-    return "+" if isTrue else "-"
+def _get_char_for_bool(is_true: bool) -> str:
+    return "+" if is_true else "-"
 
-def _trim_chromosome(chr : str) -> str:
+def _trim_chromosome(chr: str) -> str:
     return chr[3:]
 
-def _get_chromosome(mb : MutationBuilder) -> str:
+def _get_chromosome(mb: MutationBuilder) -> str:
     return mb.cds.chromosome

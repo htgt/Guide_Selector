@@ -10,6 +10,9 @@ from mutator.codon import WindowCodon
 
 
 class TestGuideSequence(TestCase):
+    def setUp(self) -> None:
+        self.window_length = 12
+    
     def test_get_window_frame_plus_plus(self):
         guide = GuideSequence('16', 67626572, 67626594, is_positive_strand=True, frame=0)
         cds = CodingRegion(67626555, 67626715, is_positive_strand=True, chromosome='16', frame=2)
@@ -21,7 +24,7 @@ class TestGuideSequence(TestCase):
             WindowCodon('CAA', 67626592, -1, True),
         ]
 
-        builder = MutationBuilder(guide, cds, 'BRCA1')
+        builder = MutationBuilder(guide, cds, 'BRCA1', self.window_length)
         window = builder.build_edit_window()
         codons = window.get_window_codons()
 
@@ -61,7 +64,7 @@ class TestGuideSequence(TestCase):
             WindowCodon('CCT', 77696647, -1, False),
         ]
 
-        builder = MutationBuilder(guide, cds, 'BRCA1')
+        builder = MutationBuilder(guide, cds, 'BRCA1', self.window_length)
         window = builder.build_edit_window()
         codons = window.get_window_codons()
 
@@ -70,6 +73,9 @@ class TestGuideSequence(TestCase):
 
 
 class TestGetWindow(TestCase):
+    def setUp(self) -> None:
+        self.window_length = 12
+    
     def test_get_window(self):
         bases = "CAGCATTCCTATATTGAGCAAGG"
         guide_start = 67626572
@@ -86,7 +92,7 @@ class TestGetWindow(TestCase):
         window_end = 67626594
         window_frame = 1
 
-        window = EditWindow(window_start, window_end, is_positive_strand=True, chromosome='X', frame=window_frame)
+        window = EditWindow(window_start, window_end, self.window_length, is_positive_strand=True, chromosome='X', frame=window_frame)
 
         with patch.object(
                 BaseSequence,
