@@ -1,3 +1,4 @@
+from ast import literal_eval
 from typing import List
 
 from utils.file_system import read_csv_to_list_dict
@@ -14,7 +15,7 @@ def read_guide_tsv_to_guide_sequences(tsv: str) -> List[GuideSequence]:
             int(guide['end']),
             is_positive_strand=(guide['grna_strand'] == '+'),
             guide_id=guide['guide_id'],
-            ot_summary=eval(guide['ot_summary'])
+            ot_summary=literal_eval(guide['ot_summary']) if 'ot_summary' in guide else None,
         )
         guide_sequences.append(guide_sequence)
     return guide_sequences

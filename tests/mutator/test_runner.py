@@ -93,6 +93,7 @@ class RunnerTestCase(unittest.TestCase):
         }]
 
         self.assertEqual(rows, expected_rows)
+
     def test_as_row_with_ot_summary(self):
         config = {
             "ignore_positions": [-1, 1],
@@ -108,7 +109,8 @@ class RunnerTestCase(unittest.TestCase):
                 chromosome='1',
                 ot_summary={0: 1, 1: 0, 2: 0, 3: 4, 4: 76}
             ),
-            gene_name='ACT'
+            gene_name='ACT',
+            window_length=self.window_length,
         )
         mb.window = EditWindow(150, 180, True, '1'),
         mb.codons = [WindowCodon('TCA', 23, 1, True)]
