@@ -3,19 +3,17 @@ import os.path
 
 from typing import List
 
+from mutator.guide import GuideSequence
 from mutator.guide_determiner import GuideDeterminer
 from mutator.runner import Runner
-from mutator.retrieve import \
-    retrieve_data_for_region, \
-    get_target_regions, \
-    get_guides_data, \
-    write_gff_to_input_tsv
+from mutator.retrieve import get_target_regions, get_guides_data
 from utils.file_system import write_json_failed_guides
 from utils.arguments_parser import InputArguments
 from utils.config import prepare_config
 from utils.file_system import write_dict_list_to_csv, read_gtf_to_df
 from adaptors.parsers.parse_guide_tsv import read_guide_tsv_to_guide_sequences
 from adaptors.parsers.parse_wge_gff import read_wge_gff_to_guide_sequences
+from adaptors.serialisers.serialise_guide_sequences import write_guide_sequences_to_tsv
 
 
 def resolve_command(command: str, args: dict, config: dict) -> None:
@@ -37,13 +35,12 @@ def main() -> None:
 
 
 def run_guide_selector_cmd(args: dict, config: dict) -> None:
-    tsv_path = run_retrieve_cmd(args, config)
+    guide_sequences = run_retrieve_cmd(args, config)
 
-    args['tsv'] = tsv_path
-    run_mutator_cmd(args, config)
+    run_mutator_cmd(args, config, guide_sequences)
 
 
-def run_retrieve_cmd(args: dict, config: dict) -> str:
+def run_retrieve_cmd(args: dict, config: dict) -> List[GuideSequence]:
     OUTPUT_FILE = 'guides.tsv'
     print('Run retrieve command with config:', config)
 
@@ -54,18 +51,19 @@ def run_retrieve_cmd(args: dict, config: dict) -> str:
         'assembly': config['assembly']
 
     }
-    guide_dicts = get_guides_data(regions, request_options)
+    guide_sequences = get_guides_data(regions, request_options)
+
     output_path = os.path.join(args['out_dir'], OUTPUT_FILE)
-    write_gff_to_input_tsv(output_path, guide_dicts)
+    write_guide_sequences_to_tsv(output_path, guide_sequences)
 
     print('====================================')
-    print('Guides retrieved: ', len(guide_dicts))
+    print('Guides retrieved: ', len(guide_sequences))
     print('Output saved to: ', output_path)
 
-    return output_path
+    return guide_sequences
 
 
-def run_mutator_cmd(args: dict, config: dict) -> None:
+def run_mutator_cmd(args: dict, config: dict, guide_sequences: List[GuideSequence] = None) -> None:
     OUTPUT_TSV_FILE = 'output.tsv'
     OUTPUT_VCF_FILE = 'output.vcf'
     runner = Runner(config)
@@ -73,8 +71,8 @@ def run_mutator_cmd(args: dict, config: dict) -> None:
     print('Running PAM & Protospacer mutator')
     # Run Guide Frame Determiner
     gtf_data = read_gtf_to_df(args['gtf'])
-    guide_sequences = read_guide_tsv_to_guide_sequences(args['tsv'])
-
+    if not guide_sequences:
+        guide_sequences = read_guide_tsv_to_guide_sequences(args['tsv'])
     guide_determiner = GuideDeterminer()
     guide_data_df = guide_determiner.parse_loci(gtf_data, guide_sequences)
 

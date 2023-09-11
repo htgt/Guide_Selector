@@ -104,6 +104,7 @@ class RunnerTestCase(unittest.TestCase):
         }]
 
         self.assertEqual(rows, expected_rows)
+
     def test_as_row_with_ot_summary(self):
         config = {
             "ignore_positions": [-1, 1],
