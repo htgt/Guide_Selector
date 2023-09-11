@@ -23,7 +23,7 @@ class Runner:
         self.mutation_builders = None
         self.failed_mutations = None
 
-    def build_mutations(self, region_data : pd.DataFrame) -> None:
+    def build_mutations(self, region_data: pd.DataFrame) -> None:
         guide = self.fill_guide_sequence(region_data)
         coding_region = self.fill_coding_region(region_data)
         gene_name = region_data['gene_name']
@@ -58,7 +58,7 @@ class Runner:
             frame=row['cds_frame']
         )
 
-    def create_mutation_builders(self, guide_data : pd.DataFrame) -> None:
+    def create_mutation_builders(self, guide_data: pd.DataFrame) -> None:
         mutation_builder_objects = []
 
         for index, row in guide_data.iterrows():
@@ -66,36 +66,35 @@ class Runner:
 
         self.mutation_builders = mutation_builder_objects
 
-    def as_rows(self, config : str) -> dict:
+    def as_rows(self, config: str) -> dict:
         rows = []
 
         for mb in (self.mutation_builders):
             base = {
-                'guide_id' : mb.guide.guide_id,
-                'chromosome' : mb.cds.chromosome,
-                'cds_strand' : _get_char_for_bool(mb.cds.is_positive_strand),
-                'gene_name' : mb.gene_name,
-                'guide_strand' : _get_char_for_bool(mb.guide.is_positive_strand),
-                'guide_start' : mb.guide.start,
-                'guide_end' : mb.guide.end,
+                'guide_id': mb.guide.guide_id,
+                'chromosome': mb.cds.chromosome,
+                'cds_strand': _get_char_for_bool(mb.cds.is_positive_strand),
+                'gene_name': mb.gene_name,
+                'guide_strand': _get_char_for_bool(mb.guide.is_positive_strand),
+                'guide_start': mb.guide.start,
+                'guide_end': mb.guide.end,
                 'ot_summary': mb.guide.ot_summary,
-                'target_region_id' : mb.target_region_id,
+                'target_region_id': mb.target_region_id,
             }
 
-            for codon in (mb.codons):
+            for codon in mb.codons:
                 row = base
                 lost_amino = ','.join(codon.amino_acids_lost_from_edit) if codon.amino_acids_lost_from_edit else 'N/A'
 
                 row.update({
-                    'window_pos' : codon.third_base_pos,
-                    'pos' : codon.third_base_coord,
-                    'ref_codon' : codon.bases,
-                    'ref_pos_three' : codon.bases[2],
-                    'alt' : codon.edited_bases[2],
-                    'lost_amino_acids' : lost_amino, 
-                    'permitted' : codon.is_edit_permitted(config)
+                    'window_pos': codon.third_base_pos,
+                    'pos': codon.third_base_coord,
+                    'ref_codon': codon.bases,
+                    'ref_pos_three': codon.bases[2],
+                    'alt': codon.edited_bases[2],
+                    'lost_amino_acids': lost_amino,
+                    'permitted': codon.is_edit_permitted(config)
                 })
-
 
                 rows.append(copy.deepcopy(row))
         return rows

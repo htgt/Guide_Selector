@@ -10,9 +10,9 @@ def read_guide_tsv_to_guide_sequences(tsv: str) -> List[GuideSequence]:
     guide_sequences = []
     for guide in guide_data:
         guide_sequence = GuideSequence(
-            chromosome = guide['chr'],
-            start = int(guide['start']),
-            end = int(guide['end']),
+            chromosome=guide['chr'],
+            start=int(guide['start']),
+            end=int(guide['end']),
             is_positive_strand=(guide['grna_strand'] == '+'),
             guide_id=guide['guide_id'],
             ot_summary=eval(guide['ot_summary']),

@@ -88,7 +88,7 @@ def parse_gff(gff_data: dict, target_region_id:str):
     return entries
 
 
-def write_gff_to_input_tsv(file : str, gff : List[dict]) -> None:
+def write_gff_to_input_tsv(file: str, gff: List[dict]) -> None:
     headers = ['guide_id', 'chr', 'start', 'end', 'grna_strand', 'ot_summary', 'target_region_id']
 
     tsv_rows = []
