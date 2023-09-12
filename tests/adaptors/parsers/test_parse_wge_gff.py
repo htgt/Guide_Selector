@@ -26,6 +26,7 @@ class TestReadGffToGuideSequences(TestCase):
             end=48900500,
             guide_id='285858433',
             is_positive_strand=False,
+            ot_summary={0: 1, 1: 0, 2: 1, 3: 8, 4: 98},
         )]
 
         # act

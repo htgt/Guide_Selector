@@ -6,18 +6,21 @@ from mutator.codon import WindowCodon
 
 
 class EditWindow(BaseSequence):
-    def __init__(self,
-            start: int,
-            end: int,
-            is_positive_strand: bool = True,
-            chromosome: Optional[str] = None,
-            frame: int = 0,
-            guide_strand_is_positive: bool = True
-        ) -> None:
+    def __init__(
+        self,
+        start: int,
+        end: int,
+        window_length: int,
+        is_positive_strand: bool = True,
+        chromosome: Optional[str] = None,
+        frame: int = 0,
+        guide_strand_is_positive: bool = True
+    ) -> None:
 
         self.id = id
         self.start = start
-        self.end  = end
+        self.end = end
+        self._window_length = window_length
         self.is_positive_strand = is_positive_strand
         self.chromosome = chromosome
         self.frame = frame
@@ -63,7 +66,6 @@ class EditWindow(BaseSequence):
 
         return codons
 
-
     def _get_third_base_coordinate(self, start: int, end: int, i: int, is_positive_strand: bool) -> int:
         if is_positive_strand:
             return start + i + 2
@@ -71,7 +73,7 @@ class EditWindow(BaseSequence):
             return end - i - 2
 
     def _get_base_window_position(self, coordinate: int) -> int:
-        return calculate_position_in_window(self.start, coordinate, self.guide_strand)
+        return calculate_position_in_window(self.start, coordinate, self.guide_strand, self._window_length)
 
     def _get_extended_window_bases(self, coords: Tuple[int, int]) -> str:
         extended_window = BaseSequence(
@@ -96,16 +98,16 @@ class EditWindow(BaseSequence):
 
         return codons
 
-
     # Position in window - for 12 bases length window (12 is 9 + PAM)
     # Positive strand: NNNNNNNNN PAM - 9...1 -1 ... -3
     # Negative strand: PAM NNNNNNNNN - -3 ... -1 1 ... 9
+
 
 def calculate_position_in_window(
         window_start: int,
         coordinate: int,
         strand: bool,
-        window_length: int = 12
+        window_length: int
 ) -> int:
     PAM_PROTECTION_LENGTH = 3
 
@@ -121,6 +123,5 @@ def calculate_position_in_window(
         result = coords_diff - PAM_PROTECTION_LENGTH
         if result >= 0:
             result = result + 1
-
 
     return result

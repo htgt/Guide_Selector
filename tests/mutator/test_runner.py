@@ -1,4 +1,6 @@
 import unittest
+from unittest import mock
+
 from mutator.runner import Runner
 from mutator.mutation_builder import MutationBuilder
 from mutator.base_sequence import BaseSequence
@@ -8,8 +10,7 @@ from mutator.edit_window import EditWindow
 from mutator.codon import WindowCodon
 import pandas as pd
 from pathlib import Path
-from tdutils.utils.vcf_utils import write_to_vcf, Variants, Variant
-from copy import copy
+from tdutils.utils.vcf_utils import Variants, Variant
 
 class RunnerTestCase(unittest.TestCase):
     def setUp(self):
@@ -21,9 +22,10 @@ class RunnerTestCase(unittest.TestCase):
         self.pos = 23
         self.third_base = 'A'
         self.alt_third_base = 'G'
+        self.window_length = 12
         self.test_dir = '/test_dir'
         self.cds = BaseSequence(100, 200, True, 'chr1', 1)
-        self.window = EditWindow(150, 180, True, '1')
+        self.window = EditWindow(150, 180, self.window_length, True, '1')
         self.guide = GuideSequence(
             guide_id='123',
             start=160,
@@ -33,7 +35,7 @@ class RunnerTestCase(unittest.TestCase):
         )
         self.gene_name = 'ACT'
         # self.codons = [WindowCodon('TCA', self.pos, 1, True)]
-        self.mutation_builder=MutationBuilder(self.guide, self.cds, self.gene_name)
+        self.mutation_builder=MutationBuilder(self.guide, self.cds, self.gene_name, self.window_length)
         self.variants = Variants(variant_list=
             [
                 Variant(
@@ -48,7 +50,7 @@ class RunnerTestCase(unittest.TestCase):
             chroms=[self.chrom]
         )
 
-    def test_as_row(self):
+    def test_as_row_without_ot_summary(self):
         config = {
             "ignore_positions": [-1, 1],
             "allow_codon_loss": True
@@ -62,7 +64,53 @@ class RunnerTestCase(unittest.TestCase):
                 guide_id='123',
                 chromosome='1'
             ),
-            gene_name='ACT'
+            gene_name='ACT',
+            window_length=self.window_length
+        )
+        mb.window = EditWindow(150, 180, self.window_length, True, '1'),
+        mb.codons = [WindowCodon('TCA', 23, 1, True)]
+
+        self.runner.mutation_builders = [mb]
+
+        rows = self.runner.as_rows(config)
+
+        expected_rows = [{
+            'guide_id': '123',
+            'alt': 'G',
+            'chromosome': '1',
+            'cds_strand': "+",
+            'gene_name': 'ACT',
+            'guide_strand': "+",
+            'guide_start': 160,
+            'guide_end': 170,
+            'window_pos': 1,
+            'pos': 23,
+            'ref_codon': 'TCA',
+            'ref_pos_three': 'A',
+            'lost_amino_acids': 'N/A',
+            'permitted': False,
+            'ot_summary': None,
+        }]
+
+        self.assertEqual(rows, expected_rows)
+
+    def test_as_row_with_ot_summary(self):
+        config = {
+            "ignore_positions": [-1, 1],
+            "allow_codon_loss": True
+        }
+        mb = MutationBuilder(
+            cds=BaseSequence(100, 200, True, '1', 1),
+            guide=GuideSequence(
+                start=160,
+                end=170,
+                is_positive_strand=True,
+                guide_id='123',
+                chromosome='1',
+                ot_summary={0: 1, 1: 0, 2: 0, 3: 4, 4: 76}
+            ),
+            gene_name='ACT',
+            window_length=self.window_length,
         )
         mb.window = EditWindow(150, 180, True, '1'),
         mb.codons = [WindowCodon('TCA', 23, 1, True)]
@@ -86,11 +134,12 @@ class RunnerTestCase(unittest.TestCase):
             'ref_pos_three': 'A',
             'lost_amino_acids': 'N/A',
             'permitted': False,
+            'ot_summary': {0: 1, 1: 0, 2: 0, 3: 4, 4: 76},
         }]
 
         self.assertEqual(rows, expected_rows)
 
-    def test_fill_guide_sequence(self):
+    def test_fill_guide_sequence_without_ot_summary(self):
         row = pd.Series({
             'guide_start': 160,
             'guide_end': 170,
@@ -108,6 +157,28 @@ class RunnerTestCase(unittest.TestCase):
         self.assertEqual(guide_sequence.chromosome, 'chr1')
         self.assertEqual(guide_sequence.is_positive_strand, True)
         self.assertEqual(guide_sequence.guide_id, None)  # Ensure guide_id is not set in the test
+        self.assertEqual(guide_sequence.ot_summary, None)
+
+    def test_fill_guide_sequence_with_ot_summary(self):
+        row = pd.Series({
+            'guide_start': 160,
+            'guide_end': 170,
+            'guide_strand': '+',
+            'chromosome': 'chr1',
+            'cds_strand': '+',
+            'guide_frame': 2,
+            'ot_summary': {0: 1, 1: 0, 2: 0, 3: 4, 4: 76}
+        })
+
+        guide_sequence = self.runner.fill_guide_sequence(row)
+
+        self.assertIsInstance(guide_sequence, GuideSequence)
+        self.assertEqual(guide_sequence.start, 160)
+        self.assertEqual(guide_sequence.end, 170)
+        self.assertEqual(guide_sequence.chromosome, 'chr1')
+        self.assertEqual(guide_sequence.is_positive_strand, True)
+        self.assertEqual(guide_sequence.guide_id, None)  # Ensure guide_id is not set in the test
+        self.assertEqual(guide_sequence.ot_summary, {0: 1, 1: 0, 2: 0, 3: 4, 4: 76})
 
     def test_fill_coding_region(self):
         row = pd.Series({
