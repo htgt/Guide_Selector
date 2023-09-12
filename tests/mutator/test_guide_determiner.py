@@ -225,6 +225,7 @@ class TestGuideDeterminer(TestCase):
             'guide_end': 67610877,
             'guide_frame': 2,
             'ot_summary': {0: 1, 1: 0, 2: 0, 3: 4, 4: 76},
+            'target_region_id': '123',
         }, index=pd.Index(['1139540371'], name='guide_id'))
         expected = pd.DataFrame({
             'chromosome': 'chr16',
@@ -239,6 +240,7 @@ class TestGuideDeterminer(TestCase):
             'guide_end': 67610877,
             'guide_frame': 2,
             'ot_summary': {0: 1, 1: 0, 2: 0, 3: 4, 4: 76},
+            'target_region_id': '123',
         }, index=pd.Index(['1139540371'], name='guide_id'))
 
         # act
