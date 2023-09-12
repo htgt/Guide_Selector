@@ -59,7 +59,6 @@ class RunnerTestCase(unittest.TestCase):
             chroms=[self.chrom]
         )
 
-
     def test_as_row_without_ot_summary(self):
         config = {
             "ignore_positions": [-1, 1],
@@ -105,7 +104,6 @@ class RunnerTestCase(unittest.TestCase):
         }]
 
         self.assertEqual(rows, expected_rows)
-
 
     def test_as_row_with_ot_summary(self):
         config = {
@@ -155,7 +153,6 @@ class RunnerTestCase(unittest.TestCase):
 
         self.assertEqual(rows, expected_rows)
 
-
     def test_fill_guide_sequence_without_ot_summary(self):
         row = pd.Series({
             'guide_start': 160,
@@ -175,7 +172,6 @@ class RunnerTestCase(unittest.TestCase):
         self.assertEqual(guide_sequence.is_positive_strand, True)
         self.assertEqual(guide_sequence.guide_id, None)  # Ensure guide_id is not set in the test
         self.assertEqual(guide_sequence.ot_summary, None)
-
 
     def test_fill_guide_sequence_with_ot_summary(self):
         row = pd.Series({
@@ -198,7 +194,6 @@ class RunnerTestCase(unittest.TestCase):
         self.assertEqual(guide_sequence.guide_id, None)  # Ensure guide_id is not set in the test
         self.assertEqual(guide_sequence.ot_summary, {0: 1, 1: 0, 2: 0, 3: 4, 4: 76})
 
-
     def test_fill_coding_region(self):
         row = pd.Series({
             'cds_start': 100,
@@ -218,7 +213,6 @@ class RunnerTestCase(unittest.TestCase):
         self.assertEqual(coding_region.is_positive_strand, True)
         self.assertEqual(coding_region.exon_number, 1)
         self.assertEqual(coding_region.frame, 1)
-
 
     def test_to_variants_obj(self):
         # arrange

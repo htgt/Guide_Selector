@@ -100,8 +100,7 @@ class GuideDeterminer:
             'guide_end',
             'guide_frame',
             'ot_summary',
-        ] 
-        if "target_region_id" in coding_regions:
-            required_cols.append("target_region_id")
+            'target_region_id',
+        ]
 
         return coding_regions[required_cols].copy()
