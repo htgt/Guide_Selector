@@ -144,8 +144,8 @@ def _booleanise_strand(strand: str) -> bool:
     return strand == '+'
 
 
-def _get_char_for_bool(isTrue: bool) -> str:
-    return "+" if isTrue else "-"
+def _get_char_for_bool(is_true: bool) -> str:
+    return "+" if is_true else "-"
 
 
 def _trim_chromosome(chr: str) -> str:
