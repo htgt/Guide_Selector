@@ -1,5 +1,5 @@
 from unittest import TestCase
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 
 from mutator.mutation_builder import get_window, MutationBuilder
 from mutator.base_sequence import BaseSequence
@@ -9,11 +9,11 @@ from mutator.edit_window import EditWindow
 from mutator.codon import WindowCodon
 
 
-class TestGuideSequence(TestCase):
+class TestMutationBuilder(TestCase):
 
     @patch.object(GuideSequence, 'get_sequence_by_coords', return_value='CAGCATTCCTATATTGAGCAAGG')
     @patch.object(EditWindow, '_get_extended_window_bases', return_value='TATATTGAGCAAGG')
-    def test_get_window_codons_plus_plus(self, mock_guide_sequence, mock_edit_window):
+    def test_build_window_codons_plus_plus(self, mock_guide_sequence, mock_edit_window):
         guide = GuideSequence(
             chromosome='16',
             start=67626572,
@@ -51,7 +51,6 @@ class TestGetWindow(TestCase):
         guide_frame = 0
 
         coding_region = CodingRegion(67626572,67626594, True, 0)
-
 
         def mock_get_sequence_by_coords():
             return bases
