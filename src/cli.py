@@ -75,7 +75,8 @@ def run_mutator_cmd(args: dict, config: dict, guide_sequences: List[GuideSequenc
         guide_sequences = read_guide_tsv_to_guide_sequences(args['tsv'])
     guide_determiner = GuideDeterminer()
     guide_data_df = guide_determiner.parse_loci(gtf_data, guide_sequences)
-    runner.parse_coding_regions(guide_data_df)
+
+    runner.create_mutation_builders(guide_data_df)
 
     # Determine Window and Mutations
     runner.generate_edit_windows_for_builders()
@@ -85,6 +86,7 @@ def run_mutator_cmd(args: dict, config: dict, guide_sequences: List[GuideSequenc
     # Write Output Files
     tsv_rows = runner.as_rows(config)
     tsv_path = os.path.join(args['out_dir'], OUTPUT_TSV_FILE)
+
     write_dict_list_to_csv(tsv_path, tsv_rows, tsv_rows[0].keys(), "\t")
     print('Output saved to', tsv_path)
 

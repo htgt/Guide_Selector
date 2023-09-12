@@ -13,7 +13,7 @@ class GuideDeterminer:
             self.determine_frame_for_guide, axis=1
         )
         guide_frame_df = self.adjust_columns_for_output(coding_regions)
-        print(guide_frame_df)
+
         return guide_frame_df
 
     def get_coding_regions_for_all_guides(
@@ -62,6 +62,7 @@ class GuideDeterminer:
         dataframe['guide_start'] = guide.start
         dataframe['guide_end'] = guide.end
         dataframe['guide_strand'] = guide.strand_symbol
+        dataframe['target_region_id'] = guide.target_region_id
         dataframe['ot_summary'] = str(guide.ot_summary)
         return dataframe
 
@@ -99,5 +100,7 @@ class GuideDeterminer:
             'guide_end',
             'guide_frame',
             'ot_summary',
+            'target_region_id',
         ]
+
         return coding_regions[required_cols].copy()

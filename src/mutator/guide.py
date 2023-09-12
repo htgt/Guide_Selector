@@ -25,6 +25,7 @@ class GuideSequence(BaseSequence):
         end: int,
         is_positive_strand: bool = True,
         guide_id: str = '',
+        target_region_id: str = '',
         frame: int = 0,
         ot_summary: dict = None
     ) -> None:
@@ -33,6 +34,7 @@ class GuideSequence(BaseSequence):
         self.end = end
         self.guide_id = guide_id
         self.is_positive_strand = is_positive_strand
+        self.target_region_id = target_region_id
         self._chromosome = chromosome
         self.frame = frame
         self.ot_summary = ot_summary

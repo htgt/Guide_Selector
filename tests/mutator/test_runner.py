@@ -31,11 +31,20 @@ class RunnerTestCase(unittest.TestCase):
             start=160,
             end=170,
             is_positive_strand=True,
-            chromosome=self.chrom
+            chromosome=self.chrom,
+            target_region_id='101',
         )
         self.gene_name = 'ACT'
+        self.target_region_id = '101'
         # self.codons = [WindowCodon('TCA', self.pos, 1, True)]
-        self.mutation_builder=MutationBuilder(self.guide, self.cds, self.gene_name, self.window_length)
+
+        self.mutation_builder=MutationBuilder(
+            guide=self.guide,
+            cds=self.cds,
+            gene_name=self.gene_name,
+            window_length=self.window_length
+        )
+
         self.variants = Variants(variant_list=
             [
                 Variant(
@@ -62,10 +71,11 @@ class RunnerTestCase(unittest.TestCase):
                 end=170,
                 is_positive_strand=True,
                 guide_id='123',
-                chromosome='1'
+                chromosome='1',
+                target_region_id='101',
             ),
             gene_name='ACT',
-            window_length=self.window_length
+            window_length=self.window_length,
         )
         mb.window = EditWindow(150, 180, self.window_length, True, '1'),
         mb.codons = [WindowCodon('TCA', 23, 1, True)]
@@ -90,6 +100,7 @@ class RunnerTestCase(unittest.TestCase):
             'lost_amino_acids': 'N/A',
             'permitted': False,
             'ot_summary': None,
+            'target_region_id': '101',
         }]
 
         self.assertEqual(rows, expected_rows)
@@ -97,7 +108,8 @@ class RunnerTestCase(unittest.TestCase):
     def test_as_row_with_ot_summary(self):
         config = {
             "ignore_positions": [-1, 1],
-            "allow_codon_loss": True
+            "allow_codon_loss": True,
+            "window_length": 12,
         }
         mb = MutationBuilder(
             cds=BaseSequence(100, 200, True, '1', 1),
@@ -105,12 +117,13 @@ class RunnerTestCase(unittest.TestCase):
                 start=160,
                 end=170,
                 is_positive_strand=True,
-                guide_id='123',
-                chromosome='1',
-                ot_summary={0: 1, 1: 0, 2: 0, 3: 4, 4: 76}
+                guide_id="123",
+                chromosome="1",
+                ot_summary={0: 1, 1: 0, 2: 0, 3: 4, 4: 76},
+                target_region_id="123456",
             ),
-            gene_name='ACT',
-            window_length=self.window_length,
+            gene_name="ACT",
+            window_length=config["window_length"],
         )
         mb.window = EditWindow(150, 180, True, '1'),
         mb.codons = [WindowCodon('TCA', 23, 1, True)]
@@ -125,6 +138,7 @@ class RunnerTestCase(unittest.TestCase):
             'chromosome': '1',
             'cds_strand': "+",
             'gene_name': 'ACT',
+            'target_region_id': '123456',
             'guide_strand': "+",
             'guide_start': 160,
             'guide_end': 170,
@@ -199,7 +213,7 @@ class RunnerTestCase(unittest.TestCase):
         self.assertEqual(coding_region.is_positive_strand, True)
         self.assertEqual(coding_region.exon_number, 1)
         self.assertEqual(coding_region.frame, 1)
-        
+
     def test_to_variants_obj(self):
         # arrange
         mb_test = self.mutation_builder

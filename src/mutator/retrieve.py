@@ -19,7 +19,7 @@ def get_target_regions(region: str = None, region_file: str = None) -> List[Targ
 
 def parse_regions_data(region: str = None, region_file: str = None) -> List[str]:
     if region:
-        return [{'region': region}]
+        return [{'region': region, 'id': region}]
     else:
         if region_file:
             return read_csv_to_list_dict(region_file, delimiter='\t')
@@ -40,6 +40,7 @@ def parse_dicts_to_target_regions(data: List[dict]) -> List[TargetRegion]:
 
 def get_guides_data(regions: List[TargetRegion], request_options: dict) -> List[GuideSequence]:
     guide_sequences_for_all_regions = []
+
     for region in regions:
         print(f'Retrieve data for Target Region {region.id} {region.__repr__()}')
 
@@ -64,6 +65,10 @@ def retrieve_guides_for_region(region: TargetRegion, request_options: dict) -> L
 
     try:
         guide_sequences = read_wge_gff_to_guide_sequences(gff_data)
+
+        for guide in guide_sequences:
+            guide.target_region_id = region.id
+
         return guide_sequences
 
     except gffutils.exceptions.EmptyInputError:

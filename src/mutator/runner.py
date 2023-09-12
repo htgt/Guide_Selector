@@ -32,8 +32,9 @@ class Runner:
             guide=guide,
             cds=coding_region,
             gene_name=gene_name,
-            window_length=self._config["window_length"]
+            window_length=self._config["window_length"],
         )
+
         return mutation_builder
 
     def fill_guide_sequence(self, row: pd.Series) -> GuideSequence:
@@ -44,7 +45,8 @@ class Runner:
             is_positive_strand=(row['guide_strand'] == '+'),
             guide_id=row.name,
             frame=row['guide_frame'],
-            ot_summary=row.get('ot_summary', None)
+            ot_summary=row.get('ot_summary'),
+            target_region_id=row.get('target_region_id'),
         )
 
     def fill_coding_region(self, row: pd.Series) -> CodingRegion:
@@ -57,7 +59,7 @@ class Runner:
             frame=row['cds_frame']
         )
 
-    def parse_coding_regions(self, guide_data: pd.DataFrame) -> None:
+    def create_mutation_builders(self, guide_data: pd.DataFrame) -> None:
         mutation_builder_objects = []
 
         for index, row in guide_data.iterrows():
@@ -67,7 +69,8 @@ class Runner:
 
     def as_rows(self, config: str) -> dict:
         rows = []
-        for mb in self.mutation_builders:
+
+        for mb in (self.mutation_builders):
             base = {
                 'guide_id': mb.guide.guide_id,
                 'chromosome': mb.cds.chromosome,
@@ -77,6 +80,7 @@ class Runner:
                 'guide_start': mb.guide.start,
                 'guide_end': mb.guide.end,
                 'ot_summary': mb.guide.ot_summary,
+                'target_region_id': mb.guide.target_region_id,
             }
 
             for codon in mb.codons:
@@ -92,6 +96,7 @@ class Runner:
                     'lost_amino_acids': lost_amino,
                     'permitted': codon.is_edit_permitted(config)
                 })
+
                 rows.append(copy.deepcopy(row))
         return rows
 
@@ -139,8 +144,8 @@ def _booleanise_strand(strand: str) -> bool:
     return strand == '+'
 
 
-def _get_char_for_bool(isTrue: bool) -> str:
-    return "+" if isTrue else "-"
+def _get_char_for_bool(is_true: bool) -> str:
+    return "+" if is_true else "-"
 
 
 def _trim_chromosome(chr: str) -> str:
