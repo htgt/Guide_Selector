@@ -1,5 +1,6 @@
 from unittest import TestCase
 from unittest.mock import patch
+import json
 
 from mutator.mutation_builder import get_window, MutationBuilder
 from mutator.base_sequence import BaseSequence
@@ -49,45 +50,36 @@ class TestMutationBuilder(TestCase):
 
 
 class TestGetWindow(TestCase):
-    def test_get_window(self):
-        bases = "CAGCATTCCTATATTGAGCAAGG"
-        guide_start = 67626572
-        guide_end = 67626594
-        guide_frame = 0
 
-        coding_region = CodingRegion(67626572, 67626594, True, 0)
-
-        def mock_get_sequence_by_coords():
-            return bases
-
-        window_start = 67626583
-        window_end = 67626594
-        window_frame = 1
-        window_length = 12
-
-        window = EditWindow(
-            start=window_start,
-            end=window_end,
+    @patch.object(GuideSequence, 'get_sequence_by_coords', return_value='CAGCATTCCTATATTGAGCAAGG')
+    def test_get_window(self, mock_guide_sequence):
+        #arrange
+        coding_region = CodingRegion(
+            start=67626572,
+            end=67626594,
             is_positive_strand=True,
-            chromosome='X',
-            frame=window_frame,
-            window_length=window_length,
+            frame=0,
         )
 
-        with patch.object(
-                GuideSequence,
-                'get_sequence_by_coords',
-                side_effect=mock_get_sequence_by_coords
-        ):
-            guide = GuideSequence(
-                chromosome='X',
-                start=guide_start,
-                end=guide_end,
-                is_positive_strand=True,
-                frame=guide_frame,
-            )
-            result_window = get_window(guide, coding_region, window_length)
+        expected_window = EditWindow(
+            start=67626583,
+            end=67626594,
+            is_positive_strand=True,
+            chromosome='X',
+            frame=1,
+            window_length=12,
+        )
 
-        self.assertEqual(result_window.start, window.start)
-        self.assertEqual(result_window.end, window.end)
-        
+        #act
+        guide = GuideSequence(
+            chromosome='X',
+            start=67626572,
+            end=67626594,
+            is_positive_strand=True,
+            frame=0,
+        )
+        result_window = get_window(guide=guide, cds=coding_region, window_length=12)
+
+        #assert
+        self.assertEqual(result_window.start, expected_window.start)
+        self.assertEqual(result_window.end, expected_window.end)
