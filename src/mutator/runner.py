@@ -13,6 +13,7 @@ from tdutils.utils.vcf_utils import Variants, write_to_vcf
 
 import pandas as pd
 
+
 @dataclass
 class Runner:
     mutation_builders: List[MutationBuilder]
@@ -143,11 +144,14 @@ class Runner:
 def _booleanise_strand(strand: str) -> bool:
     return strand == '+'
 
+
 def _get_char_for_bool(is_true: bool) -> str:
     return "+" if is_true else "-"
 
+
 def _trim_chromosome(chr: str) -> str:
     return chr[3:]
+
 
 def _get_chromosome(mb: MutationBuilder) -> str:
     return mb.cds.chromosome
