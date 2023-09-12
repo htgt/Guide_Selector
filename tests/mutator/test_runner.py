@@ -31,7 +31,8 @@ class RunnerTestCase(unittest.TestCase):
             start=160,
             end=170,
             is_positive_strand=True,
-            chromosome=self.chrom
+            chromosome=self.chrom,
+            target_region_id='101',
         )
         self.gene_name = 'ACT'
         self.target_region_id = '101'
@@ -41,7 +42,6 @@ class RunnerTestCase(unittest.TestCase):
             guide=self.guide,
             cds=self.cds,
             gene_name=self.gene_name,
-            target_region_id=self.target_region_id,
             window_length=self.window_length
         )
 
@@ -72,9 +72,9 @@ class RunnerTestCase(unittest.TestCase):
                 is_positive_strand=True,
                 guide_id='123',
                 chromosome='1',
+                target_region_id='101',
             ),
             gene_name='ACT',
-            target_region_id='101',
             window_length=self.window_length,
         )
         mb.window = EditWindow(150, 180, self.window_length, True, '1'),
@@ -119,11 +119,11 @@ class RunnerTestCase(unittest.TestCase):
                 is_positive_strand=True,
                 guide_id="123",
                 chromosome="1",
-                ot_summary={0: 1, 1: 0, 2: 0, 3: 4, 4: 76}
+                ot_summary={0: 1, 1: 0, 2: 0, 3: 4, 4: 76},
+                target_region_id="123456",
             ),
             gene_name="ACT",
             window_length=config["window_length"],
-            target_region_id="123456",
         )
         mb.window = EditWindow(150, 180, True, '1'),
         mb.codons = [WindowCodon('TCA', 23, 1, True)]

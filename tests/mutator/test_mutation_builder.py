@@ -20,7 +20,7 @@ class TestMutationBuilder(TestCase):
             start=67626572,
             end=67626594,
             is_positive_strand=True,
-            frame=0
+            frame=0,
         )
         cds = CodingRegion(
             start=67626555,

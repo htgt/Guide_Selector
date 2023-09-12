@@ -81,7 +81,7 @@ class Runner:
                 'guide_start': mb.guide.start,
                 'guide_end': mb.guide.end,
                 'ot_summary': mb.guide.ot_summary,
-                'target_region_id': mb.target_region_id,
+                'target_region_id': mb.guide.target_region_id,
             }
 
             for codon in mb.codons:
@@ -100,7 +100,7 @@ class Runner:
 
                 rows.append(copy.deepcopy(row))
         return rows
-    
+
     def generate_edit_windows_for_builders(self) -> None:
         failed_mutations = []
         for mb in self.mutation_builders:
