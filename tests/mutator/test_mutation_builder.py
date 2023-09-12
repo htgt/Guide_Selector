@@ -50,7 +50,7 @@ class TestGetWindow(TestCase):
         guide_end = 67626594
         guide_frame = 0
 
-        coding_region = CodingRegion(67626572,67626594, True, 0)
+        coding_region = CodingRegion(67626572, 67626594, True, 0)
 
         def mock_get_sequence_by_coords():
             return bases
@@ -83,3 +83,4 @@ class TestGetWindow(TestCase):
 
         self.assertEqual(result_window.start, window.start)
         self.assertEqual(result_window.end, window.end)
+        
