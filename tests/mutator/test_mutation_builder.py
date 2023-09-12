@@ -65,12 +65,11 @@ class TestGetWindow(TestCase):
             start=67626583,
             end=67626594,
             is_positive_strand=True,
-            chromosome='X',
+            chromosome='chrX',
             frame=1,
             window_length=12,
         )
 
-        # act
         guide = GuideSequence(
             chromosome='X',
             start=67626572,
@@ -78,8 +77,9 @@ class TestGetWindow(TestCase):
             is_positive_strand=True,
             frame=0,
         )
+
+        # act
         result_window = get_window(guide=guide, cds=coding_region, window_length=12)
 
         # assert
-        self.assertEqual(result_window.start, expected_window.start)
-        self.assertEqual(result_window.end, expected_window.end)
+        self.assertEqual(result_window.__dict__, expected_window.__dict__)
