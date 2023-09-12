@@ -99,6 +99,7 @@ class GuideDeterminer:
             'guide_end',
             'guide_frame',
             'ot_summary',
+            'target_region_id',
         ]
 
         return coding_regions[required_cols].copy()
