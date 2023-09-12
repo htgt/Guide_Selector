@@ -75,17 +75,19 @@ class EditWindow(BaseSequence):
     def _get_base_window_position(self, coordinate: int) -> int:
         return calculate_position_in_window(self.start, coordinate, self.guide_strand, self._window_length)
 
-    def get_window_codons(self) -> List[WindowCodon]:
-        extended_coords = self._get_extended_window_coordinates()
-
+    def _get_extended_window_bases(self, coords: Tuple[int, int]) -> str:
         extended_window = BaseSequence(
-            extended_coords[0],
-            extended_coords[1],
+            coords[0],
+            coords[1],
             self.is_positive_strand,
             self.chromosome,
         )
 
-        extended_bases = extended_window.get_sequence_by_coords()
+        return  extended_window.get_sequence_by_coords()
+
+    def get_window_codons(self) -> List[WindowCodon]:
+        extended_coords = self._get_extended_window_coordinates()
+        extended_bases = self._get_extended_window_bases(extended_coords)
 
         codons = self.split_window_into_codons(
             extended_bases,
