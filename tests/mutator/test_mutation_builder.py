@@ -53,7 +53,7 @@ class TestGetWindow(TestCase):
 
     @patch.object(GuideSequence, 'get_sequence_by_coords', return_value='CAGCATTCCTATATTGAGCAAGG')
     def test_get_window(self, mock_guide_sequence):
-        #arrange
+        # arrange
         coding_region = CodingRegion(
             start=67626572,
             end=67626594,
@@ -70,7 +70,7 @@ class TestGetWindow(TestCase):
             window_length=12,
         )
 
-        #act
+        # act
         guide = GuideSequence(
             chromosome='X',
             start=67626572,
@@ -80,6 +80,6 @@ class TestGetWindow(TestCase):
         )
         result_window = get_window(guide=guide, cds=coding_region, window_length=12)
 
-        #assert
+        # assert
         self.assertEqual(result_window.start, expected_window.start)
         self.assertEqual(result_window.end, expected_window.end)
