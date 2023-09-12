@@ -16,10 +16,8 @@ class MutationBuilder:
         cds: CodingRegion,
         gene_name: str,
         window_length: int,
-        target_region_id: str
     ) -> None:
         self.gene_name = gene_name
-        self.target_region_id = target_region_id
         self.codons = []
 
         self.guide = self._build_guide_sequence(guide)
