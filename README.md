@@ -146,7 +146,9 @@ python3 src/cli.py --out_dir my_output retrieve --region_file examples/target_re
 
 ## Mutator command
 Mutator command runs the PAM mutator workflow in one command. 
-Mutator requires the Guide Loci + ID, a reference GTF file to run and output directory path. 
+
+Mutator requires the Guide Loci + ID, a reference GTF file (e.g. [MANE.GRCh38.v1.0.ensembl_genomic.gtf.gz](https://ftp.ncbi.nlm.nih.gov/refseq/MANE/MANE_human/release_1.0/MANE.GRCh38.v1.0.ensembl_genomic.gff.gz)) to run and output directory path.
+
 Custom configuration can be passed to the command for any tweaks necessary.
 
 | Argument | Description                |
