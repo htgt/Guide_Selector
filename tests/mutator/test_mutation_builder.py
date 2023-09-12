@@ -36,8 +36,13 @@ class TestMutationBuilder(TestCase):
             WindowCodon('CAA', 67626592, -1, True),
         ]
 
-        builder = MutationBuilder(guide, cds, 'BRCA1')
-        window = builder.build_edit_window()
+        builder = MutationBuilder(
+            guide=guide,
+            cds=cds,
+            gene_name='BRCA1',
+            window_length=12,
+        )
+        window = builder.window
         codons = builder.build_window_codons()
 
         self.assertEqual(list(map(vars, codons)), list(map(vars, control_codons)))
@@ -58,13 +63,15 @@ class TestGetWindow(TestCase):
         window_start = 67626583
         window_end = 67626594
         window_frame = 1
+        window_length = 12
 
         window = EditWindow(
             start=window_start,
             end=window_end,
             is_positive_strand=True,
             chromosome='X',
-            frame=window_frame
+            frame=window_frame,
+            window_length=window_length,
         )
 
         with patch.object(
@@ -79,7 +86,7 @@ class TestGetWindow(TestCase):
                 is_positive_strand=True,
                 frame=guide_frame,
             )
-            result_window = get_window(guide, coding_region)
+            result_window = get_window(guide, coding_region, window_length)
 
         self.assertEqual(result_window.start, window.start)
         self.assertEqual(result_window.end, window.end)
