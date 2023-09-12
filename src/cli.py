@@ -84,9 +84,8 @@ def run_mutator_cmd(args: dict, config: dict, guide_sequences: List[GuideSequenc
     tsv_rows = runner.as_rows(config)
     tsv_path = os.path.join(args['out_dir'], OUTPUT_TSV_FILE)
 
-    if len(tsv_rows) > 0:
-        write_dict_list_to_csv(tsv_path, tsv_rows, tsv_rows[0].keys(), "\t")
-        print('Output saved to', tsv_path)
+    write_dict_list_to_csv(tsv_path, tsv_rows, tsv_rows[0].keys(), "\t")
+    print('Output saved to', tsv_path)
 
     vcf_path = os.path.join(args['out_dir'], 'output.vcf')
     runner.write_output_to_vcf(vcf_path)

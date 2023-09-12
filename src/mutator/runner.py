@@ -27,13 +27,11 @@ class Runner:
         guide = self.fill_guide_sequence(region_data)
         coding_region = self.fill_coding_region(region_data)
         gene_name = region_data['gene_name']
-        target_region_id = region_data['target_region_id']
         mutation_builder = MutationBuilder(
             guide=guide,
             cds=coding_region,
             gene_name=gene_name,
             window_length=self._config["window_length"],
-            target_region_id=target_region_id
         )
 
         return mutation_builder
@@ -46,7 +44,8 @@ class Runner:
             is_positive_strand=(row['guide_strand'] == '+'),
             guide_id=row.name,
             frame=row['guide_frame'],
-            ot_summary=row.get('ot_summary', None)
+            ot_summary=row.get('ot_summary'),
+            target_region_id=row.get('target_region_id'),
         )
 
     def fill_coding_region(self, row: pd.Series) -> CodingRegion:

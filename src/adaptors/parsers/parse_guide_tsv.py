@@ -16,6 +16,7 @@ def read_guide_tsv_to_guide_sequences(tsv: str) -> List[GuideSequence]:
             is_positive_strand=(guide['grna_strand'] == '+'),
             guide_id=guide['guide_id'],
             ot_summary=literal_eval(guide['ot_summary']) if 'ot_summary' in guide else None,
+            target_region_id=guide.get('target_region_id'),
         )
         guide_sequences.append(guide_sequence)
     return guide_sequences
