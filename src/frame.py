@@ -1,4 +1,4 @@
-from mutator.base_sequence import BaseSequence
+from base_sequence import BaseSequence
 
 
 def get_frame(coding_region: BaseSequence, region: BaseSequence) -> int:

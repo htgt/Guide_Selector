@@ -3,7 +3,7 @@ from typing import List
 
 import gffutils
 
-from mutator.guide import GuideSequence
+from guide import GuideSequence
 
 
 def read_wge_gff_to_guide_sequences(gff_data: str) -> List[GuideSequence]:

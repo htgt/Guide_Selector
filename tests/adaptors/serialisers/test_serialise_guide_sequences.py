@@ -1,9 +1,7 @@
-from unittest.mock import patch
-
 from pyfakefs.fake_filesystem_unittest import TestCase
 
-from adaptors.serialisers.serialise_guide_sequences import write_guide_sequences_to_tsv
-from mutator.guide import GuideSequence
+from adaptors.serialisers.serialise_guide_sequences import write_guide_sequences_to_tsv, serialise_guide_sequence
+from guide import GuideSequence
 
 
 class TestWriteGuideSequencesToInputTSV(TestCase):
@@ -45,3 +43,53 @@ class TestWriteGuideSequencesToInputTSV(TestCase):
 
         # assert
         self.assertEqual(expected, actual)
+
+    def test_serialise_guide_sequence_with_all_fields(self):
+        expected = {
+            'chr': 'chr19',
+            'end': 50398874,
+            'grna_strand': '+',
+            'guide_id': 1167589901,
+            'ot_summary': {0: 1, 1: 0, 2: 0, 3: 4, 4: 76},
+            'start': 50398852,
+            'target_region_id': '123456'}
+
+        guide_sequence = GuideSequence(
+            start=50398852,
+            end=50398874,
+            is_positive_strand=True,
+            chromosome='chr19',
+            frame=0,
+            ot_summary={0: 1, 1: 0, 2: 0, 3: 4, 4: 76},
+            target_region_id='123456',
+            guide_id=1167589901
+        )
+
+        serialised_guide = serialise_guide_sequence(guide_sequence)
+
+        self.assertEqual(serialised_guide, expected)
+
+    def test_serialise_guide_sequence_with_just_required_fields(self):
+        expected = {
+            'chr': 'chr19',
+            'end': 50398874,
+            'grna_strand': '+',
+            'guide_id': '',
+            'ot_summary': None,
+            'start': 50398852,
+            'target_region_id': None
+        }
+
+        guide_sequence = GuideSequence(
+            start=50398852,
+            end=50398874,
+            is_positive_strand=True,
+            chromosome='chr19',
+            frame=0,
+            ot_summary=None,
+            target_region_id=None,
+        )
+
+        serialised_guide = serialise_guide_sequence(guide_sequence)
+
+        self.assertEqual(serialised_guide, expected)

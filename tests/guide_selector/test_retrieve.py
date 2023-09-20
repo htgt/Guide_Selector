@@ -1,9 +1,9 @@
 from unittest import TestCase
 from unittest.mock import patch
-
-from mutator.guide import GuideSequence
-from mutator.target_region import TargetRegion
-from mutator.retrieve import parse_dicts_to_target_regions, retrieve_guides_for_region
+from guide import GuideSequence
+from target_region import TargetRegion
+from retriever.retriever import _retrieve_guides_for_region
+from retriever.retriever_reader import _parse_dicts_to_target_regions
 from utils.exceptions import GetDataFromWGEError
 
 
@@ -22,13 +22,13 @@ class TestRetrieveModule(TestCase):
         expected_result = [self.target_region_1, self.target_region_2]
 
         # act
-        result = parse_dicts_to_target_regions(regions)
+        result = _parse_dicts_to_target_regions(regions)
 
         # assert
         self.assertEqual(result, expected_result)
 
     @patch('builtins.print')
-    @patch('mutator.retrieve.get_data_from_wge_by_coords')
+    @patch('retriever.retriever.get_data_from_wge_by_coords')
     def test_retrieve_guides_for_region_success(self, mock_get_data, mock_print):
         # arrange
         mock_get_data.return_value = (
@@ -54,12 +54,12 @@ class TestRetrieveModule(TestCase):
         )]
 
         # act
-        actual = retrieve_guides_for_region(self.target_region_1, self.request_options)
+        actual = _retrieve_guides_for_region(self.target_region_1, self.request_options)
 
         # assert
         self.assertEqual(list(map(vars, expected)), list(map(vars, actual)))
 
-    @patch('mutator.retrieve.get_data_from_wge_by_coords')
+    @patch('retriever.retriever.get_data_from_wge_by_coords')
     def test_retrieve_guides_for_region_no_data_raises_error(self, mock_get_data):
         # arrange
         mock_get_data.return_value = (
@@ -71,7 +71,7 @@ class TestRetrieveModule(TestCase):
 
         # act
         with self.assertRaises(GetDataFromWGEError) as cm:
-            retrieve_guides_for_region(self.target_region_1, self.request_options)
+            _retrieve_guides_for_region(self.target_region_1, self.request_options)
 
         # assert
         self.assertEqual(expected, str(cm.exception))

@@ -2,8 +2,8 @@ import unittest
 
 from parameterized import parameterized
 
-from mutator.edit_window import EditWindow, calculate_position_in_window
-from mutator.codon import WindowCodon
+from edit_window import EditWindow, calculate_position_in_window
+from codon import WindowCodon
 
 
 class TestEditWindow(unittest.TestCase):

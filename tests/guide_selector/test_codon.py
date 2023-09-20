@@ -1,7 +1,7 @@
 from unittest import TestCase
 from unittest.mock import Mock, patch
 
-from mutator.codon import WindowCodon, get_third_base_on_positive_strand
+from codon import WindowCodon, get_third_base_on_positive_strand
 from utils.exceptions import MutatorError
 
 
@@ -303,7 +303,7 @@ class TestWindowCodon(TestCase):
         # assert
         self.assertEqual(actual, expected)
 
-    @patch('mutator.codon.get_third_base_on_positive_strand')
+    @patch('codon.get_third_base_on_positive_strand')
     def test_third_base_on_positive_strand_true(self, mock_func):
         # arrange
         mock_func.return_value = 'T'
@@ -319,7 +319,7 @@ class TestWindowCodon(TestCase):
         self.assertEqual(actual, expected)
         mock_func.assert_called_with('ATT', True)
 
-    @patch('mutator.codon.get_third_base_on_positive_strand')
+    @patch('codon.get_third_base_on_positive_strand')
     def test_third_base_on_positive_strand_false(self, mock_func):
         # arrange
         mock_func.return_value = 'A'
@@ -335,7 +335,7 @@ class TestWindowCodon(TestCase):
         self.assertEqual(actual, expected)
         mock_func.assert_called_with('ATT', False)
 
-    @patch('mutator.codon.get_third_base_on_positive_strand')
+    @patch('codon.get_third_base_on_positive_strand')
     def test_edited_third_base_on_positive_strand_true(self, mock_func):
         # arrange
         mock_func.return_value = 'C'
@@ -351,7 +351,7 @@ class TestWindowCodon(TestCase):
         self.assertEqual(actual, expected)
         mock_func.assert_called_with('ATC', True)
 
-    @patch('mutator.codon.get_third_base_on_positive_strand')
+    @patch('codon.get_third_base_on_positive_strand')
     def test_edited_third_base_on_positive_strand_false(self, mock_func):
         # arrange
         mock_func.return_value = 'G'

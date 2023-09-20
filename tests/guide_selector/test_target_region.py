@@ -1,6 +1,6 @@
 import unittest
-from parameterized import parameterized_class, parameterized
-from mutator.target_region import parse_string_to_target_region, TargetRegion
+from parameterized import parameterized
+from target_region import parse_string_to_target_region, TargetRegion
 from utils.exceptions import ParseStringToTargetRegionError
 
 class TestParseTargetRegion(unittest.TestCase):

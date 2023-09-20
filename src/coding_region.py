@@ -1,4 +1,4 @@
-from mutator.base_sequence import BaseSequence
+from base_sequence import BaseSequence
 
 class CodingRegion(BaseSequence):
     def __init__(self,

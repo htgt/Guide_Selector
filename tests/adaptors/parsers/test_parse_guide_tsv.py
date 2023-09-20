@@ -1,7 +1,7 @@
 from pyfakefs.fake_filesystem_unittest import TestCase
 
-from mutator.guide import GuideSequence
-from adaptors.parsers.parse_guide_tsv import read_guide_tsv_to_guide_sequences
+from guide import GuideSequence
+from adaptors.parsers.parse_guide_tsv import read_guide_tsv_to_guide_sequences, deserialise_guide_sequence
 
 
 class TestReadGuideTsvToGuideSequences(TestCase):
@@ -79,3 +79,48 @@ class TestReadGuideTsvToGuideSequences(TestCase):
 
         # assert
         self.assertEqual(list(map(vars, expected)), list(map(vars, actual)))
+
+    def test_deserialise_guide_sequence_with_all_fields(self):
+        guide = {
+            'chr': 'chr19', 'end': '50398874',
+            'grna_strand': '+',
+            'guide_id': '1167589901',
+            'ot_summary': '{0: 1, 1: 0, 2: 0, 3: 4, 4: 76}',
+            'start': '50398852',
+            'target_region_id': '123456'}
+
+        expected = GuideSequence(
+            start=50398852,
+            end=50398874,
+            is_positive_strand=True,
+            chromosome='chr19',
+            frame=0,
+            ot_summary={0: 1, 1: 0, 2: 0, 3: 4, 4: 76},
+            target_region_id='123456',
+        )
+
+        deserialised_guide = deserialise_guide_sequence(guide)
+
+        self.assertEqual(deserialised_guide, expected)
+
+    def test_deserialise_guide_sequence_with_just_required_fields(self):
+        guide = {
+            'chr': 'chr19', 'end': '50398874',
+            'grna_strand': '+',
+            'guide_id': '1167589901',
+            'start': '50398852',
+        }
+
+        expected = GuideSequence(
+            start=50398852,
+            end=50398874,
+            is_positive_strand=True,
+            chromosome='chr19',
+            frame=0,
+            ot_summary=None,
+            target_region_id=None,
+        )
+
+        deserialised_guide = deserialise_guide_sequence(guide)
+
+        self.assertEqual(deserialised_guide, expected)
