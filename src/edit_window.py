@@ -1,8 +1,8 @@
 from typing import List, Tuple, Optional
 from Bio.Seq import Seq
 
-from mutator.base_sequence import BaseSequence
-from mutator.codon import WindowCodon
+from base_sequence import BaseSequence
+from codon import WindowCodon
 
 
 class EditWindow(BaseSequence):

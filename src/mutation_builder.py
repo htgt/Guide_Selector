@@ -1,21 +1,20 @@
 import copy
 from typing import List
-from mutator.base_sequence import BaseSequence
-from mutator.guide import GuideSequence
-from mutator.edit_window import EditWindow
-from mutator.frame import get_frame
-from mutator.coding_region import CodingRegion
-from mutator.codon import WindowCodon
+from guide import GuideSequence
+from edit_window import EditWindow
+from frame import get_frame
+from coding_region import CodingRegion
+from codon import WindowCodon
 from utils.exceptions import PamNotFoundError
 
 
 class MutationBuilder:
     def __init__(
-        self,
-        guide: GuideSequence,
-        cds: CodingRegion,
-        gene_name: str,
-        window_length: int,
+            self,
+            guide: GuideSequence,
+            cds: CodingRegion,
+            gene_name: str,
+            window_length: int,
     ) -> None:
         self.gene_name = gene_name
         self.codons = []
@@ -25,7 +24,8 @@ class MutationBuilder:
         self.window = self._build_edit_window(window_length)
 
     def __repr__(self):
-        return f"guide: {self.guide}, cds: {self.cds}, window: {self.window}, target region id: {self.target_region_id}"
+        return (f"guide: {self.guide}, cds: {self.cds}, window: {self.window}, "
+                f"target region id: {self.guide.target_region_id}")
 
     def _build_guide_sequence(self, guide: GuideSequence) -> GuideSequence:
         return copy.deepcopy(guide)

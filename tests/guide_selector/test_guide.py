@@ -1,7 +1,6 @@
 from unittest import TestCase
 from unittest.mock import Mock
-from mutator.base_sequence import BaseSequence
-from mutator.guide import GuideSequence, SequenceFragment
+from guide import GuideSequence, SequenceFragment
 
 
 class TestGuideSequence(TestCase):
