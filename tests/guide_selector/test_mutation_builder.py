@@ -1,13 +1,11 @@
 from unittest import TestCase
 from unittest.mock import patch
-import json
 
-from mutator.mutation_builder import get_window, MutationBuilder
-from mutator.base_sequence import BaseSequence
-from mutator.coding_region import CodingRegion
-from mutator.guide import GuideSequence
-from mutator.edit_window import EditWindow
-from mutator.codon import WindowCodon
+from mutation_builder import get_window, MutationBuilder
+from coding_region import CodingRegion
+from guide import GuideSequence
+from edit_window import EditWindow
+from codon import WindowCodon
 
 
 class TestMutationBuilder(TestCase):

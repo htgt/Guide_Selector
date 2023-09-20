@@ -3,7 +3,7 @@ from unittest.mock import Mock
 from pyfakefs.fake_filesystem_unittest import TestCase
 import pandas as pd
 
-from mutator.guide_determiner import GuideDeterminer
+from guide_determiner import GuideDeterminer
 from utils.exceptions import GuideDeterminerError
 
 
@@ -45,7 +45,7 @@ class TestGuideDeterminer(TestCase):
         expected = self.coding_region
 
         # act
-        actual = GuideDeterminer.get_coding_region_for_guide(
+        actual = GuideDeterminer._get_coding_region_for_guide(
             mock_object, self.gtf_data, self.guide_sequence
         )
 
@@ -65,7 +65,7 @@ class TestGuideDeterminer(TestCase):
 
         # act
         with self.assertRaises(GuideDeterminerError) as cm:
-            GuideDeterminer.get_coding_region_for_guide(mock_object, self.gtf_data, guide_sequence)
+            GuideDeterminer._get_coding_region_for_guide(mock_object, self.gtf_data, guide_sequence)
 
         # assert
         self.assertEqual(str(cm.exception), expected)
@@ -83,7 +83,7 @@ class TestGuideDeterminer(TestCase):
 
         # act
         with self.assertRaises(GuideDeterminerError) as cm:
-            GuideDeterminer.get_coding_region_for_guide(mock_object, self.gtf_data, guide_sequence)
+            GuideDeterminer._get_coding_region_for_guide(mock_object, self.gtf_data, guide_sequence)
 
         # assert
         self.assertEqual(str(cm.exception), expected)
@@ -107,7 +107,7 @@ class TestGuideDeterminer(TestCase):
         }, index=pd.Index(['1139540371'], name='guide_id'))
 
         # act
-        actual = GuideDeterminer.add_guide_data_to_dataframe(
+        actual = GuideDeterminer._add_guide_data_to_dataframe(
             mock_object, self.coding_region, self.guide_sequence
         )
 
@@ -132,7 +132,7 @@ class TestGuideDeterminer(TestCase):
         expected = 2
 
         # act
-        actual = GuideDeterminer.determine_frame_for_guide(mock_object, test_row)
+        actual = GuideDeterminer._determine_frame_for_guide(mock_object, test_row)
 
         # assert
         self.assertEqual(actual, expected)
@@ -155,7 +155,7 @@ class TestGuideDeterminer(TestCase):
         expected = 1
 
         # act
-        actual = GuideDeterminer.determine_frame_for_guide(mock_object, test_row)
+        actual = GuideDeterminer._determine_frame_for_guide(mock_object, test_row)
 
         # assert
         self.assertEqual(actual, expected)
@@ -178,7 +178,7 @@ class TestGuideDeterminer(TestCase):
         expected = 2
 
         # act
-        actual = GuideDeterminer.determine_frame_for_guide(mock_object, test_row)
+        actual = GuideDeterminer._determine_frame_for_guide(mock_object, test_row)
 
         # assert
         self.assertEqual(actual, expected)
@@ -201,7 +201,7 @@ class TestGuideDeterminer(TestCase):
         expected = 0
 
         # act
-        actual = GuideDeterminer.determine_frame_for_guide(mock_object, test_row)
+        actual = GuideDeterminer._determine_frame_for_guide(mock_object, test_row)
 
         # assert
         self.assertEqual(actual, expected)
@@ -242,7 +242,7 @@ class TestGuideDeterminer(TestCase):
         }, index=pd.Index(['1139540371'], name='guide_id'))
 
         # act
-        actual = GuideDeterminer.adjust_columns_for_output(mock_object, data)
+        actual = GuideDeterminer._adjust_columns_for_output(mock_object, data)
 
         # assert
         pd.testing.assert_frame_equal(actual, expected, check_exact=True)

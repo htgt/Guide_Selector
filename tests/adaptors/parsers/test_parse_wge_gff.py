@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from mutator.guide import GuideSequence
+from guide import GuideSequence
 from adaptors.parsers.parse_wge_gff import read_wge_gff_to_guide_sequences
 
 

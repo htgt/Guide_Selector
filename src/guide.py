@@ -2,7 +2,7 @@ import re
 from dataclasses import dataclass
 from typing import Tuple
 
-from mutator.base_sequence import BaseSequence
+from base_sequence import BaseSequence
 from utils.exceptions import PamNotFoundError
 from utils.bio_utils import add_chr_prefix
 

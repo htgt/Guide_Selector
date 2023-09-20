@@ -3,30 +3,30 @@ from typing import List
 import pandas as pd
 
 from utils.exceptions import GuideDeterminerError
-from mutator.guide import GuideSequence
+from guide import GuideSequence
 
 
 class GuideDeterminer:
     def parse_loci(self, gtf_data: pd.DataFrame, guide_sequences: List[GuideSequence]) -> pd.DataFrame:
-        coding_regions = self.get_coding_regions_for_all_guides(gtf_data, guide_sequences)
+        coding_regions = self._get_coding_regions_for_all_guides(gtf_data, guide_sequences)
         coding_regions['guide_frame'] = coding_regions.apply(
-            self.determine_frame_for_guide, axis=1
+            self._determine_frame_for_guide, axis=1
         )
-        guide_frame_df = self.adjust_columns_for_output(coding_regions)
+        guide_frame_df = self._adjust_columns_for_output(coding_regions)
 
         return guide_frame_df
 
-    def get_coding_regions_for_all_guides(
+    def _get_coding_regions_for_all_guides(
         self, gtf_data: pd.DataFrame, guide_sequences: List[GuideSequence]
     ) -> pd.DataFrame:
         coding_regions = pd.DataFrame()
         for guide in guide_sequences:
             try:
-                coding_region = self.get_coding_region_for_guide(gtf_data, guide)
+                coding_region = self._get_coding_region_for_guide(gtf_data, guide)
             except GuideDeterminerError as e:
                 print(e)
                 continue
-            coding_region = self.add_guide_data_to_dataframe(coding_region, guide)
+            coding_region = self._add_guide_data_to_dataframe(coding_region, guide)
             coding_regions = pd.concat([coding_regions, coding_region])
         if coding_regions.empty:
             raise GuideDeterminerError(
@@ -34,7 +34,7 @@ class GuideDeterminer:
             )
         return coding_regions
 
-    def get_coding_region_for_guide(
+    def _get_coding_region_for_guide(
         self, gtf_data: pd.DataFrame, guide: GuideSequence
     ) -> pd.DataFrame:
         feature_cond = gtf_data['Feature'] == 'CDS'
@@ -53,7 +53,7 @@ class GuideDeterminer:
             )
         return coding_region
 
-    def add_guide_data_to_dataframe(
+    def _add_guide_data_to_dataframe(
         self, dataframe: pd.DataFrame, guide: GuideSequence
     ) -> pd.DataFrame:
         dataframe = dataframe.copy()
@@ -65,7 +65,7 @@ class GuideDeterminer:
         dataframe['ot_summary'] = str(guide.ot_summary)
         return dataframe
 
-    def determine_frame_for_guide(self, row: pd.Series) -> int:
+    def _determine_frame_for_guide(self, row: pd.Series) -> int:
         if row['Strand'] == '+':
             difference = row['guide_start'] - row['Start']
         else:
@@ -75,7 +75,7 @@ class GuideDeterminer:
 
         return frames[(difference + int(frames.index(int(row['Frame'])))) % 3]
 
-    def adjust_columns_for_output(self, coding_regions: pd.DataFrame) -> pd.DataFrame:
+    def _adjust_columns_for_output(self, coding_regions: pd.DataFrame) -> pd.DataFrame:
         coding_regions.rename(
             columns={
                 'Chromosome': 'chromosome',

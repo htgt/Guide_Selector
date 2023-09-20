@@ -1,7 +1,7 @@
 import unittest
 from parameterized import parameterized
-from mutator.base_sequence import BaseSequence
-from mutator.frame import get_frame
+from base_sequence import BaseSequence
+from frame import get_frame
 
 
 class TestGetFrame(unittest.TestCase):
