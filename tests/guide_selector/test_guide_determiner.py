@@ -103,8 +103,9 @@ class TestGuideDeterminer(TestCase):
             'guide_start': 67610855,
             'guide_end': 67610877,
             'guide_strand': '+',
-            'ot_summary': '{0: 1, 1: 0, 2: 0, 3: 4, 4: 76}',
+            'target_region_id': '1139540371',
         }, index=pd.Index(['1139540371'], name='guide_id'))
+        expected['ot_summary'] = [{0: 1, 1: 0, 2: 0, 3: 4, 4: 76}]
 
         # act
         actual = GuideDeterminer._add_guide_data_to_dataframe(

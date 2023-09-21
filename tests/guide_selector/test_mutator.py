@@ -138,6 +138,7 @@ class RunnerTestCase(unittest.TestCase):
             'lost_amino_acids': 'N/A',
             'permitted': False,
             'ot_summary': {0: 1, 1: 0, 2: 0, 3: 4, 4: 76},
+            'wge_percentile': 25,
         }]
 
         self.assertEqual(rows, expected_rows)

@@ -76,6 +76,7 @@ class Mutator(Command):
                 'guide_end': mb.guide.end,
                 'ot_summary': mb.guide.ot_summary,
                 'target_region_id': mb.guide.target_region_id,
+                'wge_percentile': mb.guide.wge_percentile
             }
 
             for codon in mb.codons:
