@@ -31,9 +31,9 @@ class TestWriteGuideSequencesToInputTSV(TestCase):
             ),
         ]
         expected = (
-            'target_region_id\tguide_id\tchr\tstart\tend\tgrna_strand\tot_summary\n'
-            '123\t1139540371\tchr16\t67610855\t67610877\t+\t{0: 1, 1: 0, 2: 1, 3: 8, 4: 98}\n'
-            '321\t1139541475\tchr16\t67620712\t67620734\t-\t{0: 1, 1: 0, 2: 0, 3: 3, 4: 69}\n'
+            'target_region_id\tguide_id\tchr\tstart\tend\tgrna_strand\tot_summary\twge_percentile\n'
+            '123\t1139540371\tchr16\t67610855\t67610877\t+\t{0: 1, 1: 0, 2: 1, 3: 8, 4: 98}\t50\n'
+            '321\t1139541475\tchr16\t67620712\t67620734\t-\t{0: 1, 1: 0, 2: 0, 3: 3, 4: 69}\t10\n'
         )
 
         # act
@@ -51,6 +51,7 @@ class TestWriteGuideSequencesToInputTSV(TestCase):
             'grna_strand': '+',
             'guide_id': 1167589901,
             'ot_summary': {0: 1, 1: 0, 2: 0, 3: 4, 4: 76},
+            'wge_percentile': 25,
             'start': 50398852,
             'target_region_id': '123456'}
 
@@ -76,6 +77,7 @@ class TestWriteGuideSequencesToInputTSV(TestCase):
             'grna_strand': '+',
             'guide_id': '',
             'ot_summary': None,
+            'wge_percentile': None,
             'start': 50398852,
             'target_region_id': None
         }
