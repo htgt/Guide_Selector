@@ -1,4 +1,5 @@
-from typing import List, Tuple, Optional
+from typing import List, Optional, Tuple
+
 from Bio.Seq import Seq
 
 from base_sequence import BaseSequence
@@ -7,14 +8,14 @@ from codon import WindowCodon
 
 class EditWindow(BaseSequence):
     def __init__(
-        self,
-        start: int,
-        end: int,
-        window_length: int,
-        is_positive_strand: bool = True,
-        chromosome: Optional[str] = None,
-        frame: int = 0,
-        guide_strand_is_positive: bool = True
+            self,
+            start: int,
+            end: int,
+            window_length: int,
+            is_positive_strand: bool = True,
+            chromosome: Optional[str] = None,
+            frame: int = 0,
+            guide_strand_is_positive: bool = True
     ) -> None:
 
         self.id = id
@@ -52,11 +53,11 @@ class EditWindow(BaseSequence):
         codons = []
 
         for i in range(0, length - 2, 3):
-            coordinate = self._get_third_base_coordinate(start, end, i , is_positive_strand)
+            coordinate = self._get_third_base_coordinate(start, end, i, is_positive_strand)
             window_position = self._get_base_window_position(coordinate)
 
             if is_positive_strand:
-                codon_seq = bases[i:i+3]
+                codon_seq = bases[i:i + 3]
             else:
                 codon_seq = str(Seq(bases[length - i - 3: length - i]).reverse_complement())
 
@@ -83,7 +84,7 @@ class EditWindow(BaseSequence):
             self.chromosome,
         )
 
-        return  extended_window.get_sequence_by_coords()
+        return extended_window.get_sequence_by_coords()
 
     def get_window_codons(self) -> List[WindowCodon]:
         extended_coords = self._get_extended_window_coordinates()
