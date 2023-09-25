@@ -28,9 +28,8 @@ class GuideSequence(BaseSequence):
         guide_id: str = '',
         target_region_id: str = '',
         frame: int = 0,
-        ot_summary: dict = None
+        ot_summary: dict = None,
     ) -> None:
-
         self.start = start
         self.end = end
         self.guide_id = guide_id
@@ -64,9 +63,9 @@ class GuideSequence(BaseSequence):
         is_pam = False
 
         if not is_positive_strand:
-            is_pam = (match.start() <= MAX_PAM_POSITION_FROM_SEQ_EDGE)
+            is_pam = match.start() <= MAX_PAM_POSITION_FROM_SEQ_EDGE
         else:
-            is_pam = (match.end() >= len(bases) - MAX_PAM_POSITION_FROM_SEQ_EDGE)
+            is_pam = match.end() >= len(bases) - MAX_PAM_POSITION_FROM_SEQ_EDGE
 
         return is_pam
 
@@ -88,7 +87,7 @@ class GuideSequence(BaseSequence):
             return SequenceFragment(
                 pam.group(0),
                 self._calculate_coordinate(pam.start(0), self.start),
-                self._calculate_coordinate(pam.end(0) - 1, self.start)
+                self._calculate_coordinate(pam.end(0) - 1, self.start),
             )
         else:
             return PamNotFoundError('No PAM found in the sequence: ' + bases)

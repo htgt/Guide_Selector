@@ -15,7 +15,6 @@ from utils.exceptions import GetDataFromWGEError
 
 
 class Retriever(Command, Reader, Writer):
-
     def __init__(self, config: dict):
         self._target_regions = None
         self.guide_sequences = None

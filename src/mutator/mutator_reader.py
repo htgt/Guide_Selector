@@ -4,7 +4,6 @@ from utils.file_system import read_gtf_to_df
 
 
 class MutatorReader(Reader):
-
     def __init__(self) -> None:
         self.gtf_data = None
         self.guide_sequences = None

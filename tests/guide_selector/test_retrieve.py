@@ -43,15 +43,17 @@ class TestRetrieveModule(TestCase):
             'X	WGE	CDS	48900478	48900480	.	-	.	ID=PAM_285858433;'
             'Parent=C_285858433;Name=285858433;color=#1A8599;Sequence=GCACCTAAGGAATCCGGCAGTGG'
         )
-        expected = [GuideSequence(
-            chromosome='X',
-            start=48900478,
-            end=48900500,
-            is_positive_strand=False,
-            guide_id='285858433',
-            ot_summary={0: 1, 1: 0, 2: 1, 3: 8, 4: 98},
-            target_region_id='AAA',
-        )]
+        expected = [
+            GuideSequence(
+                chromosome='X',
+                start=48900478,
+                end=48900500,
+                is_positive_strand=False,
+                guide_id='285858433',
+                ot_summary={0: 1, 1: 0, 2: 1, 3: 8, 4: 98},
+                target_region_id='AAA',
+            )
+        ]
 
         # act
         actual = _retrieve_guides_for_region(self.target_region_1, self.request_options)

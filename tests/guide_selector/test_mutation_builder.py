@@ -9,7 +9,6 @@ from codon import WindowCodon
 
 
 class TestMutationBuilder(TestCase):
-
     @patch.object(GuideSequence, 'get_sequence_by_coords', return_value='CAGCATTCCTATATTGAGCAAGG')
     @patch.object(EditWindow, '_get_extended_window_bases', return_value='TATATTGAGCAAGG')
     def test_build_window_codons_plus_plus(self, mock_guide_sequence, mock_edit_window):
@@ -20,13 +19,7 @@ class TestMutationBuilder(TestCase):
             is_positive_strand=True,
             frame=0,
         )
-        cds = CodingRegion(
-            start=67626555,
-            end=67626715,
-            is_positive_strand=True,
-            chromosome='16',
-            frame=2
-        )
+        cds = CodingRegion(start=67626555, end=67626715, is_positive_strand=True, chromosome='16', frame=2)
 
         control_codons = [
             WindowCodon('TAT', 67626583, 9, True),
@@ -48,7 +41,6 @@ class TestMutationBuilder(TestCase):
 
 
 class TestGetWindow(TestCase):
-
     @patch.object(GuideSequence, 'get_sequence_by_coords', return_value='CAGCATTCCTATATTGAGCAAGG')
     def test_get_window(self, mock_guide_sequence):
         # arrange

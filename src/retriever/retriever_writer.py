@@ -9,7 +9,6 @@ GUIDES_TSV_FILENAME = 'guides.tsv'
 
 
 class RetrieverWriter(Writer):
-
     def __init__(self, guide_sequences: List[GuideSequence]):
         self._guide_sequences = guide_sequences
 

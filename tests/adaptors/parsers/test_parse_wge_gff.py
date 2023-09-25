@@ -20,14 +20,16 @@ class TestReadGffToGuideSequences(TestCase):
             'Parent=C_285858433;Name=285858433;color=#1A8599;Sequence=GCACCTAAGGAATCCGGCAGTGG'
         )
 
-        expected = [GuideSequence(
-            chromosome='X',
-            start=48900478,
-            end=48900500,
-            guide_id='285858433',
-            is_positive_strand=False,
-            ot_summary={0: 1, 1: 0, 2: 1, 3: 8, 4: 98},
-        )]
+        expected = [
+            GuideSequence(
+                chromosome='X',
+                start=48900478,
+                end=48900500,
+                guide_id='285858433',
+                is_positive_strand=False,
+                ot_summary={0: 1, 1: 0, 2: 1, 3: 8, 4: 98},
+            )
+        ]
 
         # act
         actual = read_wge_gff_to_guide_sequences(gff_data)

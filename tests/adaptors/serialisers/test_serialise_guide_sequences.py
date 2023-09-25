@@ -53,7 +53,8 @@ class TestWriteGuideSequencesToInputTSV(TestCase):
             'ot_summary': {0: 1, 1: 0, 2: 0, 3: 4, 4: 76},
             'wge_percentile': 25,
             'start': 50398852,
-            'target_region_id': '123456'}
+            'target_region_id': '123456',
+        }
 
         guide_sequence = GuideSequence(
             start=50398852,
@@ -63,7 +64,7 @@ class TestWriteGuideSequencesToInputTSV(TestCase):
             frame=0,
             ot_summary={0: 1, 1: 0, 2: 0, 3: 4, 4: 76},
             target_region_id='123456',
-            guide_id=1167589901
+            guide_id=1167589901,
         )
 
         serialised_guide = serialise_guide_sequence(guide_sequence)
@@ -79,7 +80,7 @@ class TestWriteGuideSequencesToInputTSV(TestCase):
             'ot_summary': None,
             'wge_percentile': None,
             'start': 50398852,
-            'target_region_id': None
+            'target_region_id': None,
         }
 
         guide_sequence = GuideSequence(

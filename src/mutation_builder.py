@@ -10,11 +10,11 @@ from utils.exceptions import PamNotFoundError
 
 class MutationBuilder:
     def __init__(
-            self,
-            guide: GuideSequence,
-            cds: CodingRegion,
-            gene_name: str,
-            window_length: int,
+        self,
+        guide: GuideSequence,
+        cds: CodingRegion,
+        gene_name: str,
+        window_length: int,
     ) -> None:
         self.gene_name = gene_name
         self.codons = []
@@ -24,8 +24,10 @@ class MutationBuilder:
         self.window = self._build_edit_window(window_length)
 
     def __repr__(self):
-        return (f"guide: {self.guide}, cds: {self.cds}, window: {self.window}, "
-                f"target region id: {self.guide.target_region_id}")
+        return (
+            f"guide: {self.guide}, cds: {self.cds}, window: {self.window}, "
+            f"target region id: {self.guide.target_region_id}"
+        )
 
     def _build_guide_sequence(self, guide: GuideSequence) -> GuideSequence:
         return copy.deepcopy(guide)
@@ -58,7 +60,7 @@ def get_window(guide: GuideSequence, cds: CodingRegion, window_length: int) -> E
         is_positive_strand=cds.is_positive_strand,
         chromosome=guide.chromosome,
         frame=0,
-        guide_strand_is_positive=guide.is_positive_strand
+        guide_strand_is_positive=guide.is_positive_strand,
     )
 
     window.frame = get_frame(cds, window)

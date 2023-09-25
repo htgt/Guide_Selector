@@ -1,7 +1,9 @@
 from base_sequence import BaseSequence
 
+
 class CodingRegion(BaseSequence):
-    def __init__(self,
+    def __init__(
+        self,
         start: int,
         end: int,
         is_positive_strand: bool = True,
