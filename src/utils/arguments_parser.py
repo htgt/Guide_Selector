@@ -84,4 +84,3 @@ class InputArguments:
             type=str,
             help='Path to the input file with data for Target Regions separated by new line'
         )
-

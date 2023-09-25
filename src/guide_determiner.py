@@ -2,8 +2,8 @@ from typing import List
 
 import pandas as pd
 
-from utils.exceptions import GuideDeterminerError
 from guide import GuideSequence
+from utils.exceptions import GuideDeterminerError
 
 
 class GuideDeterminer:

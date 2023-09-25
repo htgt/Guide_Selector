@@ -1,13 +1,14 @@
-from os import path
 import csv
+import json
+from os import path
 from typing import List
 
 import pandas as pd
 import pyranges as pr
 from tdutils.utils.vcf_utils import Variants, write_to_vcf
 
-from utils.exceptions import FileFormatError
 from mutation_builder import MutationBuilder
+from utils.exceptions import FileFormatError
 
 # copied from targeton-designer- need to make a shared repo
 
@@ -51,4 +52,14 @@ def write_variants_to_vcf(file_path: str, variants: Variants):
 def parse_json(file_path: str) -> dict:
     with open(file_path, "r") as file:
         try:
-            result = json.l
+            result = json.load(file)
+        except Exception as err:
+            raise FileFormatError
+
+    return result
+
+
+def read_gtf_to_df(gtf: str) -> pd.DataFrame:
+    gtf_df = pr.read_gtf(gtf, as_df=True)
+    gtf_df['Start'] += 1  # pyranges uses 0-based coords
+    return gtf_df

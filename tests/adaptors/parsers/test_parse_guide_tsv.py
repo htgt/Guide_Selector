@@ -1,7 +1,7 @@
 from pyfakefs.fake_filesystem_unittest import TestCase
 
+from adaptors.parsers.parse_guide_tsv import deserialise_guide_sequence, read_guide_tsv_to_guide_sequences  # NOQA
 from guide import GuideSequence
-from adaptors.parsers.parse_guide_tsv import read_guide_tsv_to_guide_sequences, deserialise_guide_sequence
 
 
 class TestReadGuideTsvToGuideSequences(TestCase):
