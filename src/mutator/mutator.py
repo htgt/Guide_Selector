@@ -1,15 +1,14 @@
-from typing import List
 import copy
-
-from guide_determiner import GuideDeterminer
-from abstractions.command import Command
-from mutation_builder import MutationBuilder
-from guide import GuideSequence
-from coding_region import CodingRegion
-from tdutils.utils.vcf_utils import Variants
+from typing import List
 
 import pandas as pd
+from tdutils.utils.vcf_utils import Variants
 
+from abstractions.command import Command
+from coding_region import CodingRegion
+from guide import GuideSequence
+from guide_determiner import GuideDeterminer
+from mutation_builder import MutationBuilder
 from mutator.mutator_reader import MutatorReader
 from mutator.mutator_writer import MutatorWriter
 

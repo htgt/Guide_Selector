@@ -5,13 +5,13 @@ import gffutils
 from abstractions.command import Command
 from abstractions.reader import Reader
 from abstractions.writer import Writer
-from retriever.retriever_reader import RetrieverReader
-from retriever.retriever_writer import RetrieverWriter
 from adaptors.parsers.parse_wge_gff import read_wge_gff_to_guide_sequences
 from guide import GuideSequence
+from retriever.retriever_reader import RetrieverReader
+from retriever.retriever_writer import RetrieverWriter
 from target_region import TargetRegion
-from utils.get_data.wge import get_data_from_wge_by_coords
 from utils.exceptions import GetDataFromWGEError
+from utils.get_data.wge import get_data_from_wge_by_coords
 
 
 class Retriever(Command, Reader, Writer):

@@ -1,10 +1,10 @@
 import re
 from dataclasses import dataclass
-from typing import Tuple, Optional
+from typing import Optional, Tuple
 
 from base_sequence import BaseSequence
-from utils.exceptions import PamNotFoundError
 from utils.bio_utils import add_chr_prefix
+from utils.exceptions import PamNotFoundError
 from wge_percentile import calculate_wge_percentile
 
 PAM_POSITIVE_PATTERN = r'.GG'

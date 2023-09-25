@@ -1,8 +1,8 @@
 from ast import literal_eval
 from typing import List
 
-from utils.file_system import read_tsv_to_list_dict
 from guide import GuideSequence
+from utils.file_system import read_tsv_to_list_dict
 
 
 def read_guide_tsv_to_guide_sequences(tsv_file: str) -> List[GuideSequence]:

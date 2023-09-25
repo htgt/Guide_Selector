@@ -1,9 +1,10 @@
 from unittest import TestCase
 from unittest.mock import patch
+
 from guide import GuideSequence
-from target_region import TargetRegion
 from retriever.retriever import _retrieve_guides_for_region
 from retriever.retriever_reader import _parse_dicts_to_target_regions
+from target_region import TargetRegion
 from utils.exceptions import GetDataFromWGEError
 
 

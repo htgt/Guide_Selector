@@ -1,5 +1,6 @@
-import requests
 import time
+
+import requests
 
 
 def get_seq_from_ensembl_by_coords(chromosome: str, start: int, end: int):

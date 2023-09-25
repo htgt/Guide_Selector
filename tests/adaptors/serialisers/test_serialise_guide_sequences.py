@@ -1,6 +1,6 @@
 from pyfakefs.fake_filesystem_unittest import TestCase
 
-from adaptors.serialisers.serialise_guide_sequences import write_guide_sequences_to_tsv, serialise_guide_sequence
+from adaptors.serialisers.serialise_guide_sequences import serialise_guide_sequence, write_guide_sequences_to_tsv  # NOQA
 from guide import GuideSequence
 
 

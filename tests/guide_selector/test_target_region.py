@@ -1,11 +1,14 @@
 import unittest
+
 from parameterized import parameterized
-from target_region import parse_string_to_target_region, TargetRegion
+
+from target_region import TargetRegion, parse_string_to_target_region
 from utils.exceptions import ParseStringToTargetRegionError
+
 
 class TestParseTargetRegion(unittest.TestCase):
     @parameterized.expand([
-        ("chr1:300-350", TargetRegion(chromosome="1",start=300, end=350)),
+        ("chr1:300-350", TargetRegion(chromosome="1", start=300, end=350)),
         ("ch2:100-150", TargetRegion(chromosome="2", start=100, end=150)),
         ("3:222-333", TargetRegion(chromosome="3", start=222, end=333)),
     ])

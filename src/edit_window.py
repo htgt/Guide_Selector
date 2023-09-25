@@ -1,4 +1,5 @@
-from typing import List, Tuple, Optional
+from typing import List, Optional, Tuple
+
 from Bio.Seq import Seq
 
 from base_sequence import BaseSequence
