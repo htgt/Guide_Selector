@@ -1,9 +1,9 @@
 import os
 from typing import List
 
-from adaptors.serialisers.serialise_guide_sequences import write_guide_sequences_to_tsv
-from guide import GuideSequence
 from abstractions.writer import Writer
+from adaptors.serialisers.serialise_guide_sequences import write_guide_sequences_to_tsv  # NOQA
+from guide import GuideSequence
 
 GUIDES_TSV_FILENAME = 'guides.tsv'
 

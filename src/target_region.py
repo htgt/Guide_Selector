@@ -1,5 +1,6 @@
 import re
 from dataclasses import dataclass
+
 from utils.exceptions import ParseStringToTargetRegionError
 
 
@@ -14,7 +15,7 @@ class TargetRegion:
         return f'chr{self.chromosome}:{self.start}-{self.end}'
 
 
-## Input string format is "chr1:100-150"
+# Input string format is "chr1:100-150"
 def parse_string_to_target_region(region_string: str) -> TargetRegion:
     REGION_PATTERN = r'(chr?)?(.{1,2}):(\d+)-(\d+)'
 

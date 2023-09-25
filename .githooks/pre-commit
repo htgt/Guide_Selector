@@ -8,7 +8,7 @@ RESET=$(tput sgr0)
 exec 1>&2
 
 # Run pycodestyle on the staged Python files.
-pycodestyle --exclude=venv,.git --filename=*.py --max-line-length=100 $(git diff --cached --name-only --diff-filter=ACM | grep '\.py$')
+pycodestyle --exclude=venv,.git --filename=*.py --max-line-length=120 $(git diff --cached --name-only --diff-filter=ACM | grep '\.py$')
 
 # Save the exit status of pycodestyle.
 pycodestyle_exit_status=$?

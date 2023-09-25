@@ -1,14 +1,15 @@
 import unittest
 
-from mutator.mutator import Mutator
-from mutation_builder import MutationBuilder
-from base_sequence import BaseSequence
-from guide import GuideSequence
-from coding_region import CodingRegion
-from edit_window import EditWindow
-from codon import WindowCodon
 import pandas as pd
-from tdutils.utils.vcf_utils import Variants, Variant
+from tdutils.utils.vcf_utils import Variant, Variants
+
+from base_sequence import BaseSequence
+from coding_region import CodingRegion
+from codon import WindowCodon
+from edit_window import EditWindow
+from guide import GuideSequence
+from mutation_builder import MutationBuilder
+from mutator.mutator import Mutator
 
 
 class RunnerTestCase(unittest.TestCase):
@@ -37,22 +38,22 @@ class RunnerTestCase(unittest.TestCase):
         self.target_region_id = '101'
         # self.codons = [WindowCodon('TCA', self.pos, 1, True)]
 
-        self.mutation_builder=MutationBuilder(
+        self.mutation_builder = MutationBuilder(
             guide=self.guide,
             cds=self.cds,
             gene_name=self.gene_name,
             window_length=self.window_length
         )
 
-        self.variants = Variants(variant_list=
-            [
+        self.variants = Variants(
+            variant_list=[
                 Variant(
-                id='123',
-                chrom=self.chrom,
-                pos=self.pos,
-                ref=self.third_base,
-                alt=self.alt_third_base,
-                info={'SGRNA': "sgRNA_123"}
+                    id='123',
+                    chrom=self.chrom,
+                    pos=self.pos,
+                    ref=self.third_base,
+                    alt=self.alt_third_base,
+                    info={'SGRNA': "sgRNA_123"}
                 )
             ],
             chroms=[self.chrom]
@@ -209,11 +210,11 @@ class RunnerTestCase(unittest.TestCase):
     def test_variants(self):
         # arrange
         mb_test = self.mutation_builder
-        mb_test.window =  self.window
+        mb_test.window = self.window
         mb_test.codons = [
             WindowCodon('GAT', 23, 9, False),
         ]
-        self.mutator.mutation_builders=[mb_test]
+        self.mutator.mutation_builders = [mb_test]
         expected_result = self.variants
 
         # act

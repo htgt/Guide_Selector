@@ -22,5 +22,3 @@ class BaseSequence:
         bases = get_seq_from_ensembl_by_coords(self.chromosome, self.start, self.end)
 
         return bases
-
-

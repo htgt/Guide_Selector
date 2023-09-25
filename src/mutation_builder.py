@@ -1,10 +1,11 @@
 import copy
 from typing import List
-from guide import GuideSequence
-from edit_window import EditWindow
-from frame import get_frame
+
 from coding_region import CodingRegion
 from codon import WindowCodon
+from edit_window import EditWindow
+from frame import get_frame
+from guide import GuideSequence
 from utils.exceptions import PamNotFoundError
 
 

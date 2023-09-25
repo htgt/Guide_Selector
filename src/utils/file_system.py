@@ -1,15 +1,14 @@
-from os import path
 import csv
 import json
+from os import path
 from typing import List
 
 import pandas as pd
 import pyranges as pr
 from tdutils.utils.vcf_utils import Variants, write_to_vcf
 
-from utils.exceptions import FileFormatError
 from mutation_builder import MutationBuilder
-
+from utils.exceptions import FileFormatError
 
 # copied from targeton-designer- need to make a shared repo
 

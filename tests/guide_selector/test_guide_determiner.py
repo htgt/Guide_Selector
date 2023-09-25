@@ -1,7 +1,7 @@
 from unittest.mock import Mock
 
-from pyfakefs.fake_filesystem_unittest import TestCase
 import pandas as pd
+from pyfakefs.fake_filesystem_unittest import TestCase
 
 from guide_determiner import GuideDeterminer
 from utils.exceptions import GuideDeterminerError

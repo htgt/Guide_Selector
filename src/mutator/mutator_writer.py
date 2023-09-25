@@ -5,7 +5,7 @@ from tdutils.utils.vcf_utils import Variants
 
 from abstractions.writer import Writer
 from mutation_builder import MutationBuilder
-from utils.file_system import write_list_dict_in_tsv, write_variants_to_vcf, write_json_failed_guides
+from utils.file_system import write_json_failed_guides, write_list_dict_in_tsv, write_variants_to_vcf  # NOQA
 
 GUIDES_CODONS_TSV_FILENAME = 'guides_and_codons.tsv'
 VARIANTS_VCF_FILENAME = 'variants.vcf'
