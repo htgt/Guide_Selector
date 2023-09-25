@@ -7,8 +7,6 @@ from guide import GuideSequence
 
 
 class RetrieverWriter(Writer):
-    guides_tsv_filename = 'guides.tsv'
-
     def __init__(self, guide_sequences: List[GuideSequence]):
         self._guide_sequences = guide_sequences
 
