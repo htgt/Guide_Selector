@@ -8,16 +8,15 @@ from codon import WindowCodon
 
 class EditWindow(BaseSequence):
     def __init__(
-            self,
-            start: int,
-            end: int,
-            window_length: int,
-            is_positive_strand: bool = True,
-            chromosome: Optional[str] = None,
-            frame: int = 0,
-            guide_strand_is_positive: bool = True
+        self,
+        start: int,
+        end: int,
+        window_length: int,
+        is_positive_strand: bool = True,
+        chromosome: Optional[str] = None,
+        frame: int = 0,
+        guide_strand_is_positive: bool = True,
     ) -> None:
-
         self.id = id
         self.start = start
         self.end = end
@@ -42,13 +41,12 @@ class EditWindow(BaseSequence):
         return start, end
 
     def split_window_into_codons(
-            self,
-            bases: str,
-            start: int,
-            end: int,
-            is_positive_strand: bool,
+        self,
+        bases: str,
+        start: int,
+        end: int,
+        is_positive_strand: bool,
     ) -> List[WindowCodon]:
-
         length = len(bases)
         codons = []
 
@@ -57,9 +55,9 @@ class EditWindow(BaseSequence):
             window_position = self._get_base_window_position(coordinate)
 
             if is_positive_strand:
-                codon_seq = bases[i:i + 3]
+                codon_seq = bases[i : i + 3]
             else:
-                codon_seq = str(Seq(bases[length - i - 3: length - i]).reverse_complement())
+                codon_seq = str(Seq(bases[length - i - 3 : length - i]).reverse_complement())
 
             codon = WindowCodon(codon_seq, coordinate, window_position, is_positive_strand)
 
@@ -91,10 +89,7 @@ class EditWindow(BaseSequence):
         extended_bases = self._get_extended_window_bases(extended_coords)
 
         codons = self.split_window_into_codons(
-            extended_bases,
-            extended_coords[0],
-            extended_coords[1],
-            self.is_positive_strand
+            extended_bases, extended_coords[0], extended_coords[1], self.is_positive_strand
         )
 
         return codons
@@ -104,12 +99,7 @@ class EditWindow(BaseSequence):
     # Negative strand: PAM NNNNNNNNN - -3 ... -1 1 ... 9
 
 
-def calculate_position_in_window(
-        window_start: int,
-        coordinate: int,
-        strand: bool,
-        window_length: int
-) -> int:
+def calculate_position_in_window(window_start: int, coordinate: int, strand: bool, window_length: int) -> int:
     PAM_PROTECTION_LENGTH = 3
 
     result = 0

@@ -7,7 +7,6 @@ from utils.file_system import read_tsv_to_list_dict
 
 
 class RetrieverReader(Reader):
-
     def __init__(self):
         self.target_regions = None
 

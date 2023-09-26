@@ -4,7 +4,6 @@ from wge_percentile import calculate_wge_percentile
 
 
 class TestWgePercentile(unittest.TestCase):
-
     def test_calculate_wge_percentile(self):
         percentile_10 = {0: 1, 1: 0, 2: 0, 3: 3, 4: 70}
         percentile_25 = {0: 1, 1: 0, 2: 0, 3: 8, 4: 70}
