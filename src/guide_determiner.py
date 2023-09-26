@@ -9,9 +9,7 @@ from utils.exceptions import GuideDeterminerError
 class GuideDeterminer:
     def parse_loci(self, gtf_data: pd.DataFrame, guide_sequences: List[GuideSequence]) -> pd.DataFrame:
         coding_regions = self._get_coding_regions_for_all_guides(gtf_data, guide_sequences)
-        coding_regions['guide_frame'] = coding_regions.apply(
-            self._determine_frame_for_guide, axis=1
-        )
+        coding_regions['guide_frame'] = coding_regions.apply(self._determine_frame_for_guide, axis=1)
         guide_frame_df = self._adjust_columns_for_output(coding_regions)
 
         return guide_frame_df
@@ -29,14 +27,10 @@ class GuideDeterminer:
             coding_region = self._add_guide_data_to_dataframe(coding_region, guide)
             coding_regions = pd.concat([coding_regions, coding_region])
         if coding_regions.empty:
-            raise GuideDeterminerError(
-                f'No coding regions found for any guides given.'
-            )
+            raise GuideDeterminerError('No coding regions found for any guides given.')
         return coding_regions
 
-    def _get_coding_region_for_guide(
-        self, gtf_data: pd.DataFrame, guide: GuideSequence
-    ) -> pd.DataFrame:
+    def _get_coding_region_for_guide(self, gtf_data: pd.DataFrame, guide: GuideSequence) -> pd.DataFrame:
         feature_cond = gtf_data['Feature'] == 'CDS'
         chrom_cond = gtf_data['Chromosome'] == guide.chromosome
         start_cond = gtf_data['Start'] <= guide.end
@@ -44,18 +38,12 @@ class GuideDeterminer:
         coding_region = gtf_data[feature_cond & chrom_cond & start_cond & end_cond].copy()
 
         if coding_region.empty:
-            raise GuideDeterminerError(
-                f'Guide {guide.guide_id} does not overlap with any coding regions'
-            )
+            raise GuideDeterminerError(f'Guide {guide.guide_id} does not overlap with any coding regions')
         if len(coding_region) > 1:
-            raise GuideDeterminerError(
-                f'Guide {guide.guide_id} overlaps with multiple coding regions'
-            )
+            raise GuideDeterminerError(f'Guide {guide.guide_id} overlaps with multiple coding regions')
         return coding_region
 
-    def _add_guide_data_to_dataframe(
-        self, dataframe: pd.DataFrame, guide: GuideSequence
-    ) -> pd.DataFrame:
+    def _add_guide_data_to_dataframe(self, dataframe: pd.DataFrame, guide: GuideSequence) -> pd.DataFrame:
         dataframe = dataframe.copy()
         dataframe['guide_id'] = guide.guide_id
         dataframe.set_index('guide_id', inplace=True)
@@ -85,7 +73,7 @@ class GuideDeterminer:
                 'Strand': 'cds_strand',
                 'Frame': 'cds_frame',
             },
-            inplace=True
+            inplace=True,
         )
         required_cols = [
             'chromosome',

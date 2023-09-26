@@ -11,14 +11,16 @@ def read_wge_gff_to_guide_sequences(gff_data: str) -> List[GuideSequence]:
     guide_sequences = []
 
     for feature in db.features_of_type('Crispr'):
-        guide_sequences.append(GuideSequence(
-            chromosome=feature.seqid,
-            start=int(feature.start),
-            end=int(feature.end),
-            guide_id=feature.attributes['Name'][0],
-            is_positive_strand=(feature.strand == '+'),
-            ot_summary=_OT_summary_to_dict(feature.attributes['OT_Summary']),
-        ))
+        guide_sequences.append(
+            GuideSequence(
+                chromosome=feature.seqid,
+                start=int(feature.start),
+                end=int(feature.end),
+                guide_id=feature.attributes['Name'][0],
+                is_positive_strand=(feature.strand == '+'),
+                ot_summary=_OT_summary_to_dict(feature.attributes['OT_Summary']),
+            )
+        )
 
     return guide_sequences
 
