@@ -16,7 +16,7 @@ class BaseSequence:
     end: int
     is_positive_strand: bool = True
     chromosome: str = ""
-    frame: FragmentFrameIndicator = 0
+    frame: FragmentFrameIndicator = FragmentFrameIndicator.ZERO
 
     def get_sequence_by_coords(self) -> str:
         bases = get_seq_from_ensembl_by_coords(self.chromosome, self.start, self.end)
