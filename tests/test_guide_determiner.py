@@ -10,31 +10,26 @@ from utils.exceptions import GuideDeterminerError
 class TestGuideDeterminer(TestCase):
     def setUp(self):
         self.setUpPyfakefs()
-        self.gtf_data = pd.DataFrame(
-            {
-                'Chromosome': ['chr16', 'chr16', 'chr16'],
-                'Feature': ['CDS', 'CDS', 'CDS'],
-                'Start': [67610833, 67616745, 67616745],
-                'End': [67611613, 67616878, 67616878],
-                'Strand': ['+', '+', '+'],
-                'Frame': [0, 2, 2],
-                'gene_name': ['CTCF', 'CTCF', 'CTCF'],
-                'exon_number': ['3', '5', '5'],
-            }
-        )
-        self.coding_region = pd.DataFrame(
-            {
-                'Chromosome': 'chr16',
-                'Feature': 'CDS',
-                'Start': 67610833,
-                'End': 67611613,
-                'Strand': '+',
-                'Frame': 0,
-                'gene_name': 'CTCF',
-                'exon_number': '3',
-            },
-            index=[0],
-        )
+        self.gtf_data = pd.DataFrame({
+            'Chromosome': ['chr16', 'chr16', 'chr16'],
+            'Feature': ['CDS', 'CDS', 'CDS'],
+            'Start': [67610833, 67616745, 67616745],
+            'End': [67611613, 67616878, 67616878],
+            'Strand': ['+', '+', '+'],
+            'Frame': [0, 2, 2],
+            'gene_name': ['CTCF', 'CTCF', 'CTCF'],
+            'exon_number': ['3', '5', '5'],
+        })
+        self.coding_region = pd.DataFrame({
+            'Chromosome': 'chr16',
+            'Feature': 'CDS',
+            'Start': 67610833,
+            'End': 67611613,
+            'Strand': '+',
+            'Frame': 0,
+            'gene_name': 'CTCF',
+            'exon_number': '3',
+        }, index=[0])
         self.guide_sequence = Mock(
             guide_id='1139540371',
             chromosome='chr16',
@@ -42,7 +37,7 @@ class TestGuideDeterminer(TestCase):
             end=67610877,
             strand_symbol='+',
             target_region_id='1139540371',
-            ot_summary={0: 1, 1: 0, 2: 0, 3: 4, 4: 76},
+            ot_summary={0: 1, 1: 0, 2: 0, 3: 4, 4: 76}
         )
 
     def test_get_coding_region_for_guide_success(self):
@@ -51,7 +46,9 @@ class TestGuideDeterminer(TestCase):
         expected = self.coding_region
 
         # act
-        actual = GuideDeterminer._get_coding_region_for_guide(mock_object, self.gtf_data, self.guide_sequence)
+        actual = GuideDeterminer._get_coding_region_for_guide(
+            mock_object, self.gtf_data, self.guide_sequence
+        )
 
         # assert
         pd.testing.assert_frame_equal(actual, expected, check_exact=True)
@@ -95,27 +92,26 @@ class TestGuideDeterminer(TestCase):
     def test_add_guide_data_to_dataframe(self):
         # arrange
         mock_object = Mock()
-        expected = pd.DataFrame(
-            {
-                'Chromosome': 'chr16',
-                'Feature': 'CDS',
-                'Start': 67610833,
-                'End': 67611613,
-                'Strand': '+',
-                'Frame': 0,
-                'gene_name': 'CTCF',
-                'exon_number': '3',
-                'guide_start': 67610855,
-                'guide_end': 67610877,
-                'guide_strand': '+',
-                'target_region_id': '1139540371',
-            },
-            index=pd.Index(['1139540371'], name='guide_id'),
-        )
+        expected = pd.DataFrame({
+            'Chromosome': 'chr16',
+            'Feature': 'CDS',
+            'Start': 67610833,
+            'End': 67611613,
+            'Strand': '+',
+            'Frame': 0,
+            'gene_name': 'CTCF',
+            'exon_number': '3',
+            'guide_start': 67610855,
+            'guide_end': 67610877,
+            'guide_strand': '+',
+            'target_region_id': '1139540371',
+        }, index=pd.Index(['1139540371'], name='guide_id'))
         expected['ot_summary'] = [{0: 1, 1: 0, 2: 0, 3: 4, 4: 76}]
 
         # act
-        actual = GuideDeterminer._add_guide_data_to_dataframe(mock_object, self.coding_region, self.guide_sequence)
+        actual = GuideDeterminer._add_guide_data_to_dataframe(
+            mock_object, self.coding_region, self.guide_sequence
+        )
 
         # assert
         pd.testing.assert_frame_equal(actual, expected, check_exact=True)
@@ -123,21 +119,18 @@ class TestGuideDeterminer(TestCase):
     def test_determine_frame_for_guide_within_forward_strand_cds(self):
         # arrange
         mock_object = Mock()
-        test_row = pd.Series(
-            {
-                'Chromosome': 'chr16',
-                'Feature': 'CDS',
-                'Start': 67610833,
-                'End': 67611613,
-                'Strand': '+',
-                'Frame': 0,
-                'gene_name': 'CTCF',
-                'exon_number': '3',
-                'guide_start': 67610855,
-                'guide_end': 67610877,
-            },
-            name='1139540371',
-        )
+        test_row = pd.Series({
+            'Chromosome': 'chr16',
+            'Feature': 'CDS',
+            'Start': 67610833,
+            'End': 67611613,
+            'Strand': '+',
+            'Frame': 0,
+            'gene_name': 'CTCF',
+            'exon_number': '3',
+            'guide_start': 67610855,
+            'guide_end': 67610877,
+        }, name='1139540371')
         expected = 2
 
         # act
@@ -149,21 +142,18 @@ class TestGuideDeterminer(TestCase):
     def test_determine_frame_for_guide_starting_before_forward_strand_cds(self):
         # arrange
         mock_object = Mock()
-        test_row = pd.Series(
-            {
-                'Chromosome': 'chr16',
-                'Feature': 'CDS',
-                'Start': 67610856,
-                'End': 67611613,
-                'Strand': '+',
-                'Frame': 0,
-                'gene_name': 'CTCF',
-                'exon_number': '3',
-                'guide_start': 67610855,
-                'guide_end': 67610877,
-            },
-            name='1139540371',
-        )
+        test_row = pd.Series({
+            'Chromosome': 'chr16',
+            'Feature': 'CDS',
+            'Start': 67610856,
+            'End': 67611613,
+            'Strand': '+',
+            'Frame': 0,
+            'gene_name': 'CTCF',
+            'exon_number': '3',
+            'guide_start': 67610855,
+            'guide_end': 67610877,
+        }, name='1139540371')
         expected = 1
 
         # act
@@ -175,21 +165,18 @@ class TestGuideDeterminer(TestCase):
     def test_determine_frame_for_guide_within_reverse_strand_cds(self):
         # arrange
         mock_object = Mock()
-        test_row = pd.Series(
-            {
-                'Chromosome': 'chr16',
-                'Feature': 'CDS',
-                'Start': 3791981,
-                'End': 3792094,
-                'Strand': '-',
-                'Frame': 2,
-                'gene_name': 'CREBBP',
-                'exon_number': '5',
-                'guide_start': 3791982,
-                'guide_end': 3792004,
-            },
-            name='1133146650',
-        )
+        test_row = pd.Series({
+            'Chromosome': 'chr16',
+            'Feature': 'CDS',
+            'Start': 3791981,
+            'End': 3792094,
+            'Strand': '-',
+            'Frame': 2,
+            'gene_name': 'CREBBP',
+            'exon_number': '5',
+            'guide_start': 3791982,
+            'guide_end': 3792004,
+        }, name='1133146650')
         expected = 2
 
         # act
@@ -201,21 +188,18 @@ class TestGuideDeterminer(TestCase):
     def test_determine_frame_for_guide_ending_after_reverse_strand_cds(self):
         # arrange
         mock_object = Mock()
-        test_row = pd.Series(
-            {
-                'Chromosome': 'chr16',
-                'Feature': 'CDS',
-                'Start': 3791981,
-                'End': 3792003,
-                'Strand': '-',
-                'Frame': 2,
-                'gene_name': 'CREBBP',
-                'exon_number': '5',
-                'guide_start': 3791982,
-                'guide_end': 3792004,
-            },
-            name='1133146650',
-        )
+        test_row = pd.Series({
+            'Chromosome': 'chr16',
+            'Feature': 'CDS',
+            'Start': 3791981,
+            'End': 3792003,
+            'Strand': '-',
+            'Frame': 2,
+            'gene_name': 'CREBBP',
+            'exon_number': '5',
+            'guide_start': 3791982,
+            'guide_end': 3792004,
+        }, name='1133146650')
         expected = 0
 
         # act
@@ -227,43 +211,37 @@ class TestGuideDeterminer(TestCase):
     def test_adjust_columns_for_output(self):
         # arrange
         mock_object = Mock()
-        data = pd.DataFrame(
-            {
-                'Chromosome': 'chr16',
-                'Feature': 'CDS',
-                'Start': 67610833,
-                'End': 67611613,
-                'Strand': '+',
-                'Frame': 0,
-                'gene_name': 'CTCF',
-                'exon_number': '3',
-                'guide_strand': True,
-                'guide_start': 67610855,
-                'guide_end': 67610877,
-                'guide_frame': 2,
-                'ot_summary': {0: 1, 1: 0, 2: 0, 3: 4, 4: 76},
-                'target_region_id': '123',
-            },
-            index=pd.Index(['1139540371'], name='guide_id'),
-        )
-        expected = pd.DataFrame(
-            {
-                'chromosome': 'chr16',
-                'cds_start': 67610833,
-                'cds_end': 67611613,
-                'cds_strand': '+',
-                'cds_frame': 0,
-                'gene_name': 'CTCF',
-                'exon_number': '3',
-                'guide_strand': True,
-                'guide_start': 67610855,
-                'guide_end': 67610877,
-                'guide_frame': 2,
-                'ot_summary': {0: 1, 1: 0, 2: 0, 3: 4, 4: 76},
-                'target_region_id': '123',
-            },
-            index=pd.Index(['1139540371'], name='guide_id'),
-        )
+        data = pd.DataFrame({
+            'Chromosome': 'chr16',
+            'Feature': 'CDS',
+            'Start': 67610833,
+            'End': 67611613,
+            'Strand': '+',
+            'Frame': 0,
+            'gene_name': 'CTCF',
+            'exon_number': '3',
+            'guide_strand': True,
+            'guide_start': 67610855,
+            'guide_end': 67610877,
+            'guide_frame': 2,
+            'ot_summary': {0: 1, 1: 0, 2: 0, 3: 4, 4: 76},
+            'target_region_id': '123',
+        }, index=pd.Index(['1139540371'], name='guide_id'))
+        expected = pd.DataFrame({
+            'chromosome': 'chr16',
+            'cds_start': 67610833,
+            'cds_end': 67611613,
+            'cds_strand': '+',
+            'cds_frame': 0,
+            'gene_name': 'CTCF',
+            'exon_number': '3',
+            'guide_strand': True,
+            'guide_start': 67610855,
+            'guide_end': 67610877,
+            'guide_frame': 2,
+            'ot_summary': {0: 1, 1: 0, 2: 0, 3: 4, 4: 76},
+            'target_region_id': '123',
+        }, index=pd.Index(['1139540371'], name='guide_id'))
 
         # act
         actual = GuideDeterminer._adjust_columns_for_output(mock_object, data)
