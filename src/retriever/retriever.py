@@ -15,7 +15,6 @@ from utils.get_data.wge import get_data_from_wge_by_coords
 
 
 class Retriever(Command, Reader, Writer):
-
     def __init__(self, config: dict):
         self._target_regions = None
         self.guide_sequences = None

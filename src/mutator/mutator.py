@@ -15,7 +15,6 @@ from mutator.mutator_writer import MutatorWriter
 
 
 class Mutator(Command):
-
     def __init__(self, config: dict) -> None:
         self._config = config
         self._guides_df = None
@@ -75,22 +74,24 @@ class Mutator(Command):
                 'guide_end': mb.guide.end,
                 'ot_summary': mb.guide.ot_summary,
                 'target_region_id': mb.guide.target_region_id,
-                'wge_percentile': mb.guide.wge_percentile
+                'wge_percentile': mb.guide.wge_percentile,
             }
 
             for codon in mb.codons:
                 row = base
                 lost_amino = ','.join(codon.amino_acids_lost_from_edit) if codon.amino_acids_lost_from_edit else 'N/A'
 
-                row.update({
-                    'window_pos': codon.third_base_pos,
-                    'pos': codon.third_base_coord,
-                    'ref_codon': codon.bases,
-                    'ref_pos_three': codon.bases[2],
-                    'alt': codon.edited_bases[2],
-                    'lost_amino_acids': lost_amino,
-                    'permitted': codon.is_edit_permitted(self._config)
-                })
+                row.update(
+                    {
+                        'window_pos': codon.third_base_pos,
+                        'pos': codon.third_base_coord,
+                        'ref_codon': codon.bases,
+                        'ref_pos_three': codon.bases[2],
+                        'alt': codon.edited_bases[2],
+                        'lost_amino_acids': lost_amino,
+                        'permitted': codon.is_edit_permitted(self._config),
+                    }
+                )
 
                 rows.append(copy.deepcopy(row))
         return rows
@@ -111,7 +112,7 @@ class Mutator(Command):
                         id=guide_id,
                         ref=codon.third_base_on_positive_strand,
                         alt=codon.edited_third_base_on_positive_strand,
-                        info={"SGRNA": f"sgRNA_{guide_id}"}
+                        info={"SGRNA": f"sgRNA_{guide_id}"},
                     )
         return variants
 
@@ -134,7 +135,7 @@ class Mutator(Command):
             chromosome=row['chromosome'],
             is_positive_strand=(row['cds_strand'] == '+'),
             exon_number=row['exon_number'],
-            frame=row['cds_frame']
+            frame=row['cds_frame'],
         )
 
     def _build_mutations(self, region_data: pd.Series) -> MutationBuilder:

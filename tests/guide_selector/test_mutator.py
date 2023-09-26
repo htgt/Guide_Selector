@@ -53,10 +53,10 @@ class RunnerTestCase(unittest.TestCase):
                     pos=self.pos,
                     ref=self.third_base,
                     alt=self.alt_third_base,
-                    info={'SGRNA': "sgRNA_123"}
+                    info={'SGRNA': "sgRNA_123"},
                 )
             ],
-            chroms=[self.chrom]
+            chroms=[self.chrom],
         )
 
     def test_as_row_without_ot_summary(self):
@@ -73,7 +73,7 @@ class RunnerTestCase(unittest.TestCase):
             gene_name='ACT',
             window_length=self.window_length,
         )
-        mb.window = EditWindow(150, 180, self.window_length, True, '1'),
+        mb.window = (EditWindow(150, 180, self.window_length, True, '1'),)
         mb.codons = [WindowCodon('TCA', 23, 1, True)]
 
         self.mutator.mutation_builders = [mb]
@@ -116,7 +116,7 @@ class RunnerTestCase(unittest.TestCase):
             gene_name='ACT',
             window_length=self.window_length,
         )
-        mb.window = EditWindow(150, 180, True, '1'),
+        mb.window = (EditWindow(150, 180, True, '1'),)
         mb.codons = [WindowCodon('TCA', 23, 1, True)]
 
         self.mutator.mutation_builders = [mb]

@@ -24,7 +24,8 @@ class TestReadGuideTsvToGuideSequences(TestCase):
                 67610877,
                 is_positive_strand=True,
                 guide_id='1139540371',
-                ot_summary={0: 1, 1: 0, 2: 0, 3: 4, 4: 76}
+                target_region_id='44445',
+                ot_summary={0: 1, 1: 0, 2: 0, 3: 4, 4: 76},
             ),
             GuideSequence(
                 'chr16',
@@ -32,7 +33,8 @@ class TestReadGuideTsvToGuideSequences(TestCase):
                 67620734,
                 is_positive_strand=False,
                 guide_id='1139541475',
-                ot_summary={0: 1, 1: 0, 2: 0, 3: 26, 4: 265}
+                target_region_id='44444',
+                ot_summary={0: 1, 1: 0, 2: 0, 3: 26, 4: 265},
             ),
         ]
 
@@ -78,12 +80,14 @@ class TestReadGuideTsvToGuideSequences(TestCase):
 
     def test_deserialise_guide_sequence_with_all_fields(self):
         guide = {
-            'chr': 'chr19', 'end': '50398874',
+            'chr': 'chr19',
+            'end': '50398874',
             'grna_strand': '+',
             'guide_id': '1167589901',
             'ot_summary': '{0: 1, 1: 0, 2: 0, 3: 4, 4: 76}',
             'start': '50398852',
-            'target_region_id': '123456'}
+            'target_region_id': '123456',
+        }
 
         expected = GuideSequence(
             start=50398852,
@@ -101,7 +105,8 @@ class TestReadGuideTsvToGuideSequences(TestCase):
 
     def test_deserialise_guide_sequence_with_just_required_fields(self):
         guide = {
-            'chr': 'chr19', 'end': '50398874',
+            'chr': 'chr19',
+            'end': '50398874',
             'grna_strand': '+',
             'guide_id': '1167589901',
             'start': '50398852',

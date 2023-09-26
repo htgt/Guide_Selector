@@ -16,8 +16,8 @@ def calculate_wge_percentile(off_target: Optional[dict]) -> Optional[int]:
     ]
 
     percentiles = [
-        _find_percentile(off_target[number_mismatches], distribution) for number_mismatches, distribution in
-        enumerate(off_target_count_distributions)
+        _find_percentile(off_target[number_mismatches], distribution)
+        for number_mismatches, distribution in enumerate(off_target_count_distributions)
     ]
 
     return max(percentiles)
