@@ -1,7 +1,6 @@
 from abc import ABC, abstractmethod
-from typing import List
+from typing import List, Optional, Any
 
-from filter.filter_response import FilterResponse
 from mutation_builder import MutationBuilder
 
 
@@ -11,5 +10,17 @@ class Filter(ABC):
         pass
 
     @abstractmethod
-    def apply(self, mbs: List[MutationBuilder]) -> FilterResponse:
+    def apply(self, mbs: List[MutationBuilder]) -> List[MutationBuilder]:
         pass
+
+    @classmethod
+    def get_filter_implementation_names(cls):
+        return [cls.__name__ for cls in cls.__subclasses__()]
+
+    @classmethod
+    def find_filter(cls, filter_name: str) -> Optional[Any]:
+
+        for subclass in cls.__subclasses__():
+            if subclass.__name__ == filter_name:
+                return subclass
+        return None
