@@ -20,7 +20,6 @@ class Filter(ABC):
 
     @classmethod
     def find_filter(cls, filter_name: str) -> Optional[Any]:
-
         for subclass in cls.__subclasses__():
             if subclass.__name__ == filter_name:
                 return subclass
