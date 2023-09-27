@@ -1,7 +1,9 @@
 from abc import ABC, abstractmethod
 from typing import List, Optional, Any
+import inspect
 
 from mutation_builder import MutationBuilder
+import filter
 
 
 class Filter(ABC):
@@ -17,10 +19,3 @@ class Filter(ABC):
     @classmethod
     def get_filter_implementation_names(cls):
         return [cls.__name__ for cls in cls.__subclasses__()]
-
-    @classmethod
-    def find_filter(cls, filter_name: str) -> Optional[Any]:
-        for subclass in cls.__subclasses__():
-            if subclass.__name__ == filter_name:
-                return subclass
-        return None
