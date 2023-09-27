@@ -1,17 +1,15 @@
-from typing import List
+import copy
+from typing import List, Type
 
 from pprint import pprint
 import pandas as pd
 from tdutils.utils.vcf_utils import Variants
 
 from abstractions.command import Command
-from adaptors.serialisers.mutation_builder_serialiser import (
-    serialise_mutation_builder,
-    convert_mutation_builders_to_df
-)
+from abstractions.filter import Filter
 from coding_region import CodingRegion
 from filter.filter_manager import FilterManager
-from filter.filter_validator import FilterValidator
+from filter.minimum_edits_filter import MinimumEditsFilter
 from guide import GuideSequence
 from guide_determiner import GuideDeterminer
 from mutation_builder import MutationBuilder
@@ -36,7 +34,7 @@ class Mutator(Command):
     def run(self):
         self._set_mutation_builders(self._guides_df)
         self._generate_edit_windows_for_builders()
-        self._filter_mutation_builders()
+        self._filter_mutation_builder()
 
     def write_outputs(self, output_dir: str):
         writer = MutatorWriter(
@@ -159,9 +157,23 @@ class Mutator(Command):
 
         return mutation_builder
 
-    def _filter_mutation_builders(self):
+    def _filter_mutation_builder(self):
+        filters_to_activate = self._get_filters_to_activate()
+
         filter_manager = FilterManager(self._config)
-        filters_to_activate = FilterValidator(self._config).validated_filters()
+        for filter_class in filters_to_activate:
+            filter_manager.load_filter(filter_class)
+
+        self.mutation_builders = filter_manager.filter_data(self.mutation_builders)
+
+    def _get_filters_to_activate(self) -> List[Type[Filter]]:
+        filters = self._config.get("filters")
+        filters_to_activate = []
+        if filters:
+            for key, value in filters.items():
+                if key == "min_edits_allowed":
+                    filters_to_activate.append(MinimumEditsFilter)
+        return filters_to_activate
 
         for filter_class in filters_to_activate:
             filter_manager.load_filter(filter_class)
