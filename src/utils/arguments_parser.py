@@ -13,10 +13,7 @@ class InputArguments:
         self.command = values['command']
 
     def parse_arguments(self) -> dict:
-        parser = ArgumentParser(
-            description='Guide Selection CLI',
-            prog='Guide Selection'
-        )
+        parser = ArgumentParser(description='Guide Selection CLI', prog='Guide Selection')
 
         self._add_input_args(parser)
         self._add_subparsers(parser)

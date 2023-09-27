@@ -39,10 +39,7 @@ class RunnerTestCase(unittest.TestCase):
         # self.codons = [WindowCodon('TCA', self.pos, 1, True)]
 
         self.mutation_builder = MutationBuilder(
-            guide=self.guide,
-            cds=self.cds,
-            gene_name=self.gene_name,
-            window_length=self.window_length
+            guide=self.guide, cds=self.cds, gene_name=self.gene_name, window_length=self.window_length
         )
 
         self.variants = Variants(

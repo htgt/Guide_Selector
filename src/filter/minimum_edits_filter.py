@@ -5,7 +5,6 @@ from mutation_builder import MutationBuilder
 
 
 class MinimumEditsFilter(Filter):
-
     def __init__(self, config: dict):
         self.min_edits = config['filters']['min_edits_allowed']
 
