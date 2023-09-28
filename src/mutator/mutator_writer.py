@@ -9,18 +9,15 @@ from utils.file_system import write_json_failed_guides, write_list_dict_in_tsv, 
 
 
 class MutatorWriter(Writer):
-<<<<<<< Updated upstream
-=======
     guides_codons_tsv_filename = 'guides_and_codons.tsv'
     variants_vcf_filename = 'variants.vcf'
     failed_guides_json_filename = 'failed_guides.json'
 
->>>>>>> Stashed changes
     def __init__(
-        self,
-        guides_and_codons: List[dict],
-        variants: Variants,
-        failed_mutations: List[MutationBuilder],
+            self,
+            guides_and_codons: List[dict],
+            variants: Variants,
+            failed_mutations: List[MutationBuilder],
     ) -> None:
         self._guides_and_codons = guides_and_codons
         self._variants = variants

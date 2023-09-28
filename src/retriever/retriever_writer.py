@@ -7,11 +7,8 @@ from guide import GuideSequence
 
 
 class RetrieverWriter(Writer):
-<<<<<<< Updated upstream
-=======
     guides_tsv_filename = 'guides.tsv'
 
->>>>>>> Stashed changes
     def __init__(self, guide_sequences: List[GuideSequence]):
         self._guide_sequences = guide_sequences
 
