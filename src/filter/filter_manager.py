@@ -17,6 +17,6 @@ class FilterManager:
             del self._active_filters[filter_name]
 
     def filter_data(self, data: List[MutationBuilder]) -> List[MutationBuilder]:
-        for filter_name, filter_instance in self._active_filters.items():
+        for filter_instance in self._active_filters.values():
             data = filter_instance.apply(data)
         return data
