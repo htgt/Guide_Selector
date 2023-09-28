@@ -8,13 +8,8 @@ from mutation_builder import MutationBuilder
 
 
 class TestFilterManager(unittest.TestCase):
-
     def setUp(self) -> None:
-        self.filter_dict = {
-            "filters": {
-                "min_edits_allowed": 3
-            }
-        }
+        self.filter_dict = {"filters": {"min_edits_allowed": 3}}
         self.filter_class_to_load = MinimumEditsFilter
         mb_1codons = Mock()
         mb_1codons.codons = ["codon1"]
