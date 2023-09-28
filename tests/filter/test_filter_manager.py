@@ -1,4 +1,5 @@
 import unittest
+<<<<<<< HEAD
 from unittest.mock import Mock
 
 from filter.filter_manager import FilterManager
@@ -55,3 +56,9 @@ class TestFilterManager(unittest.TestCase):
         result = self.test_instance.apply_filters(self.mutations_builder_to_filter)
 
         self.assertEqual(len(result.guides_to_keep), 2)
+=======
+
+
+class TestFilterManager(unittest.TestCase):
+
+>>>>>>> a6efae8... TD-459organising tests
