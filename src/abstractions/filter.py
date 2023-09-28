@@ -12,7 +12,3 @@ class Filter(ABC):
     @abstractmethod
     def apply(self, mbs: List[MutationBuilder]) -> List[MutationBuilder]:
         pass
-
-    @classmethod
-    def get_filter_implementation_names(cls):
-        return [cls.__name__ for cls in cls.__subclasses__()]
