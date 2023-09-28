@@ -8,7 +8,7 @@ from target_region import TargetRegion
 from utils.exceptions import GetDataFromWGEError
 
 
-class TestRetrieveModule(TestCase):
+class RetrieverTestCase(TestCase):
     def setUp(self):
         self.target_region_1 = TargetRegion(id='AAA', chromosome='19', start=111, end=222)
         self.target_region_2 = TargetRegion(id='BBB', chromosome='2', start=123, end=155)

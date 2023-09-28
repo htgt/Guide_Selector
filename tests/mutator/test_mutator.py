@@ -12,7 +12,7 @@ from mutation_builder import MutationBuilder
 from mutator.mutator import Mutator
 
 
-class RunnerTestCase(unittest.TestCase):
+class MutatorTestCase(unittest.TestCase):
     def setUp(self):
         self.mutator = Mutator({
             'ignore_positions': [-1, 1],
@@ -56,7 +56,7 @@ class RunnerTestCase(unittest.TestCase):
             chroms=[self.chrom],
         )
 
-    def test_as_row_without_ot_summary(self):
+    def test_guides_and_codons_without_ot_summary(self):
         mb = MutationBuilder(
             cds=BaseSequence(100, 200, True, '1', 1),
             guide=GuideSequence(
@@ -99,7 +99,7 @@ class RunnerTestCase(unittest.TestCase):
 
         self.assertEqual(rows, expected_rows)
 
-    def test_as_row_with_ot_summary(self):
+    def test_guides_and_codons_with_ot_summary(self):
         mb = MutationBuilder(
             cds=BaseSequence(100, 200, True, '1', 1),
             guide=GuideSequence(
