@@ -13,7 +13,7 @@ class FilterValidator:
         valid_filters = []
         if self._filters:
             for key, value in self._filters.items():
-                if key == "min_edits_allowed":
+                if key == "min_edits_allowed" and type(value) is int:
                     valid_filters.append(MinimumEditsFilter)
                 if key == 'NGG_edit_required' and value is True:
                     valid_filters.append(EditGGInPAMFilter)
