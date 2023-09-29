@@ -7,7 +7,6 @@ from utils.exceptions import ParseStringToTargetRegionError
 
 
 class TestParseTargetRegion(unittest.TestCase):
-
     # fmt: off
     @parameterized.expand([
         ("chr1:300-350", TargetRegion(chromosome="1", start=300, end=350)),

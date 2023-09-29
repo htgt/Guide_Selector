@@ -7,7 +7,6 @@ from frame import get_frame
 
 
 class TestGetFrame(unittest.TestCase):
-
     # fmt: off
     @parameterized.expand([  # Positive strand cds, same strand
         (BaseSequence(10, 40, True, '16', 0), BaseSequence(15, 27, True, '16', 0), 1),
