@@ -6,6 +6,10 @@ from filter.minimum_edits_filter import MinimumEditsFilter
 
 
 class TestFilterValidator(unittest.TestCase):
+<<<<<<< HEAD
+=======
+
+>>>>>>> 448e1bf... TD-459test filter validator added
     def test_validate_filters_when_no_filters(self):
         no_filters = {}
 
