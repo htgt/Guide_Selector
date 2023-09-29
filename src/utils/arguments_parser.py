@@ -13,10 +13,7 @@ class InputArguments:
         self.command = values['command']
 
     def parse_arguments(self) -> dict:
-        parser = ArgumentParser(
-            description='Guide Selection CLI',
-            prog='Guide Selection'
-        )
+        parser = ArgumentParser(description='Guide Selection CLI', prog='Guide Selection')
 
         self._add_input_args(parser)
         self._add_subparsers(parser)
@@ -66,9 +63,4 @@ class InputArguments:
         region_group.add_argument('--region', type=str, help='Target region specified in format chr1:1-10001')
         region_group.add_argument(
             '--region_file', type=str, help='Path to the input file with data for Target Regions separated by new line'
-        )
-        region_group.add_argument(
-            '--region_file',
-            type=str,
-            help='Path to the input file with data for Target Regions separated by new line'
         )
