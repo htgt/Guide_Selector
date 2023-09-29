@@ -1,16 +1,14 @@
 import unittest
-from typing import List
 from unittest.mock import Mock
 
 from filter.filter_manager import FilterManager
 from filter.minimum_edits_filter import MinimumEditsFilter
-from mutation_builder import MutationBuilder
 
 
 class TestFilterManager(unittest.TestCase):
     def setUp(self) -> None:
         self.filter_dict = {"filters": {"min_edits_allowed": 3}}
-        self.filter_to_load = MinimumEditsFilter
+        self.filter = MinimumEditsFilter
         mb_1codons = Mock()
         mb_1codons.codons = ["codon1"]
         mb_2codons = Mock()
@@ -26,13 +24,13 @@ class TestFilterManager(unittest.TestCase):
     def test_load_filter(self):
         self.assertDictEqual(self.test_instance._active_filters, {}, 'There is not active filters')
 
-        self.test_instance.load_filter(self.filter_to_load)
+        self.test_instance.load_filter(self.filter)
 
         self.assertEqual(len(self.test_instance._active_filters), 1)
-        self.assertIsInstance(self.test_instance._active_filters["MinimumEditsFilter"], self.filter_to_load)
+        self.assertIsInstance(self.test_instance._active_filters["MinimumEditsFilter"], self.filter)
 
     def test_unload_filter_when_exists(self):
-        self.test_instance.load_filter(self.filter_to_load)
+        self.test_instance.load_filter(self.filter)
 
         self.assertEqual(len(self.test_instance._active_filters), 1)
 
@@ -41,7 +39,7 @@ class TestFilterManager(unittest.TestCase):
         self.assertEqual(len(self.test_instance._active_filters), 0)
 
     def test_unload_filter_when_do_not_exists(self):
-        self.test_instance.load_filter(self.filter_to_load)
+        self.test_instance.load_filter(self.filter)
 
         self.assertEqual(len(self.test_instance._active_filters), 1)
 
@@ -50,7 +48,7 @@ class TestFilterManager(unittest.TestCase):
         self.assertEqual(len(self.test_instance._active_filters), 1)
 
     def test_filter_data(self):
-        self.test_instance.load_filter(self.filter_to_load)
+        self.test_instance.load_filter(self.filter)
 
         self.assertEqual(len(self.mutations_builder_to_filter), 4)
 
