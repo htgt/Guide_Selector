@@ -5,7 +5,6 @@ from mutation_builder import MutationBuilder
 
 
 class EditGGInPAMFilter(Filter):
-
     def __init__(self, config: dict):
         pass
 

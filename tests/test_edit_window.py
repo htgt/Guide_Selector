@@ -10,6 +10,7 @@ class TestEditWindow(unittest.TestCase):
     def setUp(self) -> None:
         self.window_length = 12
 
+    # fmt: off
     @parameterized.expand([
         # Positive strand test cases
         (10, 21, True, '16', 0, (10, 21)),
@@ -19,7 +20,7 @@ class TestEditWindow(unittest.TestCase):
         (10, 21, False, '16', 0, (10, 21)),
         (10, 21, False, '16', 1, (10, 23)),
         (10, 21, False, '16', 2, (10, 22)),
-    ])
+    ])  # fmt: on
     def test_get_extended_window_coordinates(self, start, end, is_positive_strand, chromosome, frame,
                                              expected_coordinates):
         window = EditWindow(start, end, self.window_length, is_positive_strand, chromosome, frame, is_positive_strand)
@@ -33,6 +34,7 @@ class TestEditWindowCodons(unittest.TestCase):
     def setUp(self) -> None:
         self.window_length = 12
 
+    # fmt: off
     @parameterized.expand([
         ('TATATTGAGCAAGG', (2, 13), [
             WindowCodon('TAT', 2, 9, True),
@@ -46,7 +48,7 @@ class TestEditWindowCodons(unittest.TestCase):
             WindowCodon('GCA', 8, 1, True),
             WindowCodon('AGG', 11, -3, True)
         ]),
-    ])
+    ])  # fmt: on
     def test_split_window_into_codons(self, bases, window_coords, expected_codons):
         window = EditWindow(window_coords[0], window_coords[1], self.window_length, True, '16')
 
@@ -60,12 +62,13 @@ class TestEditWindowCodonsNegative(unittest.TestCase):
     def setUp(self) -> None:
         self.window_length = 12
 
+    # fmt: off
     @parameterized.expand([('ATCATCCAAAGG',
                             [WindowCodon('CCT', 77696656, -1, False),
                              WindowCodon('TTG', 77696653, 3, False),
                              WindowCodon('GAT', 77696650, 6, False),
                              WindowCodon('GAT', 77696647, 9, False)]),
-                           ])
+                           ])  # fmt: on
     def test_split_window_into_codons_negative(self, bases, expected_codons):
         window = EditWindow(77696647, 77696658, self.window_length, False, 'X')
 
@@ -78,6 +81,7 @@ class TestCalculatePosition(unittest.TestCase):
     def setUp(self) -> None:
         self.window_length = 12
 
+    # fmt: off
     @parameterized.expand([
         (67626583, 67626592, True, -1),
         (67626583, 67626589, True, 3),
@@ -88,7 +92,7 @@ class TestCalculatePosition(unittest.TestCase):
         (67610855, 67610859, False, 2),
         (67610855, 67610862, False, 5),
         (67610855, 67610865, False, 8),
-    ])
+    ]) # fmt: on
     def test_calculate_position_in_window(self, start, coordinate, strand, expected_position):
         result_position = calculate_position_in_window(start, coordinate, strand, self.window_length)
 

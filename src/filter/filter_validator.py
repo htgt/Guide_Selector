@@ -6,7 +6,6 @@ from filter.minimum_edits_filter import MinimumEditsFilter
 
 
 class FilterValidator:
-
     def __init__(self, config: dict):
         self._filters = config.get("filters")
 

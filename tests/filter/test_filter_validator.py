@@ -6,7 +6,6 @@ from filter.minimum_edits_filter import MinimumEditsFilter
 
 
 class TestFilterValidator(unittest.TestCase):
-
     def test_validate_filters_when_no_filters(self):
         no_filters = {}
 
