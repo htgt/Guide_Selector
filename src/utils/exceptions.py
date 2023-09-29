@@ -25,3 +25,8 @@ class PamNotFoundError(Exception):
 # copied from targeton-designer - need to use shared repo
 class FileFormatError(Exception):
     pass
+
+
+class FilterNotFoundException(Exception):
+    def __init__(self, filter_name: str):
+        super().__init__(f"The filter '{filter_name}' could not be found")
