@@ -14,12 +14,11 @@ from mutator.mutator import Mutator, _fill_coding_region, _fill_guide_sequence
 
 class MutatorTestCase(unittest.TestCase):
     def setUp(self):
-        self.mutator = Mutator(
-            {
-                'ignore_positions': [-1, 1],
-                'allow_codon_loss': True,
-            }
-        )
+        # fmt: off
+        self.mutator = Mutator({
+            'ignore_positions': [-1, 1],
+            'allow_codon_loss': True,
+        })  # fmt: on
         self.chrom = 'chr1'
         self.pos = 23
         self.third_base = 'A'
@@ -78,28 +77,26 @@ class MutatorTestCase(unittest.TestCase):
         self.mutator.mutation_builders = [mb]
 
         rows = self.mutator.guides_and_codons
-
-        expected_rows = [
-            {
-                'guide_id': '123',
-                'alt': 'G',
-                'chromosome': '1',
-                'cds_strand': "+",
-                'gene_name': 'ACT',
-                'guide_strand': "+",
-                'guide_start': 160,
-                'guide_end': 170,
-                'window_pos': 1,
-                'pos': 23,
-                'ref_codon': 'TCA',
-                'ref_pos_three': 'A',
-                'lost_amino_acids': 'N/A',
-                'permitted': False,
-                'ot_summary': None,
-                'target_region_id': '101',
-                'wge_percentile': None,
-            }
-        ]
+        # fmt: off
+        expected_rows = [{
+            'guide_id': '123',
+            'alt': 'G',
+            'chromosome': '1',
+            'cds_strand': "+",
+            'gene_name': 'ACT',
+            'guide_strand': "+",
+            'guide_start': 160,
+            'guide_end': 170,
+            'window_pos': 1,
+            'pos': 23,
+            'ref_codon': 'TCA',
+            'ref_pos_three': 'A',
+            'lost_amino_acids': 'N/A',
+            'permitted': False,
+            'ot_summary': None,
+            'target_region_id': '101',
+            'wge_percentile': None,
+        }]  # fmt: on
 
         self.assertEqual(rows, expected_rows)
 
@@ -124,42 +121,39 @@ class MutatorTestCase(unittest.TestCase):
         self.mutator.mutation_builders = [mb]
 
         rows = self.mutator.guides_and_codons
-
-        expected_rows = [
-            {
-                'guide_id': '123',
-                'alt': 'G',
-                'chromosome': '1',
-                'cds_strand': "+",
-                'gene_name': 'ACT',
-                'target_region_id': '123456',
-                'guide_strand': "+",
-                'guide_start': 160,
-                'guide_end': 170,
-                'window_pos': 1,
-                'pos': 23,
-                'ref_codon': 'TCA',
-                'ref_pos_three': 'A',
-                'lost_amino_acids': 'N/A',
-                'permitted': False,
-                'ot_summary': {0: 1, 1: 0, 2: 0, 3: 4, 4: 76},
-                'wge_percentile': 25,
-            }
-        ]
+        # fmt: off
+        expected_rows = [{
+            'guide_id': '123',
+            'alt': 'G',
+            'chromosome': '1',
+            'cds_strand': "+",
+            'gene_name': 'ACT',
+            'target_region_id': '123456',
+            'guide_strand': "+",
+            'guide_start': 160,
+            'guide_end': 170,
+            'window_pos': 1,
+            'pos': 23,
+            'ref_codon': 'TCA',
+            'ref_pos_three': 'A',
+            'lost_amino_acids': 'N/A',
+            'permitted': False,
+            'ot_summary': {0: 1, 1: 0, 2: 0, 3: 4, 4: 76},
+            'wge_percentile': 25,
+        }]  # fmt: on
 
         self.assertEqual(rows, expected_rows)
 
     def test_fill_guide_sequence_without_ot_summary(self):
-        row = pd.Series(
-            {
-                'guide_start': 160,
-                'guide_end': 170,
-                'guide_strand': '+',
-                'chromosome': 'chr1',
-                'cds_strand': '+',
-                'guide_frame': 2,
-            }
-        )
+        # fmt: off
+        row = pd.Series({
+            'guide_start': 160,
+            'guide_end': 170,
+            'guide_strand': '+',
+            'chromosome': 'chr1',
+            'cds_strand': '+',
+            'guide_frame': 2
+        })  # fmt: on
 
         guide_sequence = _fill_guide_sequence(row)
 
@@ -172,19 +166,18 @@ class MutatorTestCase(unittest.TestCase):
         self.assertEqual(guide_sequence.ot_summary, None)
 
     def test_fill_guide_sequence_with_ot_summary(self):
-        row = pd.Series(
-            {
-                'guide_start': 160,
-                'guide_end': 170,
-                'guide_strand': '+',
-                'chromosome': 'chr1',
-                'cds_strand': '+',
-                'guide_frame': 2,
-                'ot_summary': {0: 1, 1: 0, 2: 0, 3: 4, 4: 76},
-            }
-        )
+        # fmt: off
+        row = pd.Series({
+            'guide_start': 160,
+            'guide_end': 170,
+            'guide_strand': '+',
+            'chromosome': 'chr1',
+            'cds_strand': '+',
+            'guide_frame': 2,
+            'ot_summary': {0: 1, 1: 0, 2: 0, 3: 4, 4: 76}
+        })  # fmt: on
 
-        guide_sequence = _fill_guide_sequence(row)
+        guide_sequence = self.mutator._fill_guide_sequence(row)
 
         self.assertIsInstance(guide_sequence, GuideSequence)
         self.assertEqual(guide_sequence.start, 160)
@@ -195,16 +188,15 @@ class MutatorTestCase(unittest.TestCase):
         self.assertEqual(guide_sequence.ot_summary, {0: 1, 1: 0, 2: 0, 3: 4, 4: 76})
 
     def test_fill_coding_region(self):
-        row = pd.Series(
-            {
-                'cds_start': 100,
-                'cds_end': 200,
-                'chromosome': 'chr1',
-                'cds_strand': '+',
-                'exon_number': 1,
-                'cds_frame': 1,
-            }
-        )
+        # fmt: off
+        row = pd.Series({
+            'cds_start': 100,
+            'cds_end': 200,
+            'chromosome': 'chr1',
+            'cds_strand': '+',
+            'exon_number': 1,
+            'cds_frame': 1
+        })  # fmt: on
 
         coding_region = _fill_coding_region(row)
 

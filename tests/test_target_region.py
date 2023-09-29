@@ -18,11 +18,13 @@ class TestParseTargetRegion(unittest.TestCase):
         self.assertEqual(result, expected_region)
 
     # fmt: off
-    @parameterized.expand([
-        ("chr1300350", ParseStringToTargetRegionError),
-        ("ch2100-150", ParseStringToTargetRegionError),
-        ("222-333", ParseStringToTargetRegionError),
-    ]) # fmt: on
+    @parameterized.expand(
+        [
+            ("chr1300350", ParseStringToTargetRegionError),
+            ("ch2100-150", ParseStringToTargetRegionError),
+            ("222-333", ParseStringToTargetRegionError),
+        ]
+    )  # fmt: on
     def test_invalid_target_region(self, input_str, exception):
         with self.assertRaises(exception):
             parse_string_to_target_region(input_str)
