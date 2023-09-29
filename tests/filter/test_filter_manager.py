@@ -58,6 +58,6 @@ class TestFilterManager(unittest.TestCase):
 
         self.assertEqual(len(self.mutations_builder_to_filter), 4)
 
-        result = test_instance.filter_data(self.mutations_builder_to_filter)
+        result = test_instance.apply_filters(self.mutations_builder_to_filter)
 
         self.assertEqual(len(result), 2)
