@@ -37,7 +37,7 @@ class TestGuideDeterminer(TestCase):
             end=67610877,
             strand_symbol='+',
             target_region_id='1139540371',
-            ot_summary={0: 1, 1: 0, 2: 0, 3: 4, 4: 76}
+            ot_summary={0: 1, 1: 0, 2: 0, 3: 4, 4: 76},
         )
 
     def test_get_coding_region_for_guide_success(self):
@@ -46,9 +46,7 @@ class TestGuideDeterminer(TestCase):
         expected = self.coding_region
 
         # act
-        actual = GuideDeterminer._get_coding_region_for_guide(
-            mock_object, self.gtf_data, self.guide_sequence
-        )
+        actual = GuideDeterminer._get_coding_region_for_guide(mock_object, self.gtf_data, self.guide_sequence)
 
         # assert
         pd.testing.assert_frame_equal(actual, expected, check_exact=True)
@@ -109,9 +107,7 @@ class TestGuideDeterminer(TestCase):
         expected['ot_summary'] = [{0: 1, 1: 0, 2: 0, 3: 4, 4: 76}]
 
         # act
-        actual = GuideDeterminer._add_guide_data_to_dataframe(
-            mock_object, self.coding_region, self.guide_sequence
-        )
+        actual = GuideDeterminer._add_guide_data_to_dataframe(mock_object, self.coding_region, self.guide_sequence)
 
         # assert
         pd.testing.assert_frame_equal(actual, expected, check_exact=True)
