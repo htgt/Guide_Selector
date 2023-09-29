@@ -92,7 +92,7 @@ class TestCalculatePosition(unittest.TestCase):
         (67610855, 67610859, False, 2),
         (67610855, 67610862, False, 5),
         (67610855, 67610865, False, 8),
-    ]) # fmt: on
+    ])  # fmt: on
     def test_calculate_position_in_window(self, start, coordinate, strand, expected_position):
         result_position = calculate_position_in_window(start, coordinate, strand, self.window_length)
 
