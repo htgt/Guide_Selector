@@ -1,6 +1,7 @@
 from typing import Dict, List
 
 from abstractions.filter import Filter
+from filter.filter_response import FilterResponse
 from mutation_builder import MutationBuilder
 
 
@@ -16,7 +17,12 @@ class FilterManager:
         if filter_name in self._active_filters:
             del self._active_filters[filter_name]
 
-    def apply_filters(self, data: List[MutationBuilder]) -> List[MutationBuilder]:
+    def apply_filters(self, data: List[MutationBuilder]) -> FilterResponse:
+        filtered = data
+        not_filtered = []
         for filter_instance in self._active_filters.values():
-            data = filter_instance.apply(data)
-        return data
+            filter_response = filter_instance.apply(filtered)
+            filtered = filter_response.filtered
+            not_filtered += filter_response.not_filtered
+
+        return FilterResponse(filtered=filtered, not_filtered=not_filtered)
