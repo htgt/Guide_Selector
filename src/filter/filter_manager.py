@@ -1,4 +1,4 @@
-from typing import List, Dict
+from typing import Dict, List
 
 from abstractions.filter import Filter
 from mutation_builder import MutationBuilder
@@ -16,7 +16,7 @@ class FilterManager:
         if filter_name in self._active_filters:
             del self._active_filters[filter_name]
 
-    def filter_data(self, data: List[MutationBuilder]) -> List[MutationBuilder]:
+    def apply_filters(self, data: List[MutationBuilder]) -> List[MutationBuilder]:
         for filter_instance in self._active_filters.values():
             data = filter_instance.apply(data)
         return data

@@ -7,7 +7,6 @@ from filter.minimum_edits_filter import MinimumEditsFilter
 class TestMinimumEditsFilter(unittest.TestCase):
     def setUp(self) -> None:
         self.filter_dict = {"filters": {"min_edits_allowed": 3}}
-        self.filter_class_to_load = MinimumEditsFilter
         mb_1codons = Mock()
         mb_1codons.codons = ["codon1"]
         mb_2codons = Mock()
