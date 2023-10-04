@@ -14,10 +14,10 @@ class MutatorWriter(Writer):
     failed_guides_json_filename = 'failed_guides.json'
 
     def __init__(
-            self,
-            guides_and_codons: List[dict],
-            variants: Variants,
-            failed_mutations: List[MutationBuilder],
+        self,
+        guides_and_codons: List[dict],
+        variants: Variants,
+        failed_mutations: List[MutationBuilder],
     ) -> None:
         self._guides_and_codons = guides_and_codons
         self._variants = variants
