@@ -14,10 +14,11 @@ from mutator.mutator import Mutator
 
 class MutatorTestCase(unittest.TestCase):
     def setUp(self):
+        # fmt: off
         self.mutator = Mutator({
             'ignore_positions': [-1, 1],
             'allow_codon_loss': True,
-        })
+        })  # fmt: on
         self.chrom = 'chr1'
         self.pos = 23
         self.third_base = 'A'
@@ -76,7 +77,7 @@ class MutatorTestCase(unittest.TestCase):
         self.mutator.mutation_builders = [mb]
 
         rows = self.mutator.guides_and_codons
-
+        # fmt: off
         expected_rows = [{
             'guide_id': '123',
             'alt': 'G',
@@ -95,7 +96,7 @@ class MutatorTestCase(unittest.TestCase):
             'ot_summary': None,
             'target_region_id': '101',
             'wge_percentile': None,
-        }]
+        }]  # fmt: on
 
         self.assertEqual(rows, expected_rows)
 
@@ -120,7 +121,7 @@ class MutatorTestCase(unittest.TestCase):
         self.mutator.mutation_builders = [mb]
 
         rows = self.mutator.guides_and_codons
-
+        # fmt: off
         expected_rows = [{
             'guide_id': '123',
             'alt': 'G',
@@ -139,11 +140,12 @@ class MutatorTestCase(unittest.TestCase):
             'permitted': False,
             'ot_summary': {0: 1, 1: 0, 2: 0, 3: 4, 4: 76},
             'wge_percentile': 25,
-        }]
+        }]  # fmt: on
 
         self.assertEqual(rows, expected_rows)
 
     def test_fill_guide_sequence_without_ot_summary(self):
+        # fmt: off
         row = pd.Series({
             'guide_start': 160,
             'guide_end': 170,
@@ -151,7 +153,7 @@ class MutatorTestCase(unittest.TestCase):
             'chromosome': 'chr1',
             'cds_strand': '+',
             'guide_frame': 2
-        })
+        })  # fmt: on
 
         guide_sequence = self.mutator._fill_guide_sequence(row)
 
@@ -164,6 +166,7 @@ class MutatorTestCase(unittest.TestCase):
         self.assertEqual(guide_sequence.ot_summary, None)
 
     def test_fill_guide_sequence_with_ot_summary(self):
+        # fmt: off
         row = pd.Series({
             'guide_start': 160,
             'guide_end': 170,
@@ -172,7 +175,7 @@ class MutatorTestCase(unittest.TestCase):
             'cds_strand': '+',
             'guide_frame': 2,
             'ot_summary': {0: 1, 1: 0, 2: 0, 3: 4, 4: 76}
-        })
+        })  # fmt: on
 
         guide_sequence = self.mutator._fill_guide_sequence(row)
 
@@ -185,6 +188,7 @@ class MutatorTestCase(unittest.TestCase):
         self.assertEqual(guide_sequence.ot_summary, {0: 1, 1: 0, 2: 0, 3: 4, 4: 76})
 
     def test_fill_coding_region(self):
+        # fmt: off
         row = pd.Series({
             'cds_start': 100,
             'cds_end': 200,
@@ -192,7 +196,7 @@ class MutatorTestCase(unittest.TestCase):
             'cds_strand': '+',
             'exon_number': 1,
             'cds_frame': 1
-        })
+        })  # fmt: on
 
         coding_region = self.mutator._fill_coding_region(row)
 
