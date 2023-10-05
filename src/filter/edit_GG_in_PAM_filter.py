@@ -11,6 +11,6 @@ class EditGGInPAMFilter(Filter):
     def apply(self, mbs: List[MutationBuilder]) -> List[MutationBuilder]:
         filtered_mbs = []
         for mb in mbs:
-            mb.codons = [codon for codon in mb.codons if codon.third_base_pos != -2 and codon.third_base_pos != -3]
+            mb.codons = [codon for codon in mb.codons if codon.third_base_pos == -2 or codon.third_base_pos == -3]
             filtered_mbs.append(mb)
         return filtered_mbs
