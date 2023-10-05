@@ -14,20 +14,6 @@ class EditGGInPAMFilter(Filter):
         filtered = []
         not_filtered = []
         for mb in mbs:
-            codons = mb.codons
-            codons_in = list(filter(lambda codon: codon.third_base_pos not in [-2, -3], codons))
-            codons_out = list(filter(lambda codon: codon.third_base_pos in [-2, -3], codons))
-
-            if len(codons_in) == 0:
-                not_filtered.append(mb)
-            elif len(codons_out) == 0:
-                filtered.append(mb)
-            else:
-                mb_out = copy.deepcopy(mb)
-                mb_out.codons = codons_out
-                not_filtered.append(mb_out)
-
-                mb.codons = codons_in
-                filtered.append(mb)
-
-        return FilterResponse(filtered=filtered, not_filtered=not_filtered)
+            mb.codons = [codon for codon in mb.codons if codon.third_base_pos == -2 or codon.third_base_pos == -3]
+            filtered_mbs.append(mb)
+        return filtered_mbs
