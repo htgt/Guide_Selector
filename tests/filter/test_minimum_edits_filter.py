@@ -24,4 +24,5 @@ class TestMinimumEditsFilter(unittest.TestCase):
 
         result = test_instance.apply(self.mutations_builder_to_filter)
 
-        self.assertEqual(len(result), 2)
+        self.assertEqual(len(result.filtered), 2)
+        self.assertEqual(len(result.not_filtered), 2)

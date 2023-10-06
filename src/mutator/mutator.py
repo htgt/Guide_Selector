@@ -31,7 +31,7 @@ class Mutator(Command):
     def run(self):
         self._set_mutation_builders(self._guides_df)
         self._generate_edit_windows_for_builders()
-        self._filter_mutation_builders(FilterManager(self._config))
+        self._filter_mutation_builders()
 
     def write_outputs(self, output_dir: str):
         writer = MutatorWriter(
@@ -153,14 +153,14 @@ class Mutator(Command):
 
         return mutation_builder
 
-    def _filter_mutation_builders(self, filter_manager: FilterManager):
+    def _filter_mutation_builders(self):
+        filter_manager = FilterManager(self._config)
         filters_to_activate = FilterValidator(self._config).validated_filters()
 
         for filter_class in filters_to_activate:
             filter_manager.load_filter(filter_class)
 
         filters_response = filter_manager.apply_filters(self.mutation_builders)
-
         self.mutation_builders = filters_response.filtered
 
 

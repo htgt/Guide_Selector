@@ -9,6 +9,13 @@ class TestEditGGInPAMFilter(unittest.TestCase):
         config = {'filters': {'min_edits_allowed': 3, 'NGG_edit_required': True}}
         self.test_instance = EditGGInPAMFilter(config)
         self.mutation_builder = Mock()
+        codon_not_filtered = Mock()
+        codon_not_filtered.third_base_pos = 1
+        codon_filtered1 = Mock()
+        codon_filtered1.third_base_pos = -2
+        codon_filtered2 = Mock()
+        codon_filtered2.third_base_pos = -3
+        self.mutation_builder.codons = [codon_not_filtered, codon_filtered1, codon_filtered2]
         codon_filtered = Mock()
         codon_filtered.third_base_pos = 1
         codon_not_filtered1 = Mock()
@@ -22,7 +29,8 @@ class TestEditGGInPAMFilter(unittest.TestCase):
 
         filtered_result = self.test_instance.apply(mutation_builders)
 
-        self.assertEqual(filtered_result, [])
+        self.assertEqual(filtered_result.filtered, [])
+        self.assertEqual(filtered_result.not_filtered, [])
 
     def test_apply(self):
         mutation_builders = [self.mutation_builder]
@@ -31,5 +39,11 @@ class TestEditGGInPAMFilter(unittest.TestCase):
 
         result = self.test_instance.apply(mutation_builders)
 
-        self.assertEqual(len(result[0].codons), 1)
-        self.assertEqual(result[0].codons[0].third_base_pos, 1)
+        self.assertEqual(len(result.filtered), 1)
+        self.assertEqual(len(result.filtered[0].codons), 2)
+        self.assertEqual(result.filtered[0].codons[0].third_base_pos, -2)
+        self.assertEqual(result.filtered[0].codons[1].third_base_pos, -3)
+
+        self.assertEqual(len(result.not_filtered), 1)
+        self.assertEqual(len(result.not_filtered[0].codons), 1)
+        self.assertEqual(result.not_filtered[0].codons[0].third_base_pos, 1)
