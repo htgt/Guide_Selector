@@ -2,6 +2,7 @@ from typing import List
 
 from abstractions.filter import Filter
 from filter.edit_GG_in_PAM_filter import EditGGInPAMFilter
+from filter.not_contain_TTTT_filter import NotContainTTTTFilter
 from filter.minimum_edits_filter import MinimumEditsFilter
 
 
@@ -23,4 +24,9 @@ class FilterValidator:
                         valid_filters.append(EditGGInPAMFilter)
                     else:
                         print('Invalid value: the value given for NGG edits is not \'true\'')
+                if key == 'not_contain_TTTT+':
+                    if value is True:
+                        valid_filters.append(NotContainTTTTFilter)
+                    else:
+                        print('Invalid value: the value given for TTTT+ filter is not \'true\'')
         return valid_filters
