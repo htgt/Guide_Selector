@@ -54,4 +54,4 @@ class TestFilterManager(unittest.TestCase):
 
         result = self.test_instance.apply_filters(self.mutations_builder_to_filter)
 
-        self.assertEqual(len(result.filtered), 2)
+        self.assertEqual(len(result.guides_to_keep), 2)

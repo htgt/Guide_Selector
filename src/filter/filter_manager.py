@@ -18,11 +18,11 @@ class FilterManager:
             del self._active_filters[filter_name]
 
     def apply_filters(self, data: List[MutationBuilder]) -> FilterResponse:
-        filtered = data
-        not_filtered = []
+        guides_to_keep = data
+        guides_to_discard = []
         for filter_instance in self._active_filters.values():
-            filter_response = filter_instance.apply(filtered)
-            filtered = filter_response.filtered
-            not_filtered += filter_response.not_filtered
+            filter_response = filter_instance.apply(guides_to_keep)
+            guides_to_keep = filter_response.guides_to_keep
+            guides_to_discard += filter_response.guides_to_discard
 
-        return FilterResponse(filtered=filtered, not_filtered=not_filtered)
+        return FilterResponse(guides_to_keep=guides_to_keep, guides_to_discard=guides_to_discard)

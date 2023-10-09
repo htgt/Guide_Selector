@@ -161,7 +161,7 @@ class Mutator(Command):
             filter_manager.load_filter(filter_class)
 
         filters_response = filter_manager.apply_filters(self.mutation_builders)
-        self.mutation_builders = filters_response.filtered
+        self.mutation_builders = filters_response.guides_to_keep
 
 
 def _get_char_for_bool(is_true: bool) -> str:

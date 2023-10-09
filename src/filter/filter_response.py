@@ -6,5 +6,5 @@ from mutation_builder import MutationBuilder
 
 @dataclass
 class FilterResponse:
-    filtered: List[MutationBuilder]
-    not_filtered: List[MutationBuilder]
+    guides_to_keep: List[MutationBuilder]
+    guides_to_discard: List[MutationBuilder]

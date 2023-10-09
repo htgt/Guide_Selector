@@ -10,13 +10,13 @@ class MinimumEditsFilter(Filter):
         self.min_edits = config['filters']['min_edits_allowed']
 
     def apply(self, mbs: List[MutationBuilder]) -> FilterResponse:
-        filtered = []
-        not_filtered = []
+        guides_to_keep = []
+        guides_to_discard = []
 
         for mb in mbs:
             if len(mb.codons) >= self.min_edits:
-                filtered.append(mb)
+                guides_to_keep.append(mb)
             else:
-                not_filtered.append(mb)
+                guides_to_discard.append(mb)
 
-        return FilterResponse(filtered=filtered, not_filtered=not_filtered)
+        return FilterResponse(guides_to_keep=guides_to_keep, guides_to_discard=guides_to_discard)
