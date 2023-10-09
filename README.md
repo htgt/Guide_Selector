@@ -174,6 +174,10 @@ Runs retrieve-mutator steps together, accepts region (or file with regions) and 
 | --region_file | Path tsv file with regions                                |
 | --gtf         | Path to reference gtf file                                |
 
+Example
+```
+python3 src/cli.py guide_selector --region_file examples/target_regions.tsv --gtf ./example.gtf 
+```
 
 ### Run with Docker
 

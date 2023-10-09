@@ -18,4 +18,3 @@ class NotContainTTTTFilter(Filter):
             print('------------')
 
         return FilterResponse(guides_to_keep=guides_to_keep, guides_to_discard=guides_to_discard)
-    
