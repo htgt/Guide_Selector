@@ -11,9 +11,23 @@ class EditGGInPAMFilter(Filter):
         pass
 
     def apply(self, mbs: List[MutationBuilder]) -> FilterResponse:
-        filtered = []
-        not_filtered = []
+        guides_to_keep = []
+        guides_to_discard = []
         for mb in mbs:
-            mb.codons = [codon for codon in mb.codons if codon.third_base_pos == -2 or codon.third_base_pos == -3]
-            filtered_mbs.append(mb)
-        return filtered_mbs
+            codons = mb.codons
+            codons_in = list(filter(lambda codon: codon.third_base_pos in [-2, -3], codons))
+            codons_out = list(filter(lambda codon: codon.third_base_pos not in [-2, -3], codons))
+
+            if len(codons_in) == 0:
+                guides_to_discard.append(mb)
+            elif len(codons_out) == 0:
+                guides_to_keep.append(mb)
+            else:
+                mb_out = copy.deepcopy(mb)
+                mb_out.codons = codons_out
+                guides_to_discard.append(mb_out)
+
+                mb.codons = codons_in
+                guides_to_keep.append(mb)
+
+        return FilterResponse(guides_to_keep=guides_to_keep, guides_to_discard=guides_to_discard)

@@ -164,7 +164,7 @@ class Mutator(Command):
 
         filters_response = filter_manager.apply_filters(self.mutation_builders)
 
-        self.mutation_builders = filters_response.filtered
+        self.mutation_builders = filters_response.guides_to_keep
 
         for filter_class in filters_to_activate:
             filter_manager.load_filter(filter_class)
