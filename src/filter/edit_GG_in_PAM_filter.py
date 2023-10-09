@@ -15,19 +15,19 @@ class EditGGInPAMFilter(Filter):
         guides_to_discard = []
         for mb in mbs:
             codons = mb.codons
-            codons_in = list(filter(lambda codon: codon.third_base_pos in [-2, -3], codons))
-            codons_out = list(filter(lambda codon: codon.third_base_pos not in [-2, -3], codons))
+            codons_to_keep = list(filter(lambda codon: codon.third_base_pos in [-2, -3], codons))
+            codons_to_discard = list(filter(lambda codon: codon.third_base_pos not in [-2, -3], codons))
 
-            if len(codons_in) == 0:
+            if len(codons_to_keep) == 0:
                 guides_to_discard.append(mb)
-            elif len(codons_out) == 0:
+            elif len(codons_to_discard) == 0:
                 guides_to_keep.append(mb)
             else:
-                mb_out = copy.deepcopy(mb)
-                mb_out.codons = codons_out
-                guides_to_discard.append(mb_out)
+                guide_to_discard = copy.deepcopy(mb)
+                guide_to_discard.codons = codons_to_discard
+                guides_to_discard.append(guide_to_discard)
 
-                mb.codons = codons_in
+                mb.codons = codons_to_keep
                 guides_to_keep.append(mb)
 
         return FilterResponse(guides_to_keep=guides_to_keep, guides_to_discard=guides_to_discard)
