@@ -9,8 +9,12 @@ class EditGGInPAMFilter(Filter):
         pass
 
     def apply(self, mbs: List[MutationBuilder]) -> List[MutationBuilder]:
-        filtered_mbs = []
+        guides_to_keep = []
         for mb in mbs:
-            mb.codons = [codon for codon in mb.codons if codon.third_base_pos != -2 and codon.third_base_pos != -3]
-            filtered_mbs.append(mb)
-        return filtered_mbs
+            codons_with_pam_edit = [
+                codon for codon in mb.codons if codon.third_base_pos == -2 or codon.third_base_pos == -3
+            ]
+
+            if codons_with_pam_edit:
+                guides_to_keep.append(mb)
+        return guides_to_keep
