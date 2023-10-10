@@ -27,13 +27,17 @@ class TestEditGGInPAMFilter(unittest.TestCase):
 
         filter_response = self.test_instance.apply(mutation_builders)
 
-        self.assertEqual(filter_response, [])
+        self.assertEqual(filter_response.guides_to_keep, [])
+        self.assertEqual(filter_response.guides_to_discard, [])
 
     def test_apply(self):
         mutation_builders = [self.mb_to_keep1, self.mb_to_keep2, self.mb_to_discard]
 
         filter_response = self.test_instance.apply(mutation_builders)
 
-        self.assertEqual(len(filter_response), 2)
-        self.assertEqual(filter_response[0], self.mb_to_keep1)
-        self.assertEqual(filter_response[1], self.mb_to_keep2)
+        self.assertEqual(len(filter_response.guides_to_keep), 2)
+        self.assertEqual(filter_response.guides_to_keep[0], self.mb_to_keep1)
+        self.assertEqual(filter_response.guides_to_keep[1], self.mb_to_keep2)
+
+        self.assertEqual(len(filter_response.guides_to_discard), 1)
+        self.assertEqual(filter_response.guides_to_discard[0], self.mb_to_discard)
