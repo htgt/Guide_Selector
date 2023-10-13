@@ -6,6 +6,18 @@ from utils.exceptions import MutatorError
 
 
 class TestWindowCodon(TestCase):
+    def setUp(self):
+        self.codon = Mock()
+        self.codon.bases = 'ATT'
+        self.codon.third_base_pos = 2
+        self.codon.amino_acids_lost_from_edit = []
+        self.codon.third_base_coord = 100
+        self.config = {
+            'ignore_positions': [-1, 1],
+            'allow_codon_loss': False,
+            'splice_mask_distance': 5,
+        }
+
     def test_init_upper(self):
         # arrange
         mock_object = Mock()
@@ -122,87 +134,83 @@ class TestWindowCodon(TestCase):
         self.assertEqual(actual, expected)
 
     def test_is_edit_permitted_true(self):
-        # arrange
-        mock_object = Mock()
-        mock_object.bases = 'ATT'
-        mock_object.third_base_pos = 2
-        mock_object.amino_acids_lost_from_edit = []
-        config = {'ignore_positions': [-1, 1], 'allow_codon_loss': False}
-
         # act
-        actual = WindowCodon.is_edit_permitted(mock_object, config)
+        actual = WindowCodon.is_edit_permitted(self.codon, self.config, 50, 150)
 
         # assert
         self.assertTrue(actual)
 
     def test_is_edit_permitted_false_forbidden_codon(self):
         # arrange
-        mock_object = Mock()
-        mock_object.bases = 'ATG'
-        mock_object.third_base_pos = 2
-        mock_object.amino_acids_lost_from_edit = []
-        config = {'ignore_positions': [-1, 1], 'allow_codon_loss': False}
+        self.codon.bases = 'ATG'
 
         # act
-        actual = WindowCodon.is_edit_permitted(mock_object, config)
+        actual = WindowCodon.is_edit_permitted(self.codon, self.config, 50, 150)
 
         # assert
         self.assertFalse(actual)
 
     def test_is_edit_permitted_false_window_position(self):
         # arrange
-        mock_object = Mock()
-        mock_object.bases = 'ATT'
-        mock_object.third_base_pos = 1
-        mock_object.amino_acids_lost_from_edit = []
-        config = {'ignore_positions': [-1, 1], 'allow_codon_loss': False}
+        self.codon.third_base_pos = 1
 
         # act
-        actual = WindowCodon.is_edit_permitted(mock_object, config)
+        actual = WindowCodon.is_edit_permitted(self.codon, self.config, 50, 150)
 
         # assert
         self.assertFalse(actual)
 
     def test_is_edit_permitted_true_allow_codon_loss(self):
         # arrange
-        mock_object = Mock()
-        mock_object.bases = 'AAG'
-        mock_object.third_base_pos = 2
-        mock_object.amino_acids_lost_from_edit = ['M']
-        config = {'ignore_positions': [-1, 1], 'allow_codon_loss': True}
+        self.codon.bases = 'AAG'
+        self.codon.amino_acids_lost_from_edit = ['M']
+        self.config['allow_codon_loss'] = True
 
         # act
-        actual = WindowCodon.is_edit_permitted(mock_object, config)
+        actual = WindowCodon.is_edit_permitted(self.codon, self.config, 50, 150)
 
         # assert
         self.assertTrue(actual)
 
     def test_is_edit_permitted_false_not_allow_codon_loss(self):
         # arrange
-        mock_object = Mock()
-        mock_object.bases = 'AAG'
-        mock_object.third_base_pos = 2
-        mock_object.amino_acids_lost_from_edit = ['M']
-        config = {'ignore_positions': [-1, 1], 'allow_codon_loss': False}
+        self.codon.bases = 'AAG'
+        self.codon.amino_acids_lost_from_edit = ['M']
 
         # act
-        actual = WindowCodon.is_edit_permitted(mock_object, config)
+        actual = WindowCodon.is_edit_permitted(self.codon, self.config, 50, 150)
+
+        # assert
+        self.assertFalse(actual)
+
+    def test_is_edit_permitted_false_in_masked_region_start(self):
+        # arrange
+        self.codon.third_base_coord = 54
+
+        # act
+        actual = WindowCodon.is_edit_permitted(self.codon, self.config, 50, 150)
+
+        # assert
+        self.assertFalse(actual)
+
+    def test_is_edit_permitted_false_in_masked_region_end(self):
+        # arrange
+        self.codon.third_base_coord = 150
+
+        # act
+        actual = WindowCodon.is_edit_permitted(self.codon, self.config, 50, 150)
 
         # assert
         self.assertFalse(actual)
 
     def test_is_edit_permitted_raises_error_config_field_missing(self):
         # arrange
-        mock_object = Mock()
-        mock_object.bases = 'ATT'
-        mock_object.third_base_pos = 2
-        mock_object.amino_acids_lost_from_edit = []
-        config = {'ignore_positions': [-1, 1]}
+        config = {'ignore_positions': [-1, 1], 'allow_codon_loss': False}
         expected = 'Field missing from config'
 
         # act
         with self.assertRaises(MutatorError) as cm:
-            WindowCodon.is_edit_permitted(mock_object, config)
+            WindowCodon.is_edit_permitted(self.codon, config, 50, 150)
 
         # assert
         self.assertEqual(str(cm.exception), expected)

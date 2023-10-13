@@ -18,6 +18,9 @@ def serialise_mutation_builder(mutation_builder: MutationBuilder, config: dict) 
         'wge_percentile': mutation_builder.guide.wge_percentile,
     }
 
+    cds_start = mutation_builder.cds.start
+    cds_end = mutation_builder.cds.end
+
     for codon in mutation_builder.codons:
         lost_amino = ','.join(codon.amino_acids_lost_from_edit) if codon.amino_acids_lost_from_edit else 'N/A'
 
@@ -28,7 +31,7 @@ def serialise_mutation_builder(mutation_builder: MutationBuilder, config: dict) 
             'ref_pos_three': codon.bases[2],
             'alt': codon.edited_bases[2],
             'lost_amino_acids': lost_amino,
-            'permitted': codon.is_edit_permitted(config),
+            'permitted': codon.is_edit_permitted(config, cds_start, cds_end),
         }
 
         serialised_mutation_builder.append({**base, **row})

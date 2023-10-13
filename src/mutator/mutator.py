@@ -71,7 +71,7 @@ class Mutator(Command):
 
         for mb in self.mutation_builders:
             for codon in mb.codons:
-                if codon.is_edit_permitted(self._config):
+                if codon.is_edit_permitted(self._config, mb.cds.start, mb.cds.end):
                     guide_id = mb.guide.guide_id
                     variants.append(
                         mb.cds.chromosome,

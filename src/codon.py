@@ -36,7 +36,7 @@ class WindowCodon:
         new_codon = self.bases[:2] + base_edits[self.bases[2]]
         return new_codon
 
-    def is_edit_permitted(self, config: dict) -> bool:
+    def is_edit_permitted(self, config: dict, cds_start: int, cds_end: int) -> bool:
         if self.bases in ('ATG', 'TGG', 'ATA', 'TGA'):
             return False
         try:
@@ -44,8 +44,13 @@ class WindowCodon:
                 return False
             if (not config['allow_codon_loss']) and self.amino_acids_lost_from_edit:
                 return False
+            distance = config['splice_mask_distance']
         except KeyError:
             raise MutatorError('Field missing from config')
+
+        if not (cds_start + distance) <= self.third_base_coord <= (cds_end - distance):
+            return False
+
         return True
 
     @property

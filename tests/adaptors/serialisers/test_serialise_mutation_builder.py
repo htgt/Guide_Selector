@@ -25,13 +25,14 @@ class MutatorBuilderSerialiserTestCase(unittest.TestCase):
             window_length=12,
         )
         mutation_builder.codons = [
-            WindowCodon(bases='TCA', third_base_coord=23, third_base_pos=1, is_positive_strand=True),
-            WindowCodon(bases='TCC', third_base_coord=22, third_base_pos=2, is_positive_strand=False),
+            WindowCodon(bases='TCA', third_base_coord=123, third_base_pos=1, is_positive_strand=True),
+            WindowCodon(bases='TCC', third_base_coord=122, third_base_pos=2, is_positive_strand=False),
         ]
 
         config = {
             'ignore_positions': [-1, 1],
             'allow_codon_loss': True,
+            'splice_mask_distance': 5,
         }
 
         # fmt: off
@@ -45,7 +46,7 @@ class MutatorBuilderSerialiserTestCase(unittest.TestCase):
             'guide_start': 160,
             'guide_end': 170,
             'window_pos': 1,
-            'pos': 23,
+            'pos': 123,
             'ref_codon': 'TCA',
             'ref_pos_three': 'A',
             'lost_amino_acids': 'N/A',
@@ -64,7 +65,7 @@ class MutatorBuilderSerialiserTestCase(unittest.TestCase):
             'guide_start': 160,
             'guide_end': 170,
             'window_pos': 2,
-            'pos': 22,
+            'pos': 122,
             'ref_codon': 'TCC',
             'ref_pos_three': 'C',
             'lost_amino_acids': 'N/A',
