@@ -1,4 +1,3 @@
-import copy
 from typing import List
 
 from abstractions.filter import Filter
@@ -26,8 +25,5 @@ class EditGGInPAMFilter(Filter):
                 guide_to_discard = copy.deepcopy(mb)
                 guide_to_discard.codons = codons_to_discard
                 guides_to_discard.append(guide_to_discard)
-
-                mb.codons = codons_to_keep
-                guides_to_keep.append(mb)
 
         return FilterResponse(guides_to_keep=guides_to_keep, guides_to_discard=guides_to_discard)
