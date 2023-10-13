@@ -18,6 +18,7 @@ class MutatorTestCase(unittest.TestCase):
         self.mutator = Mutator({
             'ignore_positions': [-1, 1],
             'allow_codon_loss': True,
+            'splice_mask_distance': 5,
         })  # fmt: on
         self.chrom = 'chr1'
         self.pos = 23
@@ -126,7 +127,7 @@ class MutatorTestCase(unittest.TestCase):
         mb_test = self.mutation_builder
         mb_test.window = self.window
         mb_test.codons = [
-            WindowCodon('GAT', 23, 9, False),
+            WindowCodon('GAT', 123, 9, False),
         ]
         self.mutator.mutation_builders = [mb_test]
         expected_result = self.variants
