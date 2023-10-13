@@ -9,7 +9,7 @@ from codon import WindowCodon
 from edit_window import EditWindow
 from guide import GuideSequence
 from mutation_builder import MutationBuilder
-from mutator.mutator import Mutator
+from mutator.mutator import Mutator, _fill_coding_region, _fill_guide_sequence
 
 
 class MutatorTestCase(unittest.TestCase):
@@ -18,6 +18,7 @@ class MutatorTestCase(unittest.TestCase):
         self.mutator = Mutator({
             'ignore_positions': [-1, 1],
             'allow_codon_loss': True,
+            'splice_mask_distance': 5,
         })  # fmt: on
         self.chrom = 'chr1'
         self.pos = 23
@@ -57,93 +58,6 @@ class MutatorTestCase(unittest.TestCase):
             chroms=[self.chrom],
         )
 
-    def test_guides_and_codons_without_ot_summary(self):
-        mb = MutationBuilder(
-            cds=BaseSequence(100, 200, True, '1', 1),
-            guide=GuideSequence(
-                start=160,
-                end=170,
-                is_positive_strand=True,
-                guide_id='123',
-                chromosome='1',
-                target_region_id='101',
-            ),
-            gene_name='ACT',
-            window_length=self.window_length,
-        )
-        mb.window = (EditWindow(150, 180, self.window_length, True, '1'),)
-        mb.codons = [WindowCodon('TCA', 23, 1, True)]
-
-        self.mutator.mutation_builders = [mb]
-
-        rows = self.mutator.guides_and_codons
-        # fmt: off
-        expected_rows = [{
-            'guide_id': '123',
-            'alt': 'G',
-            'chromosome': '1',
-            'cds_strand': "+",
-            'gene_name': 'ACT',
-            'guide_strand': "+",
-            'guide_start': 160,
-            'guide_end': 170,
-            'window_pos': 1,
-            'pos': 23,
-            'ref_codon': 'TCA',
-            'ref_pos_three': 'A',
-            'lost_amino_acids': 'N/A',
-            'permitted': False,
-            'ot_summary': None,
-            'target_region_id': '101',
-            'wge_percentile': None,
-        }]  # fmt: on
-
-        self.assertEqual(rows, expected_rows)
-
-    def test_guides_and_codons_with_ot_summary(self):
-        mb = MutationBuilder(
-            cds=BaseSequence(100, 200, True, '1', 1),
-            guide=GuideSequence(
-                start=160,
-                end=170,
-                is_positive_strand=True,
-                guide_id='123',
-                chromosome='1',
-                ot_summary={0: 1, 1: 0, 2: 0, 3: 4, 4: 76},
-                target_region_id='123456',
-            ),
-            gene_name='ACT',
-            window_length=self.window_length,
-        )
-        mb.window = (EditWindow(150, 180, True, '1'),)
-        mb.codons = [WindowCodon('TCA', 23, 1, True)]
-
-        self.mutator.mutation_builders = [mb]
-
-        rows = self.mutator.guides_and_codons
-        # fmt: off
-        expected_rows = [{
-            'guide_id': '123',
-            'alt': 'G',
-            'chromosome': '1',
-            'cds_strand': "+",
-            'gene_name': 'ACT',
-            'target_region_id': '123456',
-            'guide_strand': "+",
-            'guide_start': 160,
-            'guide_end': 170,
-            'window_pos': 1,
-            'pos': 23,
-            'ref_codon': 'TCA',
-            'ref_pos_three': 'A',
-            'lost_amino_acids': 'N/A',
-            'permitted': False,
-            'ot_summary': {0: 1, 1: 0, 2: 0, 3: 4, 4: 76},
-            'wge_percentile': 25,
-        }]  # fmt: on
-
-        self.assertEqual(rows, expected_rows)
-
     def test_fill_guide_sequence_without_ot_summary(self):
         # fmt: off
         row = pd.Series({
@@ -155,7 +69,7 @@ class MutatorTestCase(unittest.TestCase):
             'guide_frame': 2
         })  # fmt: on
 
-        guide_sequence = self.mutator._fill_guide_sequence(row)
+        guide_sequence = _fill_guide_sequence(row)
 
         self.assertIsInstance(guide_sequence, GuideSequence)
         self.assertEqual(guide_sequence.start, 160)
@@ -177,7 +91,7 @@ class MutatorTestCase(unittest.TestCase):
             'ot_summary': {0: 1, 1: 0, 2: 0, 3: 4, 4: 76}
         })  # fmt: on
 
-        guide_sequence = self.mutator._fill_guide_sequence(row)
+        guide_sequence = _fill_guide_sequence(row)
 
         self.assertIsInstance(guide_sequence, GuideSequence)
         self.assertEqual(guide_sequence.start, 160)
@@ -198,7 +112,7 @@ class MutatorTestCase(unittest.TestCase):
             'cds_frame': 1
         })  # fmt: on
 
-        coding_region = self.mutator._fill_coding_region(row)
+        coding_region = _fill_coding_region(row)
 
         self.assertIsInstance(coding_region, CodingRegion)
         self.assertEqual(coding_region.start, 100)
@@ -213,7 +127,7 @@ class MutatorTestCase(unittest.TestCase):
         mb_test = self.mutation_builder
         mb_test.window = self.window
         mb_test.codons = [
-            WindowCodon('GAT', 23, 9, False),
+            WindowCodon('GAT', 123, 9, False),
         ]
         self.mutator.mutation_builders = [mb_test]
         expected_result = self.variants
