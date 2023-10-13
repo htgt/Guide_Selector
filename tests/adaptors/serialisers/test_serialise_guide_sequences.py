@@ -1,7 +1,7 @@
 from pyfakefs.fake_filesystem_unittest import TestCase
 
 # fmt: off
-from adaptors.serialisers.serialise_guide_sequences import serialise_guide_sequence, write_guide_sequences_to_tsv  # NOQA
+from adaptors.serialisers.guide_sequences_serialiser import serialise_guide_sequence, write_guide_sequences_to_tsv  # NOQA
 # fmt: on
 from guide import GuideSequence
 
