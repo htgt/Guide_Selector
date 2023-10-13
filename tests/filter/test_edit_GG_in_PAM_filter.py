@@ -7,7 +7,8 @@ from filter.edit_GG_in_PAM_filter import EditGGInPAMFilter
 class TestEditGGInPAMFilter(unittest.TestCase):
     def setUp(self) -> None:
         config = {
-            'filters': {'min_edits_allowed': 3, 'NGG_edit_required': True}}
+            'filters': {'min_edits_allowed': 3, 'NGG_edit_required': True}
+        }
         self.test_instance = EditGGInPAMFilter(config)
         codon_third_pos_4 = Mock()
         codon_third_pos_4.third_base_pos = 4
@@ -22,7 +23,6 @@ class TestEditGGInPAMFilter(unittest.TestCase):
         self.mb_to_keep2.codons = [codon_third_pos_4, codon_third_pos_minus_3]
         self.mb_to_discard = Mock()
         self.mb_to_discard.codons = [codon_third_pos_4]
-
 
     def test_apply_when_no_mutation_builders(self):
         mutation_builders = []
@@ -43,4 +43,3 @@ class TestEditGGInPAMFilter(unittest.TestCase):
 
         self.assertEqual(len(filter_response.guides_to_discard), 1)
         self.assertEqual(filter_response.guides_to_discard[0], self.mb_to_discard)
-

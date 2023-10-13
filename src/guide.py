@@ -97,8 +97,7 @@ class GuideSequence(BaseSequence):
             return PamNotFoundError('No PAM found in the sequence: ' + bases)
 
     def define_window(self, window_length: int) -> Tuple[int, int]:
-        bases = self.get_sequence_by_coords().upper()
-        pam = self.find_pam(bases)
+        pam = self.find_pam(self.bases)
 
         if type(pam) == PamNotFoundError:
             return pam

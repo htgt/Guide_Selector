@@ -1,4 +1,3 @@
-import copy
 from typing import List
 
 from abstractions.filter import Filter
@@ -25,4 +24,3 @@ class EditGGInPAMFilter(Filter):
                 guides_to_discard.append(mb)
 
         return FilterResponse(guides_to_keep=guides_to_keep, guides_to_discard=guides_to_discard)
-
