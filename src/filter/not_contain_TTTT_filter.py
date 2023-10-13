@@ -7,7 +7,7 @@ from mutation_builder import MutationBuilder
 
 
 class NotContainTTTTFilter(Filter):
-    def __init__(self):
+    def __init__(self, config: dict):
         self.pattern = r'T{4,}'
 
     def apply(self, mbs: List[MutationBuilder]) -> FilterResponse:
