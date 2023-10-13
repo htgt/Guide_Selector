@@ -21,7 +21,7 @@ class TestNotContainTTTTFilter(unittest.TestCase):
         self.mutations_builder_to_filter = [mb1, mb2, mb3]
 
     def test_apply_filter_TTTT(self):
-        test_instance = NotContainTTTTFilter()
+        test_instance = NotContainTTTTFilter({})
 
         self.assertEqual(len(self.mutations_builder_to_filter), 3)
 
