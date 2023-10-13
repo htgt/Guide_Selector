@@ -21,6 +21,7 @@ class TestFilterValidator(unittest.TestCase):
         ({'filters': {'not_contain_TTTT+': False}}, []),
         ({'filters': {'not_contain_TTTT+': 'NO VALID VALUE'}}, []),
     ])
+
     def test_validate_filters(self, filters, expected_result):
         result = FilterValidator(filters).validated_filters()
         self.assertEqual(result, expected_result)
