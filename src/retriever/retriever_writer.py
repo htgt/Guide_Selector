@@ -2,7 +2,7 @@ import os
 from typing import List
 
 from abstractions.writer import Writer
-from adaptors.serialisers.serialise_guide_sequences import write_guide_sequences_to_tsv  # NOQA
+from adaptors.serialisers.guide_sequences_serialiser import write_guide_sequences_to_tsv
 from guide import GuideSequence
 
 

@@ -1,4 +1,3 @@
-import copy
 from typing import List
 
 from pprint import pprint
@@ -6,6 +5,7 @@ import pandas as pd
 from tdutils.utils.vcf_utils import Variants
 
 from abstractions.command import Command
+from adaptors.serialisers.mutation_builder_serialiser import serialise_mutation_builder
 from coding_region import CodingRegion
 from filter.filter_manager import FilterManager
 from filter.filter_validator import FilterValidator
@@ -21,6 +21,7 @@ class Mutator(Command):
         self._config = config
         self._guides_df = None
         self.mutation_builders = None
+        self.discarded_guides = None
         self.failed_mutations = None
 
     def read_inputs(self, args: dict, guide_sequences=None):
@@ -36,7 +37,8 @@ class Mutator(Command):
 
     def write_outputs(self, output_dir: str):
         writer = MutatorWriter(
-            self.guides_and_codons,
+            self._mutation_builders_to_guides_and_codons(self.mutation_builders),
+            self._mutation_builders_to_guides_and_codons(self.discarded_guides),
             self.variants,
             self.failed_mutations,
         )
@@ -63,43 +65,6 @@ class Mutator(Command):
         self.failed_mutations = failed_mutations
 
     @property
-    def guides_and_codons(self) -> List[dict]:
-        rows = []
-
-        for mb in self.mutation_builders:
-            base = {
-                'guide_id': mb.guide.guide_id,
-                'chromosome': mb.cds.chromosome,
-                'cds_strand': _get_char_for_bool(mb.cds.is_positive_strand),
-                'gene_name': mb.gene_name,
-                'guide_strand': _get_char_for_bool(mb.guide.is_positive_strand),
-                'guide_start': mb.guide.start,
-                'guide_end': mb.guide.end,
-                'ot_summary': mb.guide.ot_summary,
-                'target_region_id': mb.guide.target_region_id,
-                'wge_percentile': mb.guide.wge_percentile,
-            }
-
-            for codon in mb.codons:
-                row = base
-                lost_amino = ','.join(codon.amino_acids_lost_from_edit) if codon.amino_acids_lost_from_edit else 'N/A'
-
-                row.update(
-                    {
-                        'window_pos': codon.third_base_pos,
-                        'pos': codon.third_base_coord,
-                        'ref_codon': codon.bases,
-                        'ref_pos_three': codon.bases[2],
-                        'alt': codon.edited_bases[2],
-                        'lost_amino_acids': lost_amino,
-                        'permitted': codon.is_edit_permitted(self._config),
-                    }
-                )
-
-                rows.append(copy.deepcopy(row))
-        return rows
-
-    @property
     def variants(self) -> Variants:
         chroms = map(_get_chromosome, self.mutation_builders)
         chroms = list(set(chroms))
@@ -119,31 +84,9 @@ class Mutator(Command):
                     )
         return variants
 
-    def _fill_guide_sequence(self, row: pd.Series) -> GuideSequence:
-        return GuideSequence(
-            start=row['guide_start'],
-            end=row['guide_end'],
-            chromosome=row['chromosome'],
-            is_positive_strand=(row['guide_strand'] == '+'),
-            guide_id=row.name,
-            frame=row['guide_frame'],
-            ot_summary=row.get('ot_summary'),
-            target_region_id=row.get('target_region_id'),
-        )
-
-    def _fill_coding_region(self, row: pd.Series) -> CodingRegion:
-        return CodingRegion(
-            start=row['cds_start'],
-            end=row['cds_end'],
-            chromosome=row['chromosome'],
-            is_positive_strand=(row['cds_strand'] == '+'),
-            exon_number=row['exon_number'],
-            frame=row['cds_frame'],
-        )
-
     def _build_mutations(self, region_data: pd.Series) -> MutationBuilder:
-        guide = self._fill_guide_sequence(region_data)
-        coding_region = self._fill_coding_region(region_data)
+        guide = _fill_guide_sequence(region_data)
+        coding_region = _fill_coding_region(region_data)
         gene_name = region_data['gene_name']
         mutation_builder = MutationBuilder(
             guide=guide,
@@ -162,12 +105,41 @@ class Mutator(Command):
             filter_manager.load_filter(filter_class)
 
         filters_response = filter_manager.apply_filters(self.mutation_builders)
+
         self.mutation_builders = filters_response.guides_to_keep
+        self.discarded_guides = filters_response.guides_to_discard
 
+    def _mutation_builders_to_guides_and_codons(self, mutation_builders: List[MutationBuilder]) -> List[dict]:
+        result = []
+        for mutation_builder in mutation_builders:
+            result += serialise_mutation_builder(mutation_builder, self._config)
 
-def _get_char_for_bool(is_true: bool) -> str:
-    return "+" if is_true else "-"
+        return result
 
 
 def _get_chromosome(mb: MutationBuilder) -> str:
     return mb.cds.chromosome
+
+
+def _fill_guide_sequence(row: pd.Series) -> GuideSequence:
+    return GuideSequence(
+        start=row['guide_start'],
+        end=row['guide_end'],
+        chromosome=row['chromosome'],
+        is_positive_strand=(row['guide_strand'] == '+'),
+        guide_id=row.name,
+        frame=row['guide_frame'],
+        ot_summary=row.get('ot_summary'),
+        target_region_id=row.get('target_region_id'),
+    )
+
+
+def _fill_coding_region(row: pd.Series) -> CodingRegion:
+    return CodingRegion(
+        start=row['cds_start'],
+        end=row['cds_end'],
+        chromosome=row['chromosome'],
+        is_positive_strand=(row['cds_strand'] == '+'),
+        exon_number=row['exon_number'],
+        frame=row['cds_frame'],
+    )
