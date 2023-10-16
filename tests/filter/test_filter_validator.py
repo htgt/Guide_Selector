@@ -2,6 +2,7 @@ import unittest
 
 from filter.edit_GG_in_PAM_filter import EditGGInPAMFilter
 from filter.filter_validator import FilterValidator
+from filter.max_edits_number_filter import MaxEditsNumberFilter
 from filter.minimum_edits_filter import MinimumEditsFilter
 
 
@@ -47,5 +48,20 @@ class TestFilterValidator(unittest.TestCase):
         minimum_edit_filter = {'filters': {'NGG_edit_required': "NO VALID VALUE"}}
 
         result = FilterValidator(minimum_edit_filter).validated_filters()
+
+        self.assertEqual(result, [])
+
+    def test_validate_filters_max_edits_filter(self):
+        max_edit_filter = {'filters': {'max_edits_to_apply': 3}}
+
+        result = FilterValidator(max_edit_filter).validated_filters()
+
+        self.assertEqual(len(result), 1)
+        self.assertIs(result[0], MaxEditsNumberFilter)
+
+    def test_validate_filters_max_edits_filter_when_no_int_value(self):
+        max_edit_filter = {'filters': {'max_edits_to_apply': '3'}}
+
+        result = FilterValidator(max_edit_filter).validated_filters()
 
         self.assertEqual(result, [])
