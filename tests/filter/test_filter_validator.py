@@ -11,6 +11,7 @@ from filter.not_contain_TTTT_filter import NotContainTTTTFilter
 class TestFilterValidator(unittest.TestCase):
     @parameterized.expand([({}, []),
         ({'filters': {'no_valid_key': 3}}, []),
+        ({'filters': {}}, []),
         # MinimumEditsFilter
         ({'filters': {'min_edits_allowed': 3}}, [MinimumEditsFilter]),
         # MaxEditsNumberFilter
@@ -25,7 +26,6 @@ class TestFilterValidator(unittest.TestCase):
         ({'filters': {'not_contain_TTTT+': False}}, []),
         ({'filters': {'not_contain_TTTT+': 'NO VALID VALUE'}}, []),
     ])
-
     def test_validate_filters(self, filters, expected_result):
         result = FilterValidator(filters).validated_filters()
         self.assertEqual(result, expected_result)
