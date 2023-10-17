@@ -13,8 +13,8 @@ class TestFilterValidator(unittest.TestCase):
         ({'filters': {'no_valid_key': 3}}, []),
         # MinimumEditsFilter
         ({'filters': {'min_edits_allowed': 3}}, [MinimumEditsFilter]),
-        # EditGGInPAMFilter
-        ({'filters': {'max_edits_to_apply': 3}}, [EditGGInPAMFilter]),
+        # MaxEditsNumberFilter
+        ({'filters': {'max_edits_to_apply': 3}}, [MaxEditsNumberFilter]),
         ({'filters': {'max_edits_to_apply': '3'}}, []),
         # EditGGInPAMFilter
         ({'filters': {'NGG_edit_required': True}}, [EditGGInPAMFilter]),

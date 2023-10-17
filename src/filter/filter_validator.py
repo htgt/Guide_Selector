@@ -2,11 +2,8 @@ from typing import List
 
 from abstractions.filter import Filter
 from filter.edit_GG_in_PAM_filter import EditGGInPAMFilter
-<<<<<<< HEAD
 from filter.not_contain_TTTT_filter import NotContainTTTTFilter
-=======
 from filter.max_edits_number_filter import MaxEditsNumberFilter
->>>>>>> main
 from filter.minimum_edits_filter import MinimumEditsFilter
 
 
