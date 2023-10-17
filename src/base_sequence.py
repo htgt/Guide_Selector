@@ -20,7 +20,7 @@ class BaseSequence:
     frame: FragmentFrameIndicator = FragmentFrameIndicator.ZERO
 
     @property
-    def bases(self)  -> Optional[int]:
+    def bases(self) -> Optional[int]:
         return self.get_sequence_by_coords().upper()
 
     def get_sequence_by_coords(self) -> str:
