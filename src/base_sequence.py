@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from enum import Enum
+from typing import Optional
 
 from utils.get_data.ensembl import get_seq_from_ensembl_by_coords
 
@@ -17,6 +18,10 @@ class BaseSequence:
     is_positive_strand: bool = True
     chromosome: str = ""
     frame: FragmentFrameIndicator = FragmentFrameIndicator.ZERO
+
+    @property
+    def bases(self)  -> Optional[int]:
+        return self.get_sequence_by_coords().upper()
 
     def get_sequence_by_coords(self) -> str:
         bases = get_seq_from_ensembl_by_coords(self.chromosome, self.start, self.end)
