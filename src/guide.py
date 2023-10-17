@@ -41,10 +41,6 @@ class GuideSequence(BaseSequence):
         self.ot_summary = ot_summary
 
     @property
-    def bases(self) -> Optional[int]:
-        return self.get_sequence_by_coords().upper()
-
-    @property
     def wge_percentile(self) -> Optional[int]:
         return calculate_wge_percentile(self.ot_summary)
 
