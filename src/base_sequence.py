@@ -1,6 +1,5 @@
 from dataclasses import dataclass
 from enum import Enum
-from typing import Optional
 
 from utils.get_data.ensembl import get_seq_from_ensembl_by_coords
 
@@ -20,7 +19,7 @@ class BaseSequence:
     frame: FragmentFrameIndicator = FragmentFrameIndicator.ZERO
 
     @property
-    def bases(self) -> Optional[int]:
+    def bases(self) -> str:
         return self.get_sequence_by_coords().upper()
 
     def get_sequence_by_coords(self) -> str:

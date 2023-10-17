@@ -1,4 +1,4 @@
-from typing import List, Any
+from typing import List
 
 from abstractions.filter import Filter
 from filter.edit_GG_in_PAM_filter import EditGGInPAMFilter
