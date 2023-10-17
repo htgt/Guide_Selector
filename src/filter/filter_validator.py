@@ -2,7 +2,11 @@ from typing import List
 
 from abstractions.filter import Filter
 from filter.edit_GG_in_PAM_filter import EditGGInPAMFilter
+<<<<<<< HEAD
 from filter.not_contain_TTTT_filter import NotContainTTTTFilter
+=======
+from filter.max_edits_number_filter import MaxEditsNumberFilter
+>>>>>>> main
 from filter.minimum_edits_filter import MinimumEditsFilter
 
 
@@ -19,6 +23,11 @@ class FilterValidator:
                         valid_filters.append(MinimumEditsFilter)
                     else:
                         print('Invalid value: the value given for minimum edits is not integer')
+                if key == 'max_edits_to_apply':
+                    if isinstance(value, int):
+                        valid_filters.append(MaxEditsNumberFilter)
+                    else:
+                        print('Invalid value: the value given for maximum edits to apply is not integer')
                 if key == 'NGG_edit_required':
                     if value is True:
                         valid_filters.append(EditGGInPAMFilter)
@@ -29,4 +38,5 @@ class FilterValidator:
                         valid_filters.append(NotContainTTTTFilter)
                     else:
                         print('Invalid value: the value given for TTTT+ filter is not \'true\'')
+
         return valid_filters

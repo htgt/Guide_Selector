@@ -3,15 +3,19 @@ from parameterized import parameterized
 
 from filter.filter_validator import FilterValidator
 from filter.edit_GG_in_PAM_filter import EditGGInPAMFilter
+from filter.max_edits_number_filter import MaxEditsNumberFilter
 from filter.minimum_edits_filter import MinimumEditsFilter
 from filter.not_contain_TTTT_filter import NotContainTTTTFilter
 
 
 class TestFilterValidator(unittest.TestCase):
     @parameterized.expand([({}, []),
-        # MinimumEditsFilter
         ({'filters': {'no_valid_key': 3}}, []),
+        # MinimumEditsFilter
         ({'filters': {'min_edits_allowed': 3}}, [MinimumEditsFilter]),
+        # EditGGInPAMFilter
+        ({'filters': {'max_edits_to_apply': 3}}, [EditGGInPAMFilter]),
+        ({'filters': {'max_edits_to_apply': '3'}}, []),
         # EditGGInPAMFilter
         ({'filters': {'NGG_edit_required': True}}, [EditGGInPAMFilter]),
         ({'filters': {'NGG_edit_required': False}}, []),

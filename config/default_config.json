@@ -8,6 +8,7 @@
     "filters": {
         "min_edits_allowed": 3,
         "NGG_edit_required": true,
-        "not_contain_TTTT+": true
+        "not_contain_TTTT+": true,
+        "max_edits_to_apply": 3
     }
 }
