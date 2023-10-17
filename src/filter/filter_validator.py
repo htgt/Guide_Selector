@@ -28,6 +28,6 @@ class FilterValidator:
                     if value is not False:
                         valid_filters.append(filter_class)
                 else:
-                    print( f'Invalid value: the value given for {key} is not {expected_type.__name__}')
+                    print(f'Invalid value: the value given for {key} is not {expected_type.__name__}')
 
         return valid_filters

@@ -13,20 +13,17 @@ def create_mutation_builder_with_bases(bases):
 
 
 class TestNotContainTTTTFilter(unittest.TestCase):
-    def setUp(self) -> None:
+    def test_apply_filter_TTTT(self):
         mb1 = create_mutation_builder_with_bases('CACATTTTTTAAACCCCC')
         mb2 = create_mutation_builder_with_bases('CACAAACTCTTTCCCTTCCAAAAAAA')
         mb3 = create_mutation_builder_with_bases('CACAAACAA')
 
-        self.mutations_builder_to_filter = [mb1, mb2, mb3]
-
-    def test_apply_filter_TTTT(self):
         test_instance = NotContainTTTTFilter({})
-
-        self.assertEqual(len(self.mutations_builder_to_filter), 3)
-
-        result = test_instance.apply(self.mutations_builder_to_filter)
+        result = test_instance.apply([mb1, mb2, mb3])
 
         self.assertEqual(len(result.guides_to_keep), 2)
         self.assertEqual(len(result.guides_to_discard), 1)
+        self.assertIn(mb2, result.guides_to_keep)
+        self.assertNotIn(mb1, result.guides_to_keep)
+        self.assertIn(mb1, result.guides_to_discard)
 
