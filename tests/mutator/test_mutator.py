@@ -139,6 +139,17 @@ class MutatorTestCase(unittest.TestCase):
         self.assertEqual(test_result.__len__(), expected_result.__len__())
         self.assertEqual(test_result.header, expected_result.header)
 
+    def test_convert_to_dataframe(self):
+        self.mutator.mutation_builders = [self.mutation_builder]
+        df = self.mutator.convert_to_dataframe()
+
+        self.assertFalse(df.empty)
+
+    def test_extract_codon_details(self):
+        codon_details = self.mutator.extract_codon_details(self.mutation_builder)
+
+        self.assertIsInstance(codon_details, list)
+
 
 if __name__ == '__main__':
     unittest.main()
