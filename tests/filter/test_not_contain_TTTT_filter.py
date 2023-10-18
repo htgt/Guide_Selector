@@ -21,9 +21,5 @@ class TestNotContainTTTTFilter(unittest.TestCase):
         test_instance = NotContainTTTTFilter({})
         result = test_instance.apply([mb1, mb2, mb3])
 
-        self.assertEqual(len(result.guides_to_keep), 2)
-        self.assertEqual(len(result.guides_to_discard), 1)
-        self.assertIn(mb2, result.guides_to_keep)
-        self.assertNotIn(mb1, result.guides_to_keep)
-        self.assertIn(mb1, result.guides_to_discard)
-
+        self.assertCountEqual(result.guides_to_keep, [mb2, mb3])
+        self.assertCountEqual(result.guides_to_discard, [mb1])
