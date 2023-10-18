@@ -21,13 +21,18 @@ class FilterValidator:
         }
 
         if self._filters:
-            for key, (expected_type, filter_class) in filter_validations.items():
-                value = self._filters.get(key)
+            for key, value in self._filters.items():
+
+                filter_data = filter_validations.get(key)
+                if filter_data:
+                    (expected_type, filter_class) = filter_data
             
-                if isinstance(value, expected_type):
-                    if value is not False:
-                        valid_filters.append(filter_class)
+                    if isinstance(value, expected_type):
+                        if value is not False:
+                            valid_filters.append(filter_class)
+                    else:
+                        print(f'Invalid value: the value given for {key} is not {expected_type.__name__}')
                 else:
-                    print(f'Invalid value: the value given for {key} is not {expected_type.__name__}')
+                    print(f'No filters specified')
 
         return valid_filters
