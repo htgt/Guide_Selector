@@ -33,6 +33,6 @@ class FilterValidator:
                     else:
                         print(f'Invalid value: the value given for {key} is not {expected_type.__name__}')
                 else:
-                    print('{key}: filter not recognised')
+                    print(f'{key}: filter not recognised')
 
         return valid_filters
