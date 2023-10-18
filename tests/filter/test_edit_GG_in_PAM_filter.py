@@ -6,7 +6,9 @@ from filter.edit_GG_in_PAM_filter import EditGGInPAMFilter
 
 class TestEditGGInPAMFilter(unittest.TestCase):
     def setUp(self) -> None:
-        config = {'filters': {'min_edits_allowed': 3, 'NGG_edit_required': True}}
+        config = {
+            'filters': {'min_edits_allowed': 3, 'NGG_edit_required': True}
+        }
         self.test_instance = EditGGInPAMFilter(config)
         codon_third_pos_4 = Mock()
         codon_third_pos_4.third_base_pos = 4
