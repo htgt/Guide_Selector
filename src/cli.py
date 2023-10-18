@@ -62,6 +62,10 @@ def run_mutator_cmd(args: dict, config: dict, guide_sequences: List[GuideSequenc
     # Write Output Files
     mutator.write_outputs(output_dir=args['out_dir'])
 
+    # Ranking output
+    print('rank')
+    mutator_df = mutator.convert_to_dataframe()
+    print(mutator_df)
 
 # Temporary for sprint 23. Delete after.
 def run_wge_cmd(args: dict, config: dict) -> None:
