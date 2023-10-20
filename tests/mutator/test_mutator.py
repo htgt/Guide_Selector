@@ -143,13 +143,33 @@ class MutatorTestCase(unittest.TestCase):
         self.mutator.mutation_builders = [self.mutation_builder]
         df = self.mutator.convert_to_dataframe()
 
-        self.assertFalse(df.empty)
+        expected_data = {
+            "guide_id": ["123"],
+            "chromosome": ["chr1"],
+            "cds_strand": ["+"],
+            "gene_name": ["ACT"],
+            "guide_strand": ["+"],
+            "guide_start": [160],
+            "guide_end": [170],
+            "ot_summary": [None],
+            "target_region_id": '101',
+            "wge_percentile": [None],
+            "codon_details": [[]],
+        }
+
+        expected_df = pd.DataFrame(expected_data)
+
+        pd.testing.assert_frame_equal(df, expected_df)
 
     def test_extract_codon_details(self):
+        expected_codon_details = [{'window_pos': 1, 'pos': 23, 'ref_codon': 'TCA', 'ref_pos_three': 'A', 'alt': 'G', 'lost_amino_acids': 'N/A', 'permitted': False}]
+
+        self.codons = [WindowCodon('TCA', self.pos, 1, True)]
+        self.mutation_builder.codons = self.codons
+        self.mutator.mutation_builders = [self.mutation_builder]
         codon_details = self.mutator.extract_codon_details(self.mutation_builder)
 
-        self.assertIsInstance(codon_details, list)
-
+        self.assertListEqual(codon_details, expected_codon_details)
 
 if __name__ == '__main__':
     unittest.main()
