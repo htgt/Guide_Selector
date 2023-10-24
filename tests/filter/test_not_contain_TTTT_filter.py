@@ -1,6 +1,7 @@
 import unittest
 from unittest.mock import Mock
 
+from filter.filter_response import GuideDiscarded
 from filter.not_contain_TTTT_filter import NotContainTTTTFilter
 
 
@@ -22,4 +23,4 @@ class TestNotContainTTTTFilter(unittest.TestCase):
         result = test_instance.apply([mb1, mb2, mb3])
 
         self.assertCountEqual(result.guides_to_keep, [mb2, mb3])
-        self.assertCountEqual(result.guides_to_discard, [mb1])
+        self.assertCountEqual(result.guides_to_discard, [GuideDiscarded(mb1, 'not_contain_TTTT+')])

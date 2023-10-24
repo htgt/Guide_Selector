@@ -1,7 +1,7 @@
 from typing import List
 
 from abstractions.filter import Filter
-from filter.filter_response import FilterResponse
+from filter.filter_response import FilterResponse, GuideDiscarded
 from mutation_builder import MutationBuilder
 
 
@@ -13,17 +13,13 @@ class EditGGInPAMFilter(Filter):
         guides_to_keep = []
         guides_to_discard = []
         for mb in mbs:
-            codons = mb.codons
-            codons_to_keep = list(filter(lambda codon: codon.third_base_pos in [-2, -3], codons))
-            codons_to_discard = list(filter(lambda codon: codon.third_base_pos not in [-2, -3], codons))
+            codons_with_pam_edit = [codon for codon in mb.codons if codon.third_base_pos in [-2, -3]]
 
             if len(codons_to_keep) == 0:
                 guides_to_discard.append(mb)
             elif len(codons_to_discard) == 0:
                 guides_to_keep.append(mb)
             else:
-                guide_to_discard = copy.deepcopy(mb)
-                guide_to_discard.codons = codons_to_discard
-                guides_to_discard.append(guide_to_discard)
+                guides_to_discard.append(GuideDiscarded(mb, 'NGG_edit_required'))
 
         return FilterResponse(guides_to_keep=guides_to_keep, guides_to_discard=guides_to_discard)
