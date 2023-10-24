@@ -2,9 +2,9 @@ from typing import List
 
 from abstractions.filter import Filter
 from filter.edit_GG_in_PAM_filter import EditGGInPAMFilter
-from filter.not_contain_TTTT_filter import NotContainTTTTFilter
 from filter.max_edits_number_filter import MaxEditsNumberFilter
 from filter.minimum_edits_filter import MinimumEditsFilter
+from filter.not_contain_TTTT_filter import NotContainTTTTFilter
 
 
 class FilterValidator:
@@ -22,11 +22,10 @@ class FilterValidator:
 
         if self._filters:
             for key, value in self._filters.items():
-
                 filter_data = filter_validations.get(key)
                 if filter_data:
                     (expected_type, filter_class) = filter_data
-            
+
                     if isinstance(value, expected_type):
                         if value is not False:
                             valid_filters.append(filter_class)
