@@ -7,6 +7,7 @@ from abstractions.command import Command
 from adaptors.serialisers.mutation_builder_serialiser import serialise_mutation_builder
 from coding_region import CodingRegion
 from filter.filter_manager import FilterManager
+from filter.filter_response import GuideDiscarded
 from filter.filter_validator import FilterValidator
 from guide import GuideSequence
 from guide_determiner import GuideDeterminer
@@ -19,8 +20,8 @@ class Mutator(Command):
     def __init__(self, config: dict) -> None:
         self._config = config
         self._guides_df = None
-        self.mutation_builders = None
-        self.discarded_guides = None
+        self.mutation_builders: List[MutationBuilder] = []
+        self.discarded_guides: List[GuideDiscarded] = []
         self.failed_mutations = None
 
     def read_inputs(self, args: dict, guide_sequences=None):
@@ -36,8 +37,8 @@ class Mutator(Command):
 
     def write_outputs(self, output_dir: str):
         writer = MutatorWriter(
-            self._mutation_builders_to_guides_and_codons(self.mutation_builders),
-            self._mutation_builders_to_guides_and_codons(self.discarded_guides),
+            self._kept_mb_to_guides_and_codons(self.mutation_builders),
+            self._discarded_mb_to_guides_and_codons(self.discarded_guides),
             self.variants,
             self.failed_mutations,
         )
@@ -45,10 +46,7 @@ class Mutator(Command):
         writer.write_outputs(output_dir)
 
     def _set_mutation_builders(self, guide_data: pd.DataFrame) -> None:
-        mutation_builder_objects = []
-
-        for index, row in guide_data.iterrows():
-            mutation_builder_objects.append(self._build_mutations(row))
+        mutation_builder_objects = [self._build_mutations(row) for index, row in guide_data.iterrows()]
 
         self.mutation_builders = mutation_builder_objects
 
@@ -87,14 +85,12 @@ class Mutator(Command):
         guide = _fill_guide_sequence(region_data)
         coding_region = _fill_coding_region(region_data)
         gene_name = region_data['gene_name']
-        mutation_builder = MutationBuilder(
+        return MutationBuilder(
             guide=guide,
             cds=coding_region,
             gene_name=gene_name,
             window_length=self._config["window_length"],
         )
-
-        return mutation_builder
 
     def _filter_mutation_builders(self):
         filter_manager = FilterManager(self._config)
@@ -108,10 +104,17 @@ class Mutator(Command):
         self.mutation_builders = filters_response.guides_to_keep
         self.discarded_guides = filters_response.guides_to_discard
 
-    def _mutation_builders_to_guides_and_codons(self, mutation_builders: List[MutationBuilder]) -> List[dict]:
+    def _kept_mb_to_guides_and_codons(self, mutation_builders: List[MutationBuilder]) -> List[dict]:
         result = []
         for mutation_builder in mutation_builders:
             result += serialise_mutation_builder(mutation_builder, self._config)
+
+        return result
+
+    def _discarded_mb_to_guides_and_codons(self, discarded_guide: List[GuideDiscarded]) -> List[dict]:
+        result = []
+        for guide in discarded_guide:
+            result += serialise_mutation_builder(guide.mutation_builder, self._config, guide.filter_applied)
 
         return result
 

@@ -45,8 +45,11 @@ class TestMaxEditsNumberFilter(unittest.TestCase):
         third_pos_of_kept_codons = [codon.third_base_pos for codon in filter_response.guides_to_keep[0].codons]
         self.assertEqual(third_pos_of_kept_codons, [-2, -3, 4])
 
-        third_pos_of_discarded_codons = [codon.third_base_pos for codon in filter_response.guides_to_discard[0].codons]
+        third_pos_of_discarded_codons = [
+            codon.third_base_pos for codon in filter_response.guides_to_discard[0].mutation_builder.codons
+        ]
         self.assertEqual(third_pos_of_discarded_codons, [10])
+        self.assertEqual(filter_response.guides_to_discard[0].filter_applied, 'max_edits_to_apply')
 
     def test_apply_when_less_than_max_edits(self):
         self.mutation_builder.codons = [self.codon_3th_pos_4, self.codon_3th_pos_minus_3, self.codon_3th_pos_10]

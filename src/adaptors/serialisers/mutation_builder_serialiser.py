@@ -3,7 +3,9 @@ from typing import List
 from mutation_builder import MutationBuilder
 
 
-def serialise_mutation_builder(mutation_builder: MutationBuilder, config: dict) -> List[dict]:
+def serialise_mutation_builder(
+    mutation_builder: MutationBuilder, config: dict, filter_applied: str = None
+) -> List[dict]:
     serialised_mutation_builder = []
     base = {
         'guide_id': mutation_builder.guide.guide_id,
@@ -17,6 +19,8 @@ def serialise_mutation_builder(mutation_builder: MutationBuilder, config: dict) 
         'target_region_id': mutation_builder.guide.target_region_id,
         'wge_percentile': mutation_builder.guide.wge_percentile,
     }
+    if filter_applied:
+        base['filter_applied'] = filter_applied
 
     cds_start = mutation_builder.cds.start
     cds_end = mutation_builder.cds.end

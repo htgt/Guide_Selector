@@ -2,7 +2,7 @@ import copy
 from typing import List
 
 from abstractions.filter import Filter
-from filter.filter_response import FilterResponse
+from filter.filter_response import FilterResponse, GuideDiscarded
 from mutation_builder import MutationBuilder
 
 
@@ -23,11 +23,10 @@ class MaxEditsNumberFilter(Filter):
 
                 guide_with_discarded_codons = copy.deepcopy(mb)
                 guide_with_discarded_codons.codons = codons_to_discard
-                guides_with_discarded_codons.append(guide_with_discarded_codons)
+                guides_with_discarded_codons.append(GuideDiscarded(guide_with_discarded_codons, 'max_edits_to_apply'))
 
                 mb.codons = codons_to_keep
-                guides_with_codons_to_keep.append(mb)
-            else:
-                guides_with_codons_to_keep.append(mb)
+
+            guides_with_codons_to_keep.append(mb)
 
         return FilterResponse(guides_to_keep=guides_with_codons_to_keep, guides_to_discard=guides_with_discarded_codons)
