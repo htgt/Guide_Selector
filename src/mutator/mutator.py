@@ -5,7 +5,10 @@ import pandas as pd
 from tdutils.utils.vcf_utils import Variants
 
 from abstractions.command import Command
-from adaptors.serialisers.mutation_builder_serialiser import serialise_mutation_builder
+from adaptors.serialisers.mutation_builder_serialiser import (
+    serialise_mutation_builder,
+    convert_mutation_builders_to_df
+)
 from coding_region import CodingRegion
 from filter.filter_manager import FilterManager
 from filter.filter_validator import FilterValidator
@@ -119,48 +122,10 @@ class Mutator(Command):
 
     def convert_to_dataframe(self) -> pd.DataFrame:
         mutation_builders = self.mutation_builders
+        data = convert_mutation_builders_to_df(mutation_builders, self._config)
 
-        if mutation_builders is None:
-            raise ValueError("Mutation builders not available in the Mutator.")
+        return data
 
-        data = {
-            "guide_id": [mb.guide.guide_id for mb in mutation_builders],
-            "chromosome": [mb.cds.chromosome for mb in mutation_builders],
-            "cds_strand": [_get_char_for_bool(mb.cds.is_positive_strand) for mb in mutation_builders],
-            "gene_name": [mb.gene_name for mb in mutation_builders],
-            "guide_strand": [_get_char_for_bool(mb.guide.is_positive_strand) for mb in mutation_builders],
-            "guide_start": [mb.guide.start for mb in mutation_builders],
-            "guide_end": [mb.guide.end for mb in mutation_builders],
-            "ot_summary": [mb.guide.ot_summary for mb in mutation_builders],
-            "target_region_id": [mb.guide.target_region_id for mb in mutation_builders],
-            "wge_percentile": [mb.guide.wge_percentile for mb in mutation_builders],
-        }
-
-        codon_details = [self.extract_codon_details(mb) for mb in mutation_builders]
-
-        data["codon_details"] = codon_details
-
-        return pd.DataFrame(data)
-
-    def extract_codon_details(self, mutation_builder: MutationBuilder) -> List:
-        codon_details = []
-        cds_start = mutation_builder.cds.start
-        cds_end = mutation_builder.cds.end
-
-        for codon in mutation_builder.codons:
-            lost_amino = ','.join(codon.amino_acids_lost_from_edit) if codon.amino_acids_lost_from_edit else 'N/A'
-            codon_data = {
-                "window_pos": codon.third_base_pos,
-                "pos": codon.third_base_coord,
-                "ref_codon": codon.bases,
-                "ref_pos_three": codon.bases[2],
-                "alt": codon.edited_bases[2],
-                "lost_amino_acids": lost_amino,
-                "permitted": codon.is_edit_permitted(self._config, cds_start, cds_end),
-            }
-            codon_details.append(codon_data)
-
-        return codon_details
 
 def _get_char_for_bool(value):
     return '+' if value else '-'
