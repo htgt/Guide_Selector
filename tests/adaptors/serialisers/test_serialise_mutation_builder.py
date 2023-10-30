@@ -232,7 +232,5 @@ class MutatorBuilderSerialiserTestCase(unittest.TestCase):
         self.assertEqual(serialised_mb, expected_serialisation)
 
 
-
-
 if __name__ == '__main__':
     unittest.main()
