@@ -57,8 +57,6 @@ def _get_mutator_row(mutation_builder: MutationBuilder) -> dict:
         'target_region_id': mutation_builder.guide.target_region_id,
         'wge_percentile': mutation_builder.guide.wge_percentile,
     }
-    if filter_applied:
-        base['filter_applied'] = filter_applied
 
 def _get_codon_row(cds_start, cds_end, codon, config):
     lost_amino = ','.join(codon.amino_acids_lost_from_edit) if codon.amino_acids_lost_from_edit else 'N/A'
