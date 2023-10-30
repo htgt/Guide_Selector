@@ -7,6 +7,9 @@ from mutation_builder import MutationBuilder
 
 
 class MaxEditsNumberFilter(Filter):
+    key: str = 'max_edits_to_apply'
+    value_type: type = int
+
     def __init__(self, config: dict):
         self.max_edits = config['filters']['max_edits_to_apply']
 
@@ -23,7 +26,9 @@ class MaxEditsNumberFilter(Filter):
 
                 guide_with_discarded_codons = copy.deepcopy(mb)
                 guide_with_discarded_codons.codons = codons_to_discard
-                guides_with_discarded_codons.append(GuideDiscarded(guide_with_discarded_codons, 'max_edits_to_apply'))
+                guides_with_discarded_codons.append(
+                    GuideDiscarded(guide_with_discarded_codons, MaxEditsNumberFilter.key)
+                )
 
                 mb.codons = codons_to_keep
 
