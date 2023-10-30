@@ -129,10 +129,6 @@ class Mutator(Command):
         return data
 
 
-def _get_char_for_bool(value):
-    return '+' if value else '-'
-
-
 def _get_chromosome(mb: MutationBuilder) -> str:
     return mb.cds.chromosome
 
