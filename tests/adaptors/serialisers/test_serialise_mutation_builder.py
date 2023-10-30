@@ -40,7 +40,6 @@ class MutatorBuilderSerialiserTestCase(unittest.TestCase):
         }
 
     def test_convert_mutation_builders_to_df(self):
-        self.maxDiff = None
         expected_columns = [
             'guide_id', 'chromosome', 'cds_strand', 'gene_name',
             'guide_strand', 'guide_start', 'guide_end', 'ot_summary',
