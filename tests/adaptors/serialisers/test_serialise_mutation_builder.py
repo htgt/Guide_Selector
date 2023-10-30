@@ -41,7 +41,7 @@ class MutatorBuilderSerialiserTestCase(unittest.TestCase):
             'splice_mask_distance': 5,
         }
 
-   def test_convert_mutation_builders_to_df(self):
+    def test_convert_mutation_builders_to_df(self):
         self.maxDiff = None
         expected_columns = [
             'guide_id', 'chromosome', 'cds_strand', 'gene_name',
