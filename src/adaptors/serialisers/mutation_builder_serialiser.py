@@ -9,6 +9,8 @@ def serialise_mutation_builder(
     serialised_mutation_builder = []
 
     base = _get_mutator_row(mutation_builder)
+    if filter_applied:
+        base['filter_applied'] = filter_applied
 
     cds_start = mutation_builder.cds.start
     cds_end = mutation_builder.cds.end
@@ -48,7 +50,7 @@ def _get_mutator_row(mutation_builder: MutationBuilder) -> dict:
         'chromosome': mutation_builder.cds.chromosome,
         'cds_strand': _get_char_for_bool(mutation_builder.cds.is_positive_strand),
         'gene_name': mutation_builder.gene_name,
-        'guide_strand': mutation_builder.guide.strand_symbol(),
+        'guide_strand': mutation_builder.guide.strand_symbol,
         'guide_start': mutation_builder.guide.start,
         'guide_end': mutation_builder.guide.end,
         'ot_summary': mutation_builder.guide.ot_summary,
