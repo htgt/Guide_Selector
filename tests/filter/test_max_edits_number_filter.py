@@ -12,7 +12,7 @@ def _create_codon_with_third_pos(third_pos: int) -> Mock:
 
 class TestMaxEditsNumberFilter(unittest.TestCase):
     def setUp(self) -> None:
-        config = {'filters': {'max_edits_to_apply': 3}}
+        config = {'filters': {MaxEditsNumberFilter.key: 3}}
         self.max_edits_number_filter = MaxEditsNumberFilter(config)
 
         self.codon_3th_pos_4 = _create_codon_with_third_pos(4)
@@ -49,7 +49,7 @@ class TestMaxEditsNumberFilter(unittest.TestCase):
             codon.third_base_pos for codon in filter_response.guides_to_discard[0].mutation_builder.codons
         ]
         self.assertEqual(third_pos_of_discarded_codons, [10])
-        self.assertEqual(filter_response.guides_to_discard[0].filter_applied, 'max_edits_to_apply')
+        self.assertEqual(filter_response.guides_to_discard[0].filter_applied, MaxEditsNumberFilter.key)
 
     def test_apply_when_less_than_max_edits(self):
         self.mutation_builder.codons = [self.codon_3th_pos_4, self.codon_3th_pos_minus_3, self.codon_3th_pos_10]
