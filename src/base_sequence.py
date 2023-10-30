@@ -18,6 +18,10 @@ class BaseSequence:
     chromosome: str = ""
     frame: FragmentFrameIndicator = FragmentFrameIndicator.ZERO
 
+    @property
+    def bases(self) -> str:
+        return self.get_sequence_by_coords().upper()
+
     def get_sequence_by_coords(self) -> str:
         bases = get_seq_from_ensembl_by_coords(self.chromosome, self.start, self.end)
 

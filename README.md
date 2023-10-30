@@ -107,6 +107,7 @@ Available commands:
 - --version
 - mutator
 - retrieve
+- guide_selector
 
 Shared arguments (not required):
 
@@ -145,13 +146,17 @@ python3 src/cli.py --out_dir my_output retrieve --region_file examples/target_re
 
 
 ## Mutator command
-Mutator command runs the PAM mutator workflow in one command. 
+Mutator command runs the PAM/protospacer mutator workflow. 
 
 Mutator requires the Guide Loci + ID, a reference GTF file 
-(e.g. [MANE.GRCh38.v1.0.ensembl_genomic.gtf.gz](https://ftp.ncbi.nlm.nih.gov/refseq/MANE/MANE_human/release_1.0/MANE.GRCh38.v1.0.ensembl_genomic.gtf.gz)) 
-to run and output directory path.
+(e.g. [MANE.GRCh38.v1.0.ensembl_genomic.gtf.gz](https://ftp.ncbi.nlm.nih.gov/refseq/MANE/MANE_human/release_1.0/MANE.GRCh38.v1.0.ensembl_genomic.gtf.gz)) and output directory path.
 
-Custom configuration can be passed to the command for any tweaks necessary.
+Custom configuration can be passed to the command for any tweaks necessary. Parameters used:
+- **window_length**: length (in bp) of the window edits can be made in (default 12). Includes the PAM (3bp) and upstream bases
+- **ignore_positions**: sets permitted to False for edits at the supplied positions (default [-1, 1]). 1 is the N of the PAM and -1 is the protospacer base next to this
+- **allow_codon_loss**: if false sets permitted to False for edits that would result in any lost amino acids in the screen (default true)
+- **splice_mask_distance**: sets permitted to False for edits that are not the specified number of bases within the coding region at the start and end (default 5)
+- **filters**: see Filters section below
 
 | Argument | Description                |
 |----------|----------------------------|
@@ -162,6 +167,15 @@ Example:
 ```
 python3 src/cli.py --conf custom.conf --out_dir ./output/ mutator --gtf ./example.gtf --tsv guides.tsv 
 ```
+
+### Filters
+
+You can set various filters in the config file. Guides and edits that are kept as a result of these filters will be output to ``guides_and_codons.tsv``, while those discarded will be output to ``discarded_guides_and_codons.tsv``.
+
+- **min_edits_allowed**: minimum number of edits required per guide, discards guides with fewer than this (default 3)
+- **NGG_edit_required**: if true, discards guides that don't have any edits in the GG of the PAM (default true)
+- **not_contain_TTTT+**: if true, discards guides containing 4 or more consecutive Ts (default true)
+- **max_edits_to_apply**: maximum number of edits to output per guide (default 3). Edits are prioritised based on their position in the window, with those closest to 0 being preferred
 
 
 ## Guide selector command
@@ -174,6 +188,10 @@ Runs retrieve-mutator steps together, accepts region (or file with regions) and 
 | --region_file | Path tsv file with regions                                |
 | --gtf         | Path to reference gtf file                                |
 
+Example
+```
+python3 src/cli.py guide_selector --region_file examples/target_regions.tsv --gtf ./example.gtf 
+```
 
 ### Run with Docker
 

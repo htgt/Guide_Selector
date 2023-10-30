@@ -5,6 +5,7 @@ from coding_region import CodingRegion
 from codon import WindowCodon
 from guide import GuideSequence
 from adaptors.serialisers.mutation_builder_serialiser import (
+    serialise_mutation_builder,
     convert_mutation_builders_to_df,
     extract_codon_details,
     _get_mutator_row,
@@ -12,7 +13,7 @@ from adaptors.serialisers.mutation_builder_serialiser import (
 )
 
 class MutatorBuilderSerialiserTestCase(unittest.TestCase):
-    def setUp(self):
+    def setUp(self) -> None:
         self.mutation_builder = MutationBuilder(
             guide=GuideSequence(
                 chromosome='1',
@@ -40,7 +41,7 @@ class MutatorBuilderSerialiserTestCase(unittest.TestCase):
             'splice_mask_distance': 5,
         }
 
-    def test_convert_mutation_builders_to_df(self):
+   def test_convert_mutation_builders_to_df(self):
         self.maxDiff = None
         expected_columns = [
             'guide_id', 'chromosome', 'cds_strand', 'gene_name',
@@ -137,6 +138,101 @@ class MutatorBuilderSerialiserTestCase(unittest.TestCase):
         codon_row = _get_codon_row(cds_start, cds_end, codon, self.config)
 
         self.assertEqual(codon_row, expected_row)
+
+    def test_serialise_mutation_builder_when_no_filter_applied(self):
+        # fmt: off
+        expected_serialisation = [{
+            'guide_id': '123',
+            'alt': 'G',
+            'chromosome': '1',
+            'cds_strand': "+",
+            'gene_name': 'ACT',
+            'guide_strand': "+",
+            'guide_start': 160,
+            'guide_end': 170,
+            'window_pos': 1,
+            'pos': 123,
+            'ref_codon': 'TCA',
+            'ref_pos_three': 'A',
+            'lost_amino_acids': 'N/A',
+            'permitted': False,
+            'ot_summary': {0: 1, 1: 0, 2: 0, 3: 4, 4: 76},
+            'target_region_id': '101',
+            'wge_percentile': 25,
+        },
+        {
+            'guide_id': '123',
+            'alt': 'T',
+            'chromosome': '1',
+            'cds_strand': "+",
+            'gene_name': 'ACT',
+            'guide_strand': "+",
+            'guide_start': 160,
+            'guide_end': 170,
+            'window_pos': 2,
+            'pos': 122,
+            'ref_codon': 'TCC',
+            'ref_pos_three': 'C',
+            'lost_amino_acids': 'N/A',
+            'permitted': True,
+            'ot_summary': {0: 1, 1: 0, 2: 0, 3: 4, 4: 76},
+            'target_region_id': '101',
+            'wge_percentile': 25,
+        }]  # fmt: on
+
+        serialised_mb = serialise_mutation_builder(self.mutation_builder, self.config, filter_applied=None)
+
+        self.assertEqual(serialised_mb, expected_serialisation)
+
+    def test_serialise_mutation_builder_when_filter_applied(self):
+        # fmt: off
+        expected_serialisation = [{
+            'guide_id': '123',
+            'alt': 'G',
+            'chromosome': '1',
+            'cds_strand': "+",
+            'gene_name': 'ACT',
+            'guide_strand': "+",
+            'guide_start': 160,
+            'guide_end': 170,
+            'window_pos': 1,
+            'pos': 123,
+            'ref_codon': 'TCA',
+            'ref_pos_three': 'A',
+            'lost_amino_acids': 'N/A',
+            'permitted': False,
+            'ot_summary': {0: 1, 1: 0, 2: 0, 3: 4, 4: 76},
+            'target_region_id': '101',
+            'wge_percentile': 25,
+            'filter_applied': 'filter_name',
+        },
+        {
+            'guide_id': '123',
+            'alt': 'T',
+            'chromosome': '1',
+            'cds_strand': "+",
+            'gene_name': 'ACT',
+            'guide_strand': "+",
+            'guide_start': 160,
+            'guide_end': 170,
+            'window_pos': 2,
+            'pos': 122,
+            'ref_codon': 'TCC',
+            'ref_pos_three': 'C',
+            'lost_amino_acids': 'N/A',
+            'permitted': True,
+            'ot_summary': {0: 1, 1: 0, 2: 0, 3: 4, 4: 76},
+            'target_region_id': '101',
+            'wge_percentile': 25,
+            'filter_applied': 'filter_name',
+        }]  # fmt: on
+
+        serialised_mb = serialise_mutation_builder(self.mutation_builder, self.config, filter_applied='filter_name')
+
+        self.assertEqual(serialised_mb, expected_serialisation)
+
+
+
 
 if __name__ == '__main__':
     unittest.main()
