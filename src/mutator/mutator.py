@@ -4,7 +4,10 @@ import pandas as pd
 from tdutils.utils.vcf_utils import Variants
 
 from abstractions.command import Command
-from adaptors.serialisers.mutation_builder_serialiser import serialise_mutation_builder
+from adaptors.serialisers.mutation_builder_serialiser import (
+    serialise_mutation_builder,
+    convert_mutation_builders_to_df
+)
 from coding_region import CodingRegion
 from filter.filter_manager import FilterManager
 from filter.filter_response import GuideDiscarded
@@ -117,6 +120,12 @@ class Mutator(Command):
             result += serialise_mutation_builder(guide.mutation_builder, self._config, guide.filter_applied)
 
         return result
+
+    def convert_to_dataframe(self) -> pd.DataFrame:
+        mutation_builders = self.mutation_builders
+        data = convert_mutation_builders_to_df(mutation_builders, self._config)
+
+        return data
 
 
 def _get_chromosome(mb: MutationBuilder) -> str:
