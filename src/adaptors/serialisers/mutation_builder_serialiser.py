@@ -48,7 +48,7 @@ def _get_mutator_row(mutation_builder: MutationBuilder) -> dict:
         'chromosome': mutation_builder.cds.chromosome,
         'cds_strand': _get_char_for_bool(mutation_builder.cds.is_positive_strand),
         'gene_name': mutation_builder.gene_name,
-        'guide_strand': _get_char_for_bool(mutation_builder.guide.is_positive_strand),
+        'guide_strand': mutation_builder.guide.strand_symbol(),
         'guide_start': mutation_builder.guide.start,
         'guide_end': mutation_builder.guide.end,
         'ot_summary': mutation_builder.guide.ot_summary,
