@@ -67,5 +67,6 @@ def run_mutator_cmd(args: dict, config: dict, guide_sequences: List[GuideSequenc
     mutator_df = mutator.convert_to_dataframe()
     print(mutator_df)
 
+
 if __name__ == '__main__':
     main()
