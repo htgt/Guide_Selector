@@ -68,7 +68,7 @@ def run_mutator_cmd(args: dict, config: dict, guide_sequences: List[GuideSequenc
     mutator_df = mutator.convert_to_dataframe()
 
     ranker = Ranker(config, mutator_df)
-    print(mutator_df)
+    ranker.run()
 
 
 if __name__ == '__main__':
