@@ -1,5 +1,4 @@
 import unittest
-import pandas as pd
 
 from mutation_builder import MutationBuilder
 from coding_region import CodingRegion
