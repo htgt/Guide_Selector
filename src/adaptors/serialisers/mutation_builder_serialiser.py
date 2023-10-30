@@ -65,6 +65,21 @@ def extract_codon_details(mutation_builder: MutationBuilder, config: dict) -> Li
     return codon_details
 
 
+def _get_mutator_row(mutation_builder: MutationBuilder) -> dict:
+    return {
+        'target_region_id': mutation_builder.guide.target_region_id,
+        'guide_id': mutation_builder.guide.guide_id,
+        'chromosome': mutation_builder.cds.chromosome,
+        'cds_strand': _get_char_for_bool(mutation_builder.cds.is_positive_strand),
+        'gene_name': mutation_builder.gene_name,
+        'guide_strand': mutation_builder.guide.strand_symbol,
+        'guide_start': mutation_builder.guide.start,
+        'guide_end': mutation_builder.guide.end,
+        'ot_summary': mutation_builder.guide.ot_summary,
+        'wge_percentile': mutation_builder.guide.wge_percentile,
+    }
+
+
 def _get_codon_row(cds_start, cds_end, codon, config):
     lost_amino = ','.join(codon.amino_acids_lost_from_edit) if codon.amino_acids_lost_from_edit else 'N/A'
 
