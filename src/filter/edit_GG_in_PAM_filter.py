@@ -6,6 +6,9 @@ from mutation_builder import MutationBuilder
 
 
 class EditGGInPAMFilter(Filter):
+    key: str = 'NGG_edit_required'
+    value_type: type = bool
+
     def __init__(self, config: dict):
         pass
 
@@ -20,6 +23,6 @@ class EditGGInPAMFilter(Filter):
             elif len(codons_to_discard) == 0:
                 guides_to_keep.append(mb)
             else:
-                guides_to_discard.append(GuideDiscarded(mb, 'NGG_edit_required'))
+                guides_to_discard.append(GuideDiscarded(mb, EditGGInPAMFilter.key))
 
         return FilterResponse(guides_to_keep=guides_to_keep, guides_to_discard=guides_to_discard)

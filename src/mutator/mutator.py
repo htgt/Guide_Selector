@@ -9,7 +9,6 @@ from abstractions.command import Command
 from coding_region import CodingRegion
 from filter.filter_manager import FilterManager
 from filter.filter_response import GuideDiscarded
-from filter.filter_validator import FilterValidator
 from guide import GuideSequence
 from guide_determiner import GuideDeterminer
 from mutation_builder import MutationBuilder
@@ -153,13 +152,7 @@ class Mutator(Command):
         )
 
     def _filter_mutation_builders(self):
-        filter_manager = FilterManager(self._config)
-        filters_to_activate = FilterValidator(self._config).validated_filters()
-
-        for filter_class in filters_to_activate:
-            filter_manager.load_filter(filter_class)
-
-        filters_response = filter_manager.apply_filters(self.mutation_builders)
+        filters_response = FilterManager(self._config).apply_filters(self.mutation_builders)
 
         self.mutation_builders = filters_response.guides_to_keep
 
