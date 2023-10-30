@@ -185,7 +185,6 @@ class Mutator(Command):
 
         return result
 
-
     def convert_to_dataframe(self) -> pd.DataFrame:
         mutation_builders = self.mutation_builders
         data = convert_mutation_builders_to_df(mutation_builders, self._config)
@@ -195,6 +194,7 @@ class Mutator(Command):
 
 def _get_chromosome(mb: MutationBuilder) -> str:
     return mb.cds.chromosome
+
 
 def _fill_guide_sequence(row: pd.Series) -> GuideSequence:
     return GuideSequence(

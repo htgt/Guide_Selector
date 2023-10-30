@@ -67,14 +67,6 @@ def run_mutator_cmd(args: dict, config: dict, guide_sequences: List[GuideSequenc
     mutator_df = mutator.convert_to_dataframe()
     print(mutator_df)
 
-# Temporary for sprint 23. Delete after.
-def run_wge_cmd(args: dict, config: dict) -> None:
-    gff = ''
-    with open('examples/test_guidesX.gff', 'r') as file:
-        gff = file.read()
 
-    guide_dicts = parse_gff(gff)
-    for entry in guide_dicts:
-        print(entry)
-
-    output_file = 'wge.tsv'
+if __name__ == '__main__':
+    main()
