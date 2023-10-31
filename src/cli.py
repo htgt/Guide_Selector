@@ -69,6 +69,7 @@ def run_mutator_cmd(args: dict, config: dict, guide_sequences: List[GuideSequenc
 
     ranker = Ranker(config, mutator_df)
     ranker.run()
+    ranker.write_outputs(output_dir=args['out_dir'])
 
 
 if __name__ == '__main__':

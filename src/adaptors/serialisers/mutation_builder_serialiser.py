@@ -30,11 +30,12 @@ def convert_mutation_builders_to_df(mutation_builders: MutationBuilder, config) 
     data = []
     for mb in mutation_builders:
         row = _get_mutator_row(mb)
-        row["codon_details"] = extract_codon_details(mb, config)
         data.append(row)
 
     return pd.DataFrame(data)
 
+def count_valid_codons(mutation_builder: MutationBuilder) -> int:
+    return len(mutation_builder.codons)
 
 def extract_codon_details(mutation_builder: MutationBuilder, config: dict) -> List:
     codon_details = []
@@ -50,16 +51,14 @@ def extract_codon_details(mutation_builder: MutationBuilder, config: dict) -> Li
 
 def _get_mutator_row(mutation_builder: MutationBuilder) -> dict:
     return {
+        'target_region_id': mutation_builder.guide.target_region_id,
         'guide_id': mutation_builder.guide.guide_id,
+        'wge_percentile': mutation_builder.guide.wge_percentile,
+        'valid_edits': count_valid_codons(mutation_builder),
         'chromosome': mutation_builder.cds.chromosome,
-        'cds_strand': _get_char_for_bool(mutation_builder.cds.is_positive_strand),
-        'gene_name': mutation_builder.gene_name,
-        'guide_strand': mutation_builder.guide.strand_symbol,
         'guide_start': mutation_builder.guide.start,
         'guide_end': mutation_builder.guide.end,
-        'ot_summary': mutation_builder.guide.ot_summary,
-        'target_region_id': mutation_builder.guide.target_region_id,
-        'wge_percentile': mutation_builder.guide.wge_percentile,
+        'guide_strand': mutation_builder.guide.strand_symbol,
     }
 
 
