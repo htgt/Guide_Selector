@@ -22,6 +22,7 @@ class Ranker(Command):
 
     def _sort_dataframe(self, df: pd.DataFrame) -> None:
         sorted_df = df.sort_values(by=self._column_list, ascending=self._column_list_orders)
+        sorted_df = sorted_df.reset_index(drop=True)
 
         self._dataframe = sorted_df
 

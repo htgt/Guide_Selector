@@ -15,6 +15,6 @@ class RankerWriter(Writer):
     def write_outputs(self, dir):
         file_path = path.join(dir, self._output_file_path)
 
-        self._data.to_csv(file_path, index=False)
+        self._data.to_csv(file_path, index_label='ranking')
 
         print('Output saved to ', file_path)
