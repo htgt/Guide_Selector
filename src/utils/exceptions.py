@@ -24,6 +24,8 @@ class PamNotFoundError(Exception):
 class GuidesNotFoundError(Exception):
     pass
 
+class NoGuidesRemainingError(Exception):
+    pass
 
 # copied from targeton-designer - need to use shared repo
 class FileFormatError(Exception):

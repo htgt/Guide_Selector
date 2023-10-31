@@ -11,6 +11,9 @@ from guide import GuideSequence
 from mutation_builder import MutationBuilder
 from mutator.mutator import Mutator, _fill_coding_region, _fill_guide_sequence
 
+from utils.exceptions import NoGuidesRemainingError
+
+
 
 class MutatorTestCase(unittest.TestCase):
     def setUp(self):
@@ -138,6 +141,19 @@ class MutatorTestCase(unittest.TestCase):
         # assert
         self.assertEqual(test_result.__len__(), expected_result.__len__())
         self.assertEqual(test_result.header, expected_result.header)
+
+    def test_filter_mutation_builders_all_guides_filtered(self):
+        mb_test = self.mutation_builder
+        self.mutator.mutation_builders = [mb_test]
+        self.mutator._config = {
+            "filters": {
+                "min_edits_allowed": 123,
+            }
+        }
+
+        with self.assertRaises(NoGuidesRemainingError):
+            self.mutator._filter_mutation_builders()
+
 
 
 if __name__ == '__main__':
