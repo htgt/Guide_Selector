@@ -50,6 +50,7 @@ def extract_codon_details(mutation_builder: MutationBuilder, config: dict) -> Li
 
 def _get_mutator_row(mutation_builder: MutationBuilder) -> dict:
     return {
+        'target_region_id': mutation_builder.guide.target_region_id,
         'guide_id': mutation_builder.guide.guide_id,
         'chromosome': mutation_builder.cds.chromosome,
         'cds_strand': _get_char_for_bool(mutation_builder.cds.is_positive_strand),
@@ -58,7 +59,6 @@ def _get_mutator_row(mutation_builder: MutationBuilder) -> dict:
         'guide_start': mutation_builder.guide.start,
         'guide_end': mutation_builder.guide.end,
         'ot_summary': mutation_builder.guide.ot_summary,
-        'target_region_id': mutation_builder.guide.target_region_id,
         'wge_percentile': mutation_builder.guide.wge_percentile,
     }
 

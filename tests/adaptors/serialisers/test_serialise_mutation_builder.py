@@ -43,9 +43,9 @@ class MutatorBuilderSerialiserTestCase(unittest.TestCase):
 
     def test_convert_mutation_builders_to_df(self):
         expected_columns = [
-            'guide_id', 'chromosome', 'cds_strand', 'gene_name',
-            'guide_strand', 'guide_start', 'guide_end', 'ot_summary',
-            'target_region_id', 'wge_percentile', 'codon_details'
+            'target_region_id', 'guide_id', 'chromosome', 'cds_strand',
+            'gene_name', 'guide_strand', 'guide_start', 'guide_end',
+            'ot_summary', 'wge_percentile', 'codon_details'
         ]
 
         expected_codon_details = [[
