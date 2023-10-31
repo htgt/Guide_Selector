@@ -17,6 +17,8 @@ from mutator.mutator_reader import MutatorReader
 from mutator.mutator_writer import MutatorWriter
 from target_region import TargetRegion
 
+from utils.exceptions import NoGuidesRemainingError
+
 
 class Mutator(Command):
     def __init__(self, config: dict) -> None:
@@ -165,6 +167,9 @@ class Mutator(Command):
 
         self.mutation_builders = filters_response.guides_to_keep
         self.discarded_guides = filters_response.guides_to_discard
+
+        if not self.mutation_builders:
+            raise NoGuidesRemainingError('No guides remaining after filtering, consider relaxing filters')
 
     def _kept_mb_to_guides_and_codons(self, mutation_builders: List[MutationBuilder]) -> List[dict]:
         result = []
