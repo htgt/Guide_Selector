@@ -10,7 +10,7 @@ from guide import GuideSequence
 from retriever.retriever_reader import RetrieverReader
 from retriever.retriever_writer import RetrieverWriter
 from target_region import TargetRegion
-from utils.exceptions import GetDataFromWGEError
+from utils.exceptions import GetDataFromWGEError, GuidesNotFoundError
 from utils.get_data.wge import get_data_from_wge_by_coords
 
 
@@ -31,6 +31,9 @@ class Retriever(Command, Reader, Writer):
             'assembly': self.config['assembly'],
         }
         self.guide_sequences = _get_guides_data(self._target_regions, request_options)
+
+        if not self.guide_sequences:
+            raise GuidesNotFoundError('No guides found in given regions.')
 
     def write_outputs(self, output_dir: str):
         RetrieverWriter(self.guide_sequences).write_outputs(output_dir)

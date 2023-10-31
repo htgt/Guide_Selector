@@ -21,6 +21,9 @@ class MutatorError(Exception):
 class PamNotFoundError(Exception):
     pass
 
+class GuidesNotFoundError(Exception):
+    pass
+
 
 # copied from targeton-designer - need to use shared repo
 class FileFormatError(Exception):
