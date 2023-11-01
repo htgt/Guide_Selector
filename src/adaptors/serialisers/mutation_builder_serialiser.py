@@ -7,21 +7,10 @@ import pandas as pd
 def serialise_mutation_builder(
     mutation_builder: MutationBuilder, config: dict, filter_applied: str = None
 ) -> List[dict]:
-    serialised_mutation_builder = []
 
     base = _get_mutator_row(mutation_builder)
-    if filter_applied:
-        base['filter_applied'] = filter_applied
 
-    cds_start = mutation_builder.cds.start
-    cds_end = mutation_builder.cds.end
-
-    for codon in mutation_builder.codons:
-        row = _get_codon_row(cds_start, cds_end, codon, config)
-
-        serialised_mutation_builder.append({**base, **row})
-
-    return serialised_mutation_builder
+    return base
 
 
 def convert_mutation_builders_to_df(mutation_builders: MutationBuilder, config) -> pd.DataFrame:
@@ -34,19 +23,9 @@ def convert_mutation_builders_to_df(mutation_builders: MutationBuilder, config) 
 
     return pd.DataFrame(data)
 
+
 def count_valid_codons(mutation_builder: MutationBuilder) -> int:
     return len(mutation_builder.codons)
-
-def extract_codon_details(mutation_builder: MutationBuilder, config: dict) -> List:
-    codon_details = []
-    cds_start = mutation_builder.cds.start
-    cds_end = mutation_builder.cds.end
-
-    for codon in mutation_builder.codons:
-        codon_data = _get_codon_row(cds_start, cds_end, codon, config)
-        codon_details.append(codon_data)
-
-    return codon_details
 
 
 def _get_mutator_row(mutation_builder: MutationBuilder) -> dict:
@@ -60,6 +39,18 @@ def _get_mutator_row(mutation_builder: MutationBuilder) -> dict:
         'guide_end': mutation_builder.guide.end,
         'guide_strand': mutation_builder.guide.strand_symbol,
     }
+
+
+def extract_codon_details(mutation_builder: MutationBuilder, config: dict) -> List:
+    codon_details = []
+    cds_start = mutation_builder.cds.start
+    cds_end = mutation_builder.cds.end
+
+    for codon in mutation_builder.codons:
+        codon_data = _get_codon_row(cds_start, cds_end, codon, config)
+        codon_details.append(codon_data)
+
+    return codon_details
 
 
 def _get_codon_row(cds_start, cds_end, codon, config):
