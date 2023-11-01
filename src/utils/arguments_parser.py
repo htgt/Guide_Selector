@@ -27,7 +27,11 @@ class InputArguments:
             action='version',
             version='%(prog)s 0.0.1'
         )
-        parser = add_input_args(parser)
+        parser.add_argument(
+            '--on_target',
+            type=str,
+            help='Path of on-target scores guides',
+        )
 
     def _add_subparsers(self, parser) -> None:
         subparsers = parser.add_subparsers(dest='command')

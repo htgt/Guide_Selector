@@ -31,6 +31,7 @@ class GuideSequence(BaseSequence):
         guide_id: str = '',
         frame: int = 0,
         ot_summary: dict = None,
+        on_target_score: float = None,
     ) -> None:
         self.start = start
         self.end = end
@@ -39,6 +40,7 @@ class GuideSequence(BaseSequence):
         self._chromosome = chromosome
         self.frame = frame
         self.ot_summary = ot_summary
+        self.on_target_score = on_target_score
 
     @property
     def wge_percentile(self) -> Optional[int]:
@@ -50,9 +52,7 @@ class GuideSequence(BaseSequence):
 
     @property
     def strand_symbol(self) -> str:
-        if self.is_positive_strand:
-            return '+'
-        return '-'
+        return '+' if self.is_positive_strand else '-'
 
     @staticmethod
     def _define_pam_pattern(is_positive_strand: bool) -> str:

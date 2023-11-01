@@ -8,7 +8,7 @@ from utils.file_system import read_tsv_to_list_dict
 
 class RetrieverReader(Reader):
     def __init__(self):
-        self.target_regions = None
+        self.target_regions: List[TargetRegion] = []
 
     def read_inputs(self, args: dict, **kwargs) -> Reader:
         self.target_regions = _get_target_regions(region=args['region'], region_file=args['region_file'])
@@ -25,11 +25,10 @@ def _get_target_regions(region: str = None, region_file: str = None) -> List[Tar
 def _get_regions_dict(region: str = None, region_file: str = None) -> List[dict]:
     if region:
         return [{'region': region, 'id': region}]
+    if region_file:
+        return read_tsv_to_list_dict(region_file)
     else:
-        if region_file:
-            return read_tsv_to_list_dict(region_file)
-        else:
-            raise NoTargetRegionDataError('No input data for Target Regions')
+        raise NoTargetRegionDataError('No input data for Target Regions')
 
 
 def _parse_dicts_to_target_regions(data: List[dict]) -> List[TargetRegion]:

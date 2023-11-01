@@ -87,6 +87,7 @@ class TestReadGuideTsvToGuideSequences(TestCase):
             'ot_summary': '{0: 1, 1: 0, 2: 0, 3: 4, 4: 76}',
             'start': '50398852',
             'target_region_id': '123456',
+            'on_target_score': 0.86,
         }
 
         expected = GuideSequence(
@@ -97,6 +98,7 @@ class TestReadGuideTsvToGuideSequences(TestCase):
             frame=0,
             ot_summary={0: 1, 1: 0, 2: 0, 3: 4, 4: 76},
             target_region_id='123456',
+            on_target_score=0.86,
         )
 
         deserialised_guide = deserialise_guide_sequence(guide)

@@ -174,7 +174,8 @@ class MutatorTestCase(unittest.TestCase):
             'chromosome': 'chr1',
             'cds_strand': '+',
             'guide_frame': 2,
-            'ot_summary': {0: 1, 1: 0, 2: 0, 3: 4, 4: 76}
+            'ot_summary': {0: 1, 1: 0, 2: 0, 3: 4, 4: 76},
+            'on_target_score': 0.86,
         })  # fmt: on
 
         guide_sequence = self.mutator._fill_guide_sequence(row)
@@ -186,6 +187,7 @@ class MutatorTestCase(unittest.TestCase):
         self.assertEqual(guide_sequence.is_positive_strand, True)
         self.assertEqual(guide_sequence.guide_id, None)  # Ensure guide_id is not set in the test
         self.assertEqual(guide_sequence.ot_summary, {0: 1, 1: 0, 2: 0, 3: 4, 4: 76})
+        self.assertEqual(guide_sequence.on_target_score, 0.86)
 
     def test_fill_coding_region(self):
         # fmt: off

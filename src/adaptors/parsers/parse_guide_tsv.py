@@ -22,4 +22,5 @@ def deserialise_guide_sequence(guide: dict) -> GuideSequence:
         guide_id=guide['guide_id'],
         ot_summary=literal_eval(guide['ot_summary']) if 'ot_summary' in guide else None,
         target_region_id=guide.get('target_region_id'),
+        on_target_score=guide['on_target_score'] if 'on_target_score' in guide else None,
     )
