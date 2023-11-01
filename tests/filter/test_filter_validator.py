@@ -5,7 +5,7 @@ from parameterized import parameterized
 from filter.edit_GG_in_PAM_filter import EditGGInPAMFilter
 from filter.filter_validator import FilterValidator
 from filter.max_edits_number_filter import MaxEditsNumberFilter
-from filter.minimum_edits_filter import MinimumEditsFilter
+from filter.min_edits_number_filter import MinEditsNumberFilter
 from filter.not_contain_TTTT_filter import NotContainTTTTFilter
 
 
@@ -15,8 +15,8 @@ class TestFilterValidator(unittest.TestCase):
         # No filters
         ({}, []),
         ({'filters': {}}, []),
-        # MinimumEditsFilter
-        ({'filters': {'min_edits_allowed': 3}}, [MinimumEditsFilter]),
+        # MinEditsNumberFilter
+        ({'filters': {'min_edits_allowed': 3}}, [MinEditsNumberFilter]),
         # MaxEditsNumberFilter
         ({'filters': {'max_edits_to_apply': 3}}, [MaxEditsNumberFilter]),
         # EditGGInPAMFilter

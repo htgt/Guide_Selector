@@ -4,10 +4,7 @@ import pandas as pd
 from tdutils.utils.vcf_utils import Variants
 
 from abstractions.command import Command
-from adaptors.serialisers.mutation_builder_serialiser import (
-    serialise_mutation_builder,
-    convert_mutation_builders_to_df
-)
+from adaptors.serialisers.mutation_builder_serialiser import serialise_mutation_builder, convert_mutation_builders_to_df
 from coding_region import CodingRegion
 from filter.filter_manager import FilterManager
 from filter.filter_response import GuideDiscarded
@@ -21,7 +18,7 @@ from mutator.mutator_writer import MutatorWriter
 class Mutator(Command):
     def __init__(self, config: dict) -> None:
         self._config = config
-        self._guides_df = None
+        self._guides_df: pd.DataFrame = None
         self.mutation_builders: List[MutationBuilder] = []
         self.discarded_guides: List[GuideDiscarded] = []
         self.failed_mutations = None
@@ -135,6 +132,7 @@ def _fill_guide_sequence(row: pd.Series) -> GuideSequence:
         frame=row['guide_frame'],
         ot_summary=row.get('ot_summary'),
         target_region_id=row.get('target_region_id'),
+        on_target_score=row.get('on_target_score'),
     )
 
 

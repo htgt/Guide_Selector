@@ -43,6 +43,7 @@ class TestGuideDeterminer(TestCase):
             strand_symbol='+',
             target_region_id='1139540371',
             ot_summary={0: 1, 1: 0, 2: 0, 3: 4, 4: 76},
+            on_target_score=0.87,
         )
 
     def test_get_coding_region_for_guide_success(self):
@@ -109,12 +110,43 @@ class TestGuideDeterminer(TestCase):
                 'guide_end': 67610877,
                 'guide_strand': '+',
                 'target_region_id': '1139540371',
+                'ot_summary': [{0: 1, 1: 0, 2: 0, 3: 4, 4: 76}],
+                'on_target_score': 0.87,
             },
             index=pd.Index(['1139540371'], name='guide_id'),
         )
-        expected['ot_summary'] = [{0: 1, 1: 0, 2: 0, 3: 4, 4: 76}]
 
         # act
+        actual = GuideDeterminer._add_guide_data_to_dataframe(mock_object, self.coding_region, self.guide_sequence)
+
+        # assert
+        pd.testing.assert_frame_equal(actual, expected, check_exact=True)
+
+    def test_add_guide_data_to_dataframe_no_on_target_score(self):
+        # arrange
+        mock_object = Mock()
+        expected = pd.DataFrame(
+            {
+                'Chromosome': 'chr16',
+                'Feature': 'CDS',
+                'Start': 67610833,
+                'End': 67611613,
+                'Strand': '+',
+                'Frame': 0,
+                'gene_name': 'CTCF',
+                'exon_number': '3',
+                'guide_start': 67610855,
+                'guide_end': 67610877,
+                'guide_strand': '+',
+                'target_region_id': '1139540371',
+                'ot_summary': [{0: 1, 1: 0, 2: 0, 3: 4, 4: 76}],
+                'on_target_score': None,
+            },
+            index=pd.Index(['1139540371'], name='guide_id'),
+        )
+
+        # act
+        self.guide_sequence.on_target_score = None
         actual = GuideDeterminer._add_guide_data_to_dataframe(mock_object, self.coding_region, self.guide_sequence)
 
         # assert
@@ -243,6 +275,7 @@ class TestGuideDeterminer(TestCase):
                 'guide_frame': 2,
                 'ot_summary': {0: 1, 1: 0, 2: 0, 3: 4, 4: 76},
                 'target_region_id': '123',
+                'on_target_score': 0.87,
             },
             index=pd.Index(['1139540371'], name='guide_id'),
         )
@@ -260,6 +293,7 @@ class TestGuideDeterminer(TestCase):
                 'guide_end': 67610877,
                 'guide_frame': 2,
                 'ot_summary': {0: 1, 1: 0, 2: 0, 3: 4, 4: 76},
+                'on_target_score': 0.87,
                 'target_region_id': '123',
             },
             index=pd.Index(['1139540371'], name='guide_id'),
