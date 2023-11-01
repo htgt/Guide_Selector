@@ -15,7 +15,6 @@ from target_region import TargetRegion
 from utils.exceptions import NoGuidesRemainingError
 
 
-
 class MutatorTestCase(unittest.TestCase):
     def setUp(self):
         # fmt: off
