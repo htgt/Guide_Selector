@@ -3,6 +3,8 @@ from typing import List
 
 from pprint import pprint
 import pandas as pd
+import warnings
+
 from tdutils.utils.vcf_utils import Variants
 
 from abstractions.command import Command
@@ -17,7 +19,7 @@ from mutator.mutator_reader import MutatorReader
 from mutator.mutator_writer import MutatorWriter
 from target_region import TargetRegion
 
-from utils.exceptions import NoGuidesRemainingError
+from utils.warnings import NoGuidesRemainingWarning
 
 
 class Mutator(Command):
@@ -169,7 +171,8 @@ class Mutator(Command):
         self.discarded_guides = filters_response.guides_to_discard
 
         if not self.mutation_builders:
-            raise NoGuidesRemainingError('No guides remaining after filtering, consider relaxing filters')
+            warning_msg = '\n\tNo guides remaining after filtering, consider relaxing filters.'
+            warnings.warn(NoGuidesRemainingWarning(warning_msg))
 
     def _kept_mb_to_guides_and_codons(self, mutation_builders: List[MutationBuilder]) -> List[dict]:
         result = []

@@ -37,8 +37,11 @@ class MutatorWriter(Writer):
 
     def _write_tsv_guide_and_codons_file(self, output_dir):
         tsv_path = os.path.join(output_dir, MutatorWriter.guides_codons_tsv_filename)
-        write_list_dict_in_tsv(tsv_path, self._kept_guides)
-        print('Output saved to', tsv_path)
+        if self._kept_guides:
+            write_list_dict_in_tsv(tsv_path, self._kept_guides)
+            print('Output saved to', tsv_path)
+        else:
+            print('No guides persisted to ', MutatorWriter.guides_codons_tsv_filename)
 
     def _write_tsv_discarded_guides_and_codons_file(self, output_dir):
         tsv_path = os.path.join(output_dir, MutatorWriter.discarded_guides_codons_tsv_filename)
