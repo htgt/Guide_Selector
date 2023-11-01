@@ -47,6 +47,9 @@ def _get_guides_data(regions: List[TargetRegion], request_options: dict) -> List
 
         try:
             guide_sequences_for_region = _retrieve_guides_for_region(region, request_options)
+
+            if not guide_sequences_for_region:
+                print(f'No guides found in region: {region.id} {region.__repr__()}')
             guide_sequences_for_all_regions.extend(guide_sequences_for_region)
 
         except GetDataFromWGEError:
