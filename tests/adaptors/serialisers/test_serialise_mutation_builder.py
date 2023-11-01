@@ -1,16 +1,17 @@
 import unittest
 
-from mutation_builder import MutationBuilder
-from coding_region import CodingRegion
-from codon import WindowCodon
-from guide import GuideSequence
 from adaptors.serialisers.mutation_builder_serialiser import (
     serialise_mutation_builder,
     convert_mutation_builders_to_df,
     extract_codon_details,
-    _get_mutator_row,
-    _get_codon_row,
+    _get_mutation_builder_dict,
+    _get_codon_dict,
 )
+from coding_region import CodingRegion
+from codon import WindowCodon
+from guide import GuideSequence
+from mutation_builder import MutationBuilder
+
 
 class MutatorBuilderSerialiserTestCase(unittest.TestCase):
     def setUp(self) -> None:
@@ -45,7 +46,7 @@ class MutatorBuilderSerialiserTestCase(unittest.TestCase):
         expected_columns = [
             'target_region_id', 'guide_id', 'chromosome', 'cds_strand',
             'gene_name', 'guide_strand', 'guide_start', 'guide_end',
-            'ot_summary', 'wge_percentile', 'codon_details'
+            'ot_summary', 'wge_percentile', 'on_target_score', 'codon_details'
         ]
 
         expected_codon_details = [[
@@ -101,8 +102,8 @@ class MutatorBuilderSerialiserTestCase(unittest.TestCase):
 
         self.assertEqual(codon_details, expected_codon_details)
 
-    def test_get_mutator_row(self):
-        expected_row = {
+    def test_get_mutation_builder_dict(self):
+        expected_mb_dict = {
             'guide_id': '123',
             'chromosome': '1',
             'cds_strand': "+",
@@ -113,14 +114,15 @@ class MutatorBuilderSerialiserTestCase(unittest.TestCase):
             'ot_summary': {0: 1, 1: 0, 2: 0, 3: 4, 4: 76},
             'target_region_id': '101',
             'wge_percentile': 25,
+            'on_target_score': 'N/A',
         }
 
-        mutator_row = _get_mutator_row(self.mutation_builder)
+        result = _get_mutation_builder_dict(self.mutation_builder)
 
-        self.assertEqual(mutator_row, expected_row)
+        self.assertEqual(result, expected_mb_dict)
 
-    def test_get_codon_row(self):
-        expected_row = {
+    def test_get_codon_dict(self):
+        expected_codon_dict = {
             'window_pos': 1,
             'pos': 123,
             'ref_codon': 'TCA',
@@ -134,11 +136,11 @@ class MutatorBuilderSerialiserTestCase(unittest.TestCase):
         cds_end = 200
         codon = WindowCodon(bases='TCA', third_base_coord=123, third_base_pos=1, is_positive_strand=True)
 
-        codon_row = _get_codon_row(cds_start, cds_end, codon, self.config)
+        result = _get_codon_dict(cds_start, cds_end, codon, self.config)
 
-        self.assertEqual(codon_row, expected_row)
+        self.assertEqual(result, expected_codon_dict)
 
-    def test_serialise_mutation_builder_when_no_filter_applied(self):
+    def test_serialise_mutation_builder_only_required_fields(self):
         # fmt: off
         expected_serialisation = [{
             'guide_id': '123',
@@ -158,6 +160,7 @@ class MutatorBuilderSerialiserTestCase(unittest.TestCase):
             'ot_summary': {0: 1, 1: 0, 2: 0, 3: 4, 4: 76},
             'target_region_id': '101',
             'wge_percentile': 25,
+            'on_target_score': 'N/A',
         },
         {
             'guide_id': '123',
@@ -177,13 +180,14 @@ class MutatorBuilderSerialiserTestCase(unittest.TestCase):
             'ot_summary': {0: 1, 1: 0, 2: 0, 3: 4, 4: 76},
             'target_region_id': '101',
             'wge_percentile': 25,
+            'on_target_score': 'N/A',
         }]  # fmt: on
 
         serialised_mb = serialise_mutation_builder(self.mutation_builder, self.config, filter_applied=None)
 
         self.assertEqual(serialised_mb, expected_serialisation)
 
-    def test_serialise_mutation_builder_when_filter_applied(self):
+    def test_serialise_mutation_builder_all_fields(self):
         # fmt: off
         expected_serialisation = [{
             'guide_id': '123',
@@ -204,6 +208,7 @@ class MutatorBuilderSerialiserTestCase(unittest.TestCase):
             'target_region_id': '101',
             'wge_percentile': 25,
             'filter_applied': 'filter_name',
+            'on_target_score': 0.86,
         },
         {
             'guide_id': '123',
@@ -224,8 +229,10 @@ class MutatorBuilderSerialiserTestCase(unittest.TestCase):
             'target_region_id': '101',
             'wge_percentile': 25,
             'filter_applied': 'filter_name',
+            'on_target_score': 0.86,
         }]  # fmt: on
 
+        self.mutation_builder.guide.on_target_score = 0.86
         serialised_mb = serialise_mutation_builder(self.mutation_builder, self.config, filter_applied='filter_name')
 
         self.assertEqual(serialised_mb, expected_serialisation)

@@ -2,7 +2,7 @@ import unittest
 from unittest.mock import Mock
 
 from filter.filter_manager import FilterManager
-from filter.minimum_edits_filter import MinimumEditsFilter
+from filter.min_edits_number_filter import MinEditsNumberFilter
 
 
 class TestFilterManager(unittest.TestCase):
@@ -21,7 +21,7 @@ class TestFilterManager(unittest.TestCase):
         self.assertEqual(len(self.mutations_builder_to_filter), 4)
         test_instance = FilterManager({"filters": {"min_edits_allowed": 3}})
 
-        self.assertEqual(test_instance._filters, [MinimumEditsFilter])
+        self.assertEqual(test_instance._filters, [MinEditsNumberFilter])
 
         result = test_instance.apply_filters(self.mutations_builder_to_filter)
 

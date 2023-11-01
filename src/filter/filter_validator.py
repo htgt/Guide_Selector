@@ -1,10 +1,11 @@
 from typing import List
 
 from abstractions.filter import Filter
+
 # The following imports are required to access filters via Filter.__subclasses__()
-from filter.minimum_edits_filter import MinimumEditsFilter
-from filter.max_edits_number_filter import MaxEditsNumberFilter
 from filter.edit_GG_in_PAM_filter import EditGGInPAMFilter
+from filter.max_edits_number_filter import MaxEditsNumberFilter
+from filter.min_edits_number_filter import MinEditsNumberFilter
 from filter.not_contain_TTTT_filter import NotContainTTTTFilter
 
 

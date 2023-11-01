@@ -41,6 +41,11 @@ class InputArguments:
             default='./',
             help='Desired output path (Default: ./)',
         )
+        parser.add_argument(
+            '--on_target',
+            type=str,
+            help='Path of on-target scores guides',
+        )
 
     def _add_subparsers(self, parser) -> None:
         subparsers = parser.add_subparsers(dest='command')

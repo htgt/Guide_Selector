@@ -52,6 +52,7 @@ class GuideDeterminer:
         dataframe['guide_strand'] = guide.strand_symbol
         dataframe['target_region_id'] = guide.target_region_id
         dataframe['ot_summary'] = [guide.ot_summary]
+        dataframe['on_target_score'] = guide.on_target_score
         return dataframe
 
     def _determine_frame_for_guide(self, row: pd.Series) -> int:
@@ -88,6 +89,7 @@ class GuideDeterminer:
             'guide_end',
             'guide_frame',
             'ot_summary',
+            'on_target_score',
             'target_region_id',
         ]
 
