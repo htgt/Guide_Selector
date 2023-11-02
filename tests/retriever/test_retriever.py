@@ -52,7 +52,7 @@ class RetrieverTestCase(TestCase):
                 is_positive_strand=False,
                 guide_id='285858433',
                 ot_summary={0: 1, 1: 0, 2: 1, 3: 8, 4: 98},
-                target_region_id='AAA',
+                target_region=TargetRegion('19', 111, 222, 'AAA'),
             )
         ]
 
