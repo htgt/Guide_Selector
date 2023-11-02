@@ -15,6 +15,7 @@ from guide_determiner import GuideDeterminer
 from mutation_builder import MutationBuilder
 from mutator.mutator_reader import MutatorReader
 from mutator.mutator_writer import MutatorWriter
+from target_region import TargetRegion
 
 
 class Mutator(Command):
@@ -191,6 +192,12 @@ def _get_chromosome(mb: MutationBuilder) -> str:
 
 
 def _fill_guide_sequence(row: pd.Series) -> GuideSequence:
+    target_region = TargetRegion(
+        row['chromosome'],
+        row.get('target_region_start'),
+        row.get('target_region_end'),
+        row.get('target_region_id', ''),
+    )
     return GuideSequence(
         start=row['guide_start'],
         end=row['guide_end'],
@@ -199,7 +206,7 @@ def _fill_guide_sequence(row: pd.Series) -> GuideSequence:
         guide_id=row.name,
         frame=row['guide_frame'],
         ot_summary=row.get('ot_summary'),
-        target_region_id=row.get('target_region_id'),
+        target_region=target_region,
         on_target_score=row.get('on_target_score'),
     )
 

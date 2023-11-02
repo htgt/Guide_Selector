@@ -68,7 +68,7 @@ def extract_codon_details(mutation_builder: MutationBuilder, config: dict) -> Li
 
 def _get_mutation_builder_dict(mutation_builder: MutationBuilder, filter_applied: str = None) -> dict:
     return {
-        'target_region_id': mutation_builder.guide.target_region_id,
+        'target_region_id': mutation_builder.guide.target_region.id,
         'guide_id': mutation_builder.guide.guide_id,
         'chromosome': mutation_builder.cds.chromosome,
         'cds_strand': _get_char_for_bool(mutation_builder.cds.is_positive_strand),
@@ -79,6 +79,7 @@ def _get_mutation_builder_dict(mutation_builder: MutationBuilder, filter_applied
         'ot_summary': mutation_builder.guide.ot_summary,
         'wge_percentile': mutation_builder.guide.wge_percentile,
         'on_target_score': mutation_builder.guide.on_target_score if mutation_builder.guide.on_target_score else 'N/A',
+        'centrality_score': mutation_builder.guide.centrality_score,
         **({'filter_applied': filter_applied} if filter_applied else {}),
     }
 

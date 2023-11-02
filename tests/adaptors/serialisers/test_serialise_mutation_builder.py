@@ -1,4 +1,5 @@
 import unittest
+from unittest.mock import patch, PropertyMock
 
 from adaptors.serialisers.mutation_builder_serialiser import (
     convert_mutation_builders_to_df,
@@ -10,6 +11,7 @@ from coding_region import CodingRegion
 from codon import WindowCodon
 from guide import GuideSequence
 from mutation_builder import MutationBuilder
+from target_region import TargetRegion
 
 
 class MutatorBuilderSerialiserTestCase(unittest.TestCase):
@@ -21,7 +23,7 @@ class MutatorBuilderSerialiserTestCase(unittest.TestCase):
                 end=170,
                 is_positive_strand=True,
                 guide_id='123',
-                target_region_id='101',
+                target_region=TargetRegion('1', 100, 200, '101'),
                 frame=0,  # to be replaced by FragmentFrameIndicator.ZERO
                 ot_summary={0: 1, 1: 0, 2: 0, 3: 4, 4: 76},
             ),
@@ -42,9 +44,19 @@ class MutatorBuilderSerialiserTestCase(unittest.TestCase):
 
     def test_convert_mutation_builders_to_df(self):
         expected_columns = [
-            'target_region_id', 'guide_id', 'chromosome', 'cds_strand',
-            'gene_name', 'guide_strand', 'guide_start', 'guide_end',
-            'ot_summary', 'wge_percentile', 'on_target_score', 'codon_details'
+            'target_region_id',
+            'guide_id',
+            'chromosome',
+            'cds_strand',
+            'gene_name',
+            'guide_strand',
+            'guide_start',
+            'guide_end',
+            'ot_summary',
+            'wge_percentile',
+            'on_target_score',
+            'centrality_score',
+            'codon_details',
         ]
 
         df = convert_mutation_builders_to_df([self.mutation_builder], self.config)
@@ -77,7 +89,8 @@ class MutatorBuilderSerialiserTestCase(unittest.TestCase):
 
         self.assertEqual(codon_details, expected_codon_details)
 
-    def test_get_mutation_builder_dict(self):
+    @patch('guide.GuideSequence.centrality_score', new_callable=PropertyMock, return_value=0.5)
+    def test_get_mutation_builder_dict(self, mock):
         expected_mb_dict = {
             'guide_id': '123',
             'wge_percentile': 25,
@@ -88,6 +101,7 @@ class MutatorBuilderSerialiserTestCase(unittest.TestCase):
             'ot_summary': {0: 1, 1: 0, 2: 0, 3: 4, 4: 76},
             'target_region_id': '101',
             'wge_percentile': 25,
+            'centrality_score': 0.5,
             'on_target_score': 'N/A',
         }
 
@@ -114,7 +128,8 @@ class MutatorBuilderSerialiserTestCase(unittest.TestCase):
 
         self.assertEqual(result, expected_codon_dict)
 
-    def test_serialise_mutation_builder_only_required_fields(self):
+    @patch('guide.GuideSequence.centrality_score', new_callable=PropertyMock, return_value=0.5)
+    def test_serialise_mutation_builder_no_on_target_score_or_filter_applied(self, mock):
         # fmt: off
         expected_serialisation = [{
             'guide_id': '123',
@@ -134,6 +149,7 @@ class MutatorBuilderSerialiserTestCase(unittest.TestCase):
             'ot_summary': {0: 1, 1: 0, 2: 0, 3: 4, 4: 76},
             'target_region_id': '101',
             'wge_percentile': 25,
+            'centrality_score': 0.5,
             'on_target_score': 'N/A',
         },
         {
@@ -152,6 +168,7 @@ class MutatorBuilderSerialiserTestCase(unittest.TestCase):
             'ot_summary': {0: 1, 1: 0, 2: 0, 3: 4, 4: 76},
             'target_region_id': '101',
             'wge_percentile': 25,
+            'centrality_score': 0.5,
             'on_target_score': 'N/A',
         }]  # fmt: on
 
@@ -161,7 +178,8 @@ class MutatorBuilderSerialiserTestCase(unittest.TestCase):
 
         self.assertEqual(serialised_mb, expected_serialisation)
 
-    def test_serialise_mutation_builder_all_fields(self):
+    @patch('guide.GuideSequence.centrality_score', new_callable=PropertyMock, return_value=0.5)
+    def test_serialise_mutation_builder_all_fields(self, mock):
         # fmt: off
         expected_serialisation = [{
             'guide_id': '123',
@@ -181,6 +199,7 @@ class MutatorBuilderSerialiserTestCase(unittest.TestCase):
             'ot_summary': {0: 1, 1: 0, 2: 0, 3: 4, 4: 76},
             'target_region_id': '101',
             'wge_percentile': 25,
+            'centrality_score': 0.5,
             'filter_applied': 'filter_name',
             'on_target_score': 0.86,
         },
@@ -200,6 +219,7 @@ class MutatorBuilderSerialiserTestCase(unittest.TestCase):
             'ot_summary': {0: 1, 1: 0, 2: 0, 3: 4, 4: 76},
             'target_region_id': '101',
             'wge_percentile': 25,
+            'centrality_score': 0.5,
             'filter_applied': 'filter_name',
             'on_target_score': 0.86,
         }]  # fmt: on
