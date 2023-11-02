@@ -4,13 +4,25 @@ from mutation_builder import MutationBuilder
 import pandas as pd
 
 
+
 def serialise_mutation_builder(
     mutation_builder: MutationBuilder, config: dict, filter_applied: str = None
 ) -> List[dict]:
+    serialised_mutation_builder = []
 
     base = _get_mutator_row(mutation_builder)
+    if filter_applied:
+        base['filter_applied'] = filter_applied
 
-    return base
+    cds_start = mutation_builder.cds.start
+    cds_end = mutation_builder.cds.end
+
+    for codon in mutation_builder.codons:
+        row = _get_codon_row(cds_start, cds_end, codon, config)
+
+        serialised_mutation_builder.append({**base, **row})
+
+    return serialised_mutation_builder
 
 
 def convert_mutation_builders_to_df(mutation_builders: MutationBuilder, config) -> pd.DataFrame:
