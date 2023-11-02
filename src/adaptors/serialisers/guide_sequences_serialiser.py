@@ -16,12 +16,15 @@ def write_guide_sequences_to_tsv(path: str, guide_sequences: List[GuideSequence]
 
 def serialise_guide_sequence(guide: GuideSequence) -> dict:
     return {
-        'target_region_id': guide.target_region_id,
-        'guide_id': guide.guide_id,
+        'target_region_id': guide.target_region.id,
         'chr': guide.chromosome,
-        'start': guide.start,
-        'end': guide.end,
-        'grna_strand': guide.strand_symbol,
+        'target_region_start': guide.target_region.start,
+        'target_region_end': guide.target_region.end,
+        'guide_id': guide.guide_id,
+        'guide_start': guide.start,
+        'guide_end': guide.end,
+        'guide_strand': guide.strand_symbol,
         'ot_summary': guide.ot_summary,
         'wge_percentile': guide.wge_percentile,
+        'centrality_score': guide.centrality_score,
     }

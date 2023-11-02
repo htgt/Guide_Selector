@@ -65,7 +65,7 @@ def _retrieve_guides_for_region(region: TargetRegion, request_options: dict) -> 
         guide_sequences = read_wge_gff_to_guide_sequences(gff_data)
 
         for guide in guide_sequences:
-            guide.target_region_id = region.id
+            guide.target_region = region
 
         return guide_sequences
 
