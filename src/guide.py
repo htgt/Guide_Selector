@@ -1,8 +1,10 @@
 import re
 from dataclasses import dataclass
+from decimal import Decimal, ROUND_HALF_UP
 from typing import Optional, Tuple
 
 from base_sequence import BaseSequence
+from target_region import TargetRegion
 from utils.bio_utils import add_chr_prefix
 from utils.exceptions import PamNotFoundError
 from wge_percentile import calculate_wge_percentile
@@ -26,18 +28,20 @@ class GuideSequence(BaseSequence):
         end: int,
         is_positive_strand: bool = True,
         guide_id: str = '',
-        target_region_id: str = '',
+        target_region: TargetRegion = TargetRegion(None, None, None),
         frame: int = 0,
         ot_summary: dict = None,
+        on_target_score: float = None,
     ) -> None:
         self.start = start
         self.end = end
         self.guide_id = guide_id
         self.is_positive_strand = is_positive_strand
-        self.target_region_id = target_region_id
+        self.target_region = target_region
         self._chromosome = chromosome
         self.frame = frame
         self.ot_summary = ot_summary
+        self.on_target_score = on_target_score
 
     @property
     def wge_percentile(self) -> Optional[int]:
@@ -49,9 +53,7 @@ class GuideSequence(BaseSequence):
 
     @property
     def strand_symbol(self) -> str:
-        if self.is_positive_strand:
-            return '+'
-        return '-'
+        return '+' if self.is_positive_strand else '-'
 
     @staticmethod
     def _define_pam_pattern(is_positive_strand: bool) -> str:
@@ -106,3 +108,18 @@ class GuideSequence(BaseSequence):
             window_end = pam.end + window_length - 1
 
         return window_start, window_end
+
+    @property
+    def centrality_score(self) -> Optional[float]:
+        if self.target_region.start and self.target_region.end:
+            pam = self.find_pam(self.bases)
+            if type(pam) == PamNotFoundError:
+                return None
+            pam_midpoint = pam.start + 1
+            tr_midpoint = (self.target_region.start + self.target_region.end) / 2
+            tr_length = self.target_region.end - self.target_region.start
+            standardised_distance = abs(pam_midpoint - tr_midpoint) / tr_length
+            score = 1 - standardised_distance
+            return float(Decimal(score).quantize(Decimal('0.0001'), ROUND_HALF_UP))
+        else:
+            return None

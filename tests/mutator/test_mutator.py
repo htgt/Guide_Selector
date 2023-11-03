@@ -10,6 +10,7 @@ from edit_window import EditWindow
 from guide import GuideSequence
 from mutation_builder import MutationBuilder
 from mutator.mutator import Mutator, _fill_coding_region, _fill_guide_sequence
+from target_region import TargetRegion
 
 
 class MutatorTestCase(unittest.TestCase):
@@ -34,7 +35,7 @@ class MutatorTestCase(unittest.TestCase):
             end=170,
             is_positive_strand=True,
             chromosome=self.chrom,
-            target_region_id='101',
+            target_region=TargetRegion('chr1', None, None, '101'),
         )
         self.gene_name = 'ACT'
         self.target_region_id = '101'
@@ -58,7 +59,7 @@ class MutatorTestCase(unittest.TestCase):
             chroms=[self.chrom],
         )
 
-    def test_fill_guide_sequence_without_ot_summary(self):
+    def test_fill_guide_sequence_only_required_fields(self):
         # fmt: off
         row = pd.Series({
             'guide_start': 160,
@@ -78,8 +79,9 @@ class MutatorTestCase(unittest.TestCase):
         self.assertEqual(guide_sequence.is_positive_strand, True)
         self.assertEqual(guide_sequence.guide_id, None)  # Ensure guide_id is not set in the test
         self.assertEqual(guide_sequence.ot_summary, None)
+        self.assertEqual(guide_sequence.target_region, TargetRegion('chr1', None, None, ''))
 
-    def test_fill_guide_sequence_with_ot_summary(self):
+    def test_fill_guide_sequence_with_all_fields(self):
         # fmt: off
         row = pd.Series({
             'guide_start': 160,
@@ -88,7 +90,11 @@ class MutatorTestCase(unittest.TestCase):
             'chromosome': 'chr1',
             'cds_strand': '+',
             'guide_frame': 2,
-            'ot_summary': {0: 1, 1: 0, 2: 0, 3: 4, 4: 76}
+            'ot_summary': {0: 1, 1: 0, 2: 0, 3: 4, 4: 76},
+            'on_target_score': 0.86,
+            'target_region_id': '101',
+            'target_region_start': 100,
+            'target_region_end': 200,
         })  # fmt: on
 
         guide_sequence = _fill_guide_sequence(row)
@@ -100,6 +106,8 @@ class MutatorTestCase(unittest.TestCase):
         self.assertEqual(guide_sequence.is_positive_strand, True)
         self.assertEqual(guide_sequence.guide_id, None)  # Ensure guide_id is not set in the test
         self.assertEqual(guide_sequence.ot_summary, {0: 1, 1: 0, 2: 0, 3: 4, 4: 76})
+        self.assertEqual(guide_sequence.on_target_score, 0.86)
+        self.assertEqual(guide_sequence.target_region, TargetRegion('chr1', 100, 200, '101'))
 
     def test_fill_coding_region(self):
         # fmt: off

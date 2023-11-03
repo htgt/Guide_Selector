@@ -4,25 +4,22 @@ import pandas as pd
 from tdutils.utils.vcf_utils import Variants
 
 from abstractions.command import Command
-from adaptors.serialisers.mutation_builder_serialiser import (
-    serialise_mutation_builder,
-    convert_mutation_builders_to_df
-)
+from adaptors.serialisers.mutation_builder_serialiser import serialise_mutation_builder, convert_mutation_builders_to_df
 from coding_region import CodingRegion
 from filter.filter_manager import FilterManager
 from filter.filter_response import GuideDiscarded
-from filter.filter_validator import FilterValidator
 from guide import GuideSequence
 from guide_determiner import GuideDeterminer
 from mutation_builder import MutationBuilder
 from mutator.mutator_reader import MutatorReader
 from mutator.mutator_writer import MutatorWriter
+from target_region import TargetRegion
 
 
 class Mutator(Command):
     def __init__(self, config: dict) -> None:
         self._config = config
-        self._guides_df = None
+        self._guides_df: pd.DataFrame = None
         self.mutation_builders: List[MutationBuilder] = []
         self.discarded_guides: List[GuideDiscarded] = []
         self.failed_mutations = None
@@ -96,13 +93,7 @@ class Mutator(Command):
         )
 
     def _filter_mutation_builders(self):
-        filter_manager = FilterManager(self._config)
-        filters_to_activate = FilterValidator(self._config).validated_filters()
-
-        for filter_class in filters_to_activate:
-            filter_manager.load_filter(filter_class)
-
-        filters_response = filter_manager.apply_filters(self.mutation_builders)
+        filters_response = FilterManager(self._config).apply_filters(self.mutation_builders)
 
         self.mutation_builders = filters_response.guides_to_keep
         self.discarded_guides = filters_response.guides_to_discard
@@ -133,6 +124,12 @@ def _get_chromosome(mb: MutationBuilder) -> str:
 
 
 def _fill_guide_sequence(row: pd.Series) -> GuideSequence:
+    target_region = TargetRegion(
+        row['chromosome'],
+        row.get('target_region_start'),
+        row.get('target_region_end'),
+        row.get('target_region_id', ''),
+    )
     return GuideSequence(
         start=row['guide_start'],
         end=row['guide_end'],
@@ -141,7 +138,8 @@ def _fill_guide_sequence(row: pd.Series) -> GuideSequence:
         guide_id=row.name,
         frame=row['guide_frame'],
         ot_summary=row.get('ot_summary'),
-        target_region_id=row.get('target_region_id'),
+        target_region=target_region,
+        on_target_score=row.get('on_target_score'),
     )
 
 
