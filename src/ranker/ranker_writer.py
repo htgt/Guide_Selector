@@ -3,7 +3,7 @@ from os import path
 
 from abstractions.writer import Writer
 
-RANKED_FILENAME = 'ranked_guides_and_codons.tsv'
+RANKED_FILENAME = 'ranked_guides.tsv'
 
 
 class RankerWriter(Writer):
@@ -14,6 +14,8 @@ class RankerWriter(Writer):
 
     def write_outputs(self, dir):
         file_path = path.join(dir, self._output_file_path)
+
+        print(self._data)
 
         self._data.to_csv(file_path, index_label='ranking')
 
