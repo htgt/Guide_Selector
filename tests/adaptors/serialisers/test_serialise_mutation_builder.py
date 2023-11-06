@@ -3,7 +3,6 @@ from unittest.mock import patch, PropertyMock
 
 from adaptors.serialisers.mutation_builder_serialiser import (
     convert_mutation_builders_to_df,
-    extract_codon_details,
     _get_mutation_builder_dict,
     _get_codon_dict,
 )
@@ -67,32 +66,6 @@ class MutatorBuilderSerialiserTestCase(unittest.TestCase):
 
         self.assertEqual(list(df.columns), expected_columns)
 
-    def test_extract_codon_details(self):
-        expected_codon_details = [
-            {
-                'window_pos': 1,
-                'pos': 123,
-                'ref_codon': 'TCA',
-                'ref_pos_three': 'A',
-                'alt': 'G',
-                'lost_amino_acids': 'N/A',
-                'permitted': False,
-            },
-            {
-                'window_pos': 2,
-                'pos': 122,
-                'ref_codon': 'TCC',
-                'ref_pos_three': 'C',
-                'alt': 'T',
-                'lost_amino_acids': 'N/A',
-                'permitted': True,
-            }
-        ]
-
-        codon_details = extract_codon_details(self.mutation_builder, self.config)
-
-        self.assertEqual(codon_details, expected_codon_details)
-
     @patch('guide.GuideSequence.centrality_score', new_callable=PropertyMock, return_value=0.5)
     def test_get_mutation_builder_dict(self, mock):
         expected_mb_dict = {
@@ -136,92 +109,20 @@ class MutatorBuilderSerialiserTestCase(unittest.TestCase):
     @patch('guide.GuideSequence.centrality_score', new_callable=PropertyMock, return_value=0.5)
     def test_serialise_mutation_builder_no_on_target_score_or_filter_applied(self, mock):
         # fmt: off
-        expected_serialisation = [{
-            'target_region_id': '101',
-            'guide_id': '123',
-            'centrality': 0.5,
-            'wge_percentile': 25,
-            'valid_edits': 2,
-            'on_target_score': 'N/A',
-            'chromosome': '1',
-            'guide_start': 160,
-            'guide_end': 170,
-            'guide_strand': '+',
-            'window_pos': 1,
-            'pos': 123,
-            'ref_codon': 'TCA',
-            'ref_pos_three': 'A',
-            'alt': 'G',
-            'lost_amino_acids': 'N/A',
-            'permitted': False
-        }, {
-            'target_region_id': '101',
-            'guide_id': '123',
-            'centrality': 0.5,
-            'wge_percentile': 25,
-            'valid_edits': 2,
-            'on_target_score': 'N/A',
-            'chromosome': '1',
-            'guide_start': 160,
-            'guide_end': 170,
-            'guide_strand': '+',
-            'window_pos': 2,
-            'pos': 122,
-            'ref_codon': 'TCC',
-            'ref_pos_three': 'C',
-            'alt': 'T',
-            'lost_amino_acids': 'N/A',
-            'permitted': True
-        }]
+        expected_serialisation = [{'target_region_id': '101', 'guide_id': '123', 'chromosome': '1', 'cds_strand': '+', 'gene_name': 'ACT', 'guide_strand': '+', 'guide_start': 160, 'guide_end': 170, 'ot_summary': {0: 1, 1: 0, 2: 0, 3: 4, 4: 76}, 'wge_percentile': 25, 'on_target_score': 'N/A', 'centrality_score': 0.5, 'window_pos': 1, 'pos': 123, 'ref_codon': 'TCA', 'ref_pos_three': 'A', 'alt': 'G', 'lost_amino_acids': 'N/A', 'permitted': False}, {'target_region_id': '101', 'guide_id': '123', 'chromosome': '1', 'cds_strand': '+', 'gene_name': 'ACT', 'guide_strand': '+', 'guide_start': 160, 'guide_end': 170, 'ot_summary': {0: 1, 1: 0, 2: 0, 3: 4, 4: 76}, 'wge_percentile': 25, 'on_target_score': 'N/A', 'centrality_score': 0.5, 'window_pos': 2, 'pos': 122, 'ref_codon': 'TCC', 'ref_pos_three': 'C', 'alt': 'T', 'lost_amino_acids': 'N/A', 'permitted': True}]
 
         serialised_mb = serialise_mutation_builder(self.mutation_builder, self.config, filter_applied=None)
         print(serialised_mb)
         print(expected_serialisation)
+
+        print(serialised_mb)
 
         self.assertEqual(serialised_mb, expected_serialisation)
 
     @patch('guide.GuideSequence.centrality_score', new_callable=PropertyMock, return_value=0.5)
     def test_serialise_mutation_builder_all_fields(self, mock):
         # fmt: off
-        expected_serialisation = [{
-            'target_region_id': '101',
-            'guide_id': '123',
-            'centrality': 0.5,
-            'wge_percentile': 25,
-            'valid_edits': 2,
-            'on_target_score': 0.86,
-            'chromosome': '1',
-            'guide_start': 160,
-            'guide_end': 170,
-            'guide_strand': '+',
-            'filter_applied': 'filter_name',
-            'window_pos': 1,
-            'pos': 123,
-            'ref_codon': 'TCA',
-            'ref_pos_three': 'A',
-            'alt': 'G',
-            'lost_amino_acids': 'N/A',
-            'permitted': False
-        }, {
-            'target_region_id': '101',
-            'guide_id': '123',
-            'centrality': 0.5,
-            'wge_percentile': 25,
-            'valid_edits': 2,
-            'on_target_score': 0.86,
-            'chromosome': '1',
-            'guide_start': 160,
-            'guide_end': 170,
-            'guide_strand': '+',
-            'filter_applied': 'filter_name',
-            'window_pos': 2,
-            'pos': 122,
-            'ref_codon': 'TCC',
-            'ref_pos_three': 'C',
-            'alt': 'T',
-            'lost_amino_acids': 'N/A',
-            'permitted': True
-        }] # fmt: on
+        expected_serialisation = [{'target_region_id': '101', 'guide_id': '123', 'chromosome': '1', 'cds_strand': '+', 'gene_name': 'ACT', 'guide_strand': '+', 'guide_start': 160, 'guide_end': 170, 'ot_summary': {0: 1, 1: 0, 2: 0, 3: 4, 4: 76}, 'wge_percentile': 25, 'on_target_score': 0.86, 'centrality_score': 0.5, 'filter_applied': 'filter_name', 'window_pos': 1, 'pos': 123, 'ref_codon': 'TCA', 'ref_pos_three': 'A', 'alt': 'G', 'lost_amino_acids': 'N/A', 'permitted': False}, {'target_region_id': '101', 'guide_id': '123', 'chromosome': '1', 'cds_strand': '+', 'gene_name': 'ACT', 'guide_strand': '+', 'guide_start': 160, 'guide_end': 170, 'ot_summary': {0: 1, 1: 0, 2: 0, 3: 4, 4: 76}, 'wge_percentile': 25, 'on_target_score': 0.86, 'centrality_score': 0.5, 'filter_applied': 'filter_name', 'window_pos': 2, 'pos': 122, 'ref_codon': 'TCC', 'ref_pos_three': 'C', 'alt': 'T', 'lost_amino_acids': 'N/A', 'permitted': True}]# fmt: on
 
         self.mutation_builder.guide.on_target_score = 0.86
         serialised_mb = serialise_mutation_builder(self.mutation_builder, self.config, filter_applied='filter_name')

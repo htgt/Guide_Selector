@@ -6,7 +6,6 @@ from codon import WindowCodon
 from mutation_builder import MutationBuilder
 
 
-
 def serialise_mutation_builder(
     mutation_builder: MutationBuilder, config: dict, filter_applied: str = None
 ) -> List[dict]:
@@ -54,18 +53,6 @@ def _get_mutator_row(mutation_builder: MutationBuilder) -> dict:
         'guide_end': mutation_builder.guide.end,
         'guide_strand': mutation_builder.guide.strand_symbol,
     }
-
-
-def extract_codon_details(mutation_builder: MutationBuilder, config: dict) -> List:
-    codon_details = []
-    cds_start = mutation_builder.cds.start
-    cds_end = mutation_builder.cds.end
-
-    for codon in mutation_builder.codons:
-        codon_data = _get_codon_dict(cds_start, cds_end, codon, config)
-        codon_details.append(codon_data)
-
-    return codon_details
 
 
 def _get_mutation_builder_dict(mutation_builder: MutationBuilder, filter_applied: str = None) -> dict:
