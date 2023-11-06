@@ -12,7 +12,7 @@
         "max_edits_to_apply": 3
     },
     "ranking": {
-       "wge_percentile": true,
-       "guide_id": false
+	"centrality": false,
+        "wge_percentile": true
     }
 }

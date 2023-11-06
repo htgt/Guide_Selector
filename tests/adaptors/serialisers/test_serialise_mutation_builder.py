@@ -48,8 +48,10 @@ class MutatorBuilderSerialiserTestCase(unittest.TestCase):
         expected_columns = [
             'target_region_id',
             'guide_id',
+            'centrality',
             'wge_percentile',
             'valid_edits',
+            'on_target_score',
             'chromosome',
             'guide_start',
             'guide_end',
@@ -133,8 +135,10 @@ class MutatorBuilderSerialiserTestCase(unittest.TestCase):
         expected_serialisation = [{
             'target_region_id': '101',
             'guide_id': '123',
+            'centrality': 0.5,
             'wge_percentile': 25,
             'valid_edits': 2,
+            'on_target_score': 'N/A',
             'chromosome': '1',
             'guide_start': 160,
             'guide_end': 170,
@@ -149,8 +153,10 @@ class MutatorBuilderSerialiserTestCase(unittest.TestCase):
         }, {
             'target_region_id': '101',
             'guide_id': '123',
+            'centrality': 0.5,
             'wge_percentile': 25,
             'valid_edits': 2,
+            'on_target_score': 'N/A',
             'chromosome': '1',
             'guide_start': 160,
             'guide_end': 170,
@@ -162,7 +168,7 @@ class MutatorBuilderSerialiserTestCase(unittest.TestCase):
             'alt': 'T',
             'lost_amino_acids': 'N/A',
             'permitted': True
-        }] # fmt: on
+        }]
 
         serialised_mb = serialise_mutation_builder(self.mutation_builder, self.config, filter_applied=None)
 
@@ -174,8 +180,10 @@ class MutatorBuilderSerialiserTestCase(unittest.TestCase):
         expected_serialisation = [{
             'target_region_id': '101',
             'guide_id': '123',
+            'centrality': 0.5,
             'wge_percentile': 25,
             'valid_edits': 2,
+            'on_target_score': 0.86,
             'chromosome': '1',
             'guide_start': 160,
             'guide_end': 170,
@@ -191,8 +199,10 @@ class MutatorBuilderSerialiserTestCase(unittest.TestCase):
         }, {
             'target_region_id': '101',
             'guide_id': '123',
+            'centrality': 0.5,
             'wge_percentile': 25,
             'valid_edits': 2,
+            'on_target_score': 0.86,
             'chromosome': '1',
             'guide_start': 160,
             'guide_end': 170,
@@ -211,3 +221,6 @@ class MutatorBuilderSerialiserTestCase(unittest.TestCase):
         serialised_mb = serialise_mutation_builder(self.mutation_builder, self.config, filter_applied='filter_name')
 
         self.assertEqual(serialised_mb, expected_serialisation)
+
+if __name__ == '__main__':
+    unittest.main()
