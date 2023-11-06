@@ -10,22 +10,20 @@ def serialise_mutation_builder(
 ) -> List[dict]:
     serialised_mutation_builder = []
 
-    base = _get_mutator_row(mutation_builder)
-    if filter_applied:
-        base['filter_applied'] = filter_applied
+    mb_dict = _get_mutation_builder_dict(mutation_builder, filter_applied)
 
     cds_start = mutation_builder.cds.start
     cds_end = mutation_builder.cds.end
 
     for codon in mutation_builder.codons:
-        row = _get_codon_row(cds_start, cds_end, codon, config)
+        codon_dict = _get_codon_dict(cds_start, cds_end, codon, config)
 
-        serialised_mutation_builder.append({**base, **row})
+        serialised_mutation_builder.append({**mb_dict, **codon_dict})
 
     return serialised_mutation_builder
 
 
-def convert_mutation_builders_to_df(mutation_builders: MutationBuilder, config) -> pd.DataFrame:
+def convert_mutation_builders_to_df(mutation_builders: List[MutationBuilder], config: dict) -> pd.DataFrame:
     if mutation_builders is None:
         raise ValueError("Mutation builders not available for dataframing.")
     data = []
@@ -52,32 +50,6 @@ def _get_mutator_row(mutation_builder: MutationBuilder) -> dict:
         'guide_start': mutation_builder.guide.start,
         'guide_end': mutation_builder.guide.end,
         'guide_strand': mutation_builder.guide.strand_symbol,
-    }
-
-
-def extract_codon_details(mutation_builder: MutationBuilder, config: dict) -> List:
-    codon_details = []
-    cds_start = mutation_builder.cds.start
-    cds_end = mutation_builder.cds.end
-
-    for codon in mutation_builder.codons:
-        codon_data = _get_codon_row(cds_start, cds_end, codon, config)
-        codon_details.append(codon_data)
-
-    return codon_details
-
-
-def _get_codon_row(cds_start, cds_end, codon, config):
-    lost_amino = ','.join(codon.amino_acids_lost_from_edit) if codon.amino_acids_lost_from_edit else 'N/A'
-
-    return {
-        'window_pos': codon.third_base_pos,
-        'pos': codon.third_base_coord,
-        'ref_codon': codon.bases,
-        'ref_pos_three': codon.bases[2],
-        'alt': codon.edited_bases[2],
-        'lost_amino_acids': lost_amino,
-        'permitted': codon.is_edit_permitted(config, cds_start, cds_end),
     }
 
 
