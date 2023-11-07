@@ -16,8 +16,8 @@ from utils.get_data.wge import get_data_from_wge_by_coords
 
 class Retriever(Command, Reader, Writer):
     def __init__(self, config: dict):
-        self._target_regions = None
-        self.guide_sequences = None
+        self._target_regions: List[TargetRegion] = []
+        self.guide_sequences: List[GuideSequence] = []
         self.config = config
 
     def read_inputs(self, args: dict):
@@ -71,7 +71,7 @@ def _retrieve_guides_for_region(region: TargetRegion, request_options: dict) -> 
         guide_sequences = read_wge_gff_to_guide_sequences(gff_data)
 
         for guide in guide_sequences:
-            guide.target_region_id = region.id
+            guide.target_region = region
 
         return guide_sequences
 

@@ -50,8 +50,11 @@ class GuideDeterminer:
         dataframe['guide_start'] = guide.start
         dataframe['guide_end'] = guide.end
         dataframe['guide_strand'] = guide.strand_symbol
-        dataframe['target_region_id'] = guide.target_region_id
+        dataframe['target_region_id'] = guide.target_region.id
+        dataframe['target_region_start'] = guide.target_region.start
+        dataframe['target_region_end'] = guide.target_region.end
         dataframe['ot_summary'] = [guide.ot_summary]
+        dataframe['on_target_score'] = guide.on_target_score
         return dataframe
 
     def _determine_frame_for_guide(self, row: pd.Series) -> int:
@@ -88,7 +91,10 @@ class GuideDeterminer:
             'guide_end',
             'guide_frame',
             'ot_summary',
+            'on_target_score',
             'target_region_id',
+            'target_region_start',
+            'target_region_end',
         ]
 
         return coding_regions[required_cols].copy()

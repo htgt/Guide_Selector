@@ -5,7 +5,7 @@ from filter.filter_response import FilterResponse, GuideDiscarded
 from mutation_builder import MutationBuilder
 
 
-class MinimumEditsFilter(Filter):
+class MinEditsNumberFilter(Filter):
     key: str = 'min_edits_allowed'
     value_type: type = int
 
@@ -20,6 +20,6 @@ class MinimumEditsFilter(Filter):
             if len(mb.codons) >= self.min_edits:
                 guides_to_keep.append(mb)
             else:
-                guides_to_discard.append(GuideDiscarded(mb, MinimumEditsFilter.key))
+                guides_to_discard.append(GuideDiscarded(mb, MinEditsNumberFilter.key))
 
         return FilterResponse(guides_to_keep=guides_to_keep, guides_to_discard=guides_to_discard)

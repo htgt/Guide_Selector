@@ -1,4 +1,4 @@
-guide_id	chr	start	end	grna_strand
+guide_id	chr	guide_start	guide_end	guide_strand
 1133148778	chr16	3810727	3810749	-
 1133146650	chr16	3791982	3792004	+
 1193107704	chrX	77696636	77696658	+
