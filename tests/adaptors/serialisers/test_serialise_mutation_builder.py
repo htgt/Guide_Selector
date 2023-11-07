@@ -61,7 +61,6 @@ class MutatorBuilderSerialiserTestCase(unittest.TestCase):
 
         self.assertEqual(list(df.columns), expected_columns)
 
-
     @patch('guide.GuideSequence.centrality_score', new_callable=PropertyMock, return_value=0.5)
     def test_get_mutation_builder_dict(self, mock):
         expected_mb_dict = {
@@ -206,6 +205,7 @@ class MutatorBuilderSerialiserTestCase(unittest.TestCase):
         serialised_mb = serialise_mutation_builder(self.mutation_builder, self.config, filter_applied='filter_name')
 
         self.assertEqual(serialised_mb, expected_serialisation)
+
 
 if __name__ == '__main__':
     unittest.main()
