@@ -67,13 +67,9 @@ def _retrieve_guides_for_region(region: TargetRegion, request_options: dict) -> 
         assembly=request_options['assembly'],
     )
 
-    try:
-        guide_sequences = read_wge_gff_to_guide_sequences(gff_data)
+    guide_sequences = read_wge_gff_to_guide_sequences(gff_data)
 
-        for guide in guide_sequences:
-            guide.target_region = region
+    for guide in guide_sequences:
+        guide.target_region = region
 
-        return guide_sequences
-
-    except gffutils.exceptions.EmptyInputError:
-        raise GetDataFromWGEError(f'No guides from WGE for given region: {region.id}')
+    return guide_sequences
