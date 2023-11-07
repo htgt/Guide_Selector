@@ -14,7 +14,6 @@ from mutator.mutator import Mutator, _fill_coding_region, _fill_guide_sequence
 from utils.exceptions import NoGuidesRemainingError
 
 
-
 class MutatorTestCase(unittest.TestCase):
     def setUp(self):
         # fmt: off
