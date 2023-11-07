@@ -12,7 +12,7 @@ from mutation_builder import MutationBuilder
 from mutator.mutator import Mutator, _fill_coding_region, _fill_guide_sequence
 from target_region import TargetRegion
 
-from utils.exceptions import NoGuidesRemainingError
+from utils.warnings import NoGuidesRemainingWarning
 
 
 class MutatorTestCase(unittest.TestCase):
@@ -158,7 +158,7 @@ class MutatorTestCase(unittest.TestCase):
             }
         }
 
-        with self.assertRaises(NoGuidesRemainingError):
+        with self.assertWarns(NoGuidesRemainingWarning):
             self.mutator._filter_mutation_builders()
 
 

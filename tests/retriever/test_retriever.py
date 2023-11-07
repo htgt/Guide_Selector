@@ -65,17 +65,17 @@ class RetrieverTestCase(TestCase):
         self.assertEqual(list(map(vars, expected)), list(map(vars, actual)))
 
     @patch('retriever.retriever.get_data_from_wge_by_coords')
-    def test_retrieve_guides_for_region_no_data_raises_error(self, mock_get_data):
+    def test_retrieve_guides_for_region_no_data_returns_empty(self, mock_get_data):
         # arrange
         mock_get_data.return_value = (
             '##gff-version 3\n'
             '##sequence-region lims2-region 503 533\n'
             '# Crisprs for region Grch38 (GRCh38) 19:503-533'
         )
-        expected = 'No guides from WGE for given region: AAA'
+        expected = []
 
         # act
-        with self.assertRaises(GetDataFromWGEError) as cm:
-            x = _retrieve_guides_for_region(self.target_region_1, self.request_options)
+        actual = _retrieve_guides_for_region(self.target_region_1, self.request_options)
+        
         # assert
-        self.assertEqual(expected, str(cm.exception))
+        self.assertEqual(expected, actual)
