@@ -3,6 +3,7 @@ from typing import List
 from guide import GuideSequence
 from mutator.mutator import Mutator
 from retriever.retriever import Retriever
+from ranker.ranker import Ranker
 from utils.arguments_parser import InputArguments
 from utils.config import prepare_config
 
@@ -65,7 +66,10 @@ def run_mutator_cmd(args: dict, config: dict, guide_sequences: List[GuideSequenc
     # Ranking output
     print('rank')
     mutator_df = mutator.convert_to_dataframe()
-    print(mutator_df)
+
+    ranker = Ranker(config, mutator_df)
+    ranker.run()
+    ranker.write_outputs(output_dir=args['out_dir'])
 
 
 if __name__ == '__main__':
