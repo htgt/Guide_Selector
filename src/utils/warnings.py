@@ -1,0 +1,4 @@
+
+
+class NoGuidesRemainingWarning(Warning):
+    pass
