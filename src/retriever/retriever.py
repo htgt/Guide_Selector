@@ -10,7 +10,7 @@ from guide import GuideSequence
 from retriever.retriever_reader import RetrieverReader
 from retriever.retriever_writer import RetrieverWriter
 from target_region import TargetRegion
-from utils.exceptions import GetDataFromWGEError, GuidesNotFoundError
+from utils.exceptions import GuidesNotFoundError
 from utils.get_data.wge import get_data_from_wge_by_coords
 
 
@@ -45,15 +45,11 @@ def _get_guides_data(regions: List[TargetRegion], request_options: dict) -> List
     for region in regions:
         print(f'Retrieve data for Target Region {region.id} {region.__repr__()}')
 
-        try:
-            guide_sequences_for_region = _retrieve_guides_for_region(region, request_options)
+        guide_sequences_for_region = _retrieve_guides_for_region(region, request_options)
 
-            if not guide_sequences_for_region:
-                print(f'No guides found in region: {region.id} {region.__repr__()}')
-            guide_sequences_for_all_regions.extend(guide_sequences_for_region)
-
-        except GetDataFromWGEError:
-            pass
+        if not guide_sequences_for_region:
+            print(f'No guides found in region: {region.id} {region.__repr__()}')
+        guide_sequences_for_all_regions.extend(guide_sequences_for_region)
 
     return guide_sequences_for_all_regions
 
