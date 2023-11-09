@@ -180,6 +180,18 @@ class Mutator(Command):
 
         return result
 
+    def get_variants_by_guide_id(self, id: int) -> Variants:
+        result = []
+
+        for variant in self.variants._variants:
+            if variant.id == id:
+                result.append(variant)
+
+        if len(result) == 0:
+            print('No guide found with id: {id}')
+
+        return result
+
     def convert_to_dataframe(self) -> pd.DataFrame:
         mutation_builders = self.mutation_builders
         data = convert_mutation_builders_to_df(mutation_builders, self._config)
