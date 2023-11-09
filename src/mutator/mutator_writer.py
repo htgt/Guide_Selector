@@ -47,9 +47,12 @@ class MutatorWriter(Writer):
         write_list_dict_in_tsv(tsv_path, self._discarded_guides)
         print('Output saved to', tsv_path)
 
-    def _write_vcf_variants_file(self, output_dir):
+    def _write_vcf_variants_file(self, output_dir, variants: Variants = None):
+        if not variants:
+            variants = self._variants
+
         vcf_path = os.path.join(output_dir, MutatorWriter.variants_vcf_filename)
-        write_variants_to_vcf(vcf_path, self._variants)
+        write_variants_to_vcf(vcf_path, variants)
         print('Output saved to', vcf_path)
 
     def _write_json_failed_guides_file(self, output_dir):

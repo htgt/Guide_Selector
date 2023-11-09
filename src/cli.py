@@ -71,6 +71,10 @@ def run_mutator_cmd(args: dict, config: dict, guide_sequences: List[GuideSequenc
     ranker.run()
     ranker.write_outputs(output_dir=args['out_dir'])
 
+    best_guide_id = ranker.best_guide_id
+    print("Best guide id:", best_guide_id)
+    print("Best guide:", mutator.get_variants_by_guide_id(best_guide_id))
+
 
 if __name__ == '__main__':
     main()

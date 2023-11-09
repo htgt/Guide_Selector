@@ -27,12 +27,13 @@ class Ranker(Command):
         self._dataframe = sorted_df
 
     @property
+    def best_guide_id(self):
+        return self._dataframe.at[0, 'guide_id']
+
+    @property
     def _column_list(self):
         return list(self._config.keys())
 
     @property
     def _column_list_orders(self):
         return list(self._config.values())
-
-
-
