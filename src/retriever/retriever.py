@@ -10,7 +10,7 @@ from guide import GuideSequence
 from retriever.retriever_reader import RetrieverReader
 from retriever.retriever_writer import RetrieverWriter
 from target_region import TargetRegion
-from utils.exceptions import GetDataFromWGEError
+from utils.exceptions import GuidesNotFoundError
 from utils.get_data.wge import get_data_from_wge_by_coords
 
 
@@ -32,6 +32,9 @@ class Retriever(Command, Reader, Writer):
         }
         self.guide_sequences = _get_guides_data(self._target_regions, request_options)
 
+        if not self.guide_sequences:
+            raise GuidesNotFoundError('No guides found in given regions.')
+
     def write_outputs(self, output_dir: str):
         RetrieverWriter(self.guide_sequences).write_outputs(output_dir)
 
@@ -42,12 +45,11 @@ def _get_guides_data(regions: List[TargetRegion], request_options: dict) -> List
     for region in regions:
         print(f'Retrieve data for Target Region {region.id} {region.__repr__()}')
 
-        try:
-            guide_sequences_for_region = _retrieve_guides_for_region(region, request_options)
-            guide_sequences_for_all_regions.extend(guide_sequences_for_region)
+        guide_sequences_for_region = _retrieve_guides_for_region(region, request_options)
 
-        except GetDataFromWGEError:
-            pass
+        if not guide_sequences_for_region:
+            print(f'No guides found in region: {region.id} {region.__repr__()}')
+        guide_sequences_for_all_regions.extend(guide_sequences_for_region)
 
     return guide_sequences_for_all_regions
 
@@ -61,13 +63,9 @@ def _retrieve_guides_for_region(region: TargetRegion, request_options: dict) -> 
         assembly=request_options['assembly'],
     )
 
-    try:
-        guide_sequences = read_wge_gff_to_guide_sequences(gff_data)
+    guide_sequences = read_wge_gff_to_guide_sequences(gff_data)
 
-        for guide in guide_sequences:
-            guide.target_region = region
+    for guide in guide_sequences:
+        guide.target_region = region
 
-        return guide_sequences
-
-    except gffutils.exceptions.EmptyInputError:
-        raise GetDataFromWGEError(f'No guides from WGE for given region: {region.id}')
+    return guide_sequences

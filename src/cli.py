@@ -3,7 +3,6 @@ from typing import List
 from guide import GuideSequence
 from mutator.mutator import Mutator
 from retriever.retriever import Retriever
-from ranker.ranker import Ranker
 from utils.arguments_parser import InputArguments
 from utils.config import prepare_config
 
@@ -62,18 +61,6 @@ def run_mutator_cmd(args: dict, config: dict, guide_sequences: List[GuideSequenc
 
     # Write Output Files
     mutator.write_outputs(output_dir=args['out_dir'])
-
-    # Ranking output
-    print('rank')
-    mutator_df = mutator.convert_to_dataframe()
-
-    ranker = Ranker(config, mutator_df)
-    ranker.run()
-    ranker.write_outputs(output_dir=args['out_dir'])
-
-    best_guide_id = ranker.best_guide_id
-    print("Best guide id:", best_guide_id)
-    print("Best guide:", mutator.get_variants_by_guide_id(best_guide_id))
 
 
 if __name__ == '__main__':

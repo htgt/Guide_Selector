@@ -2,10 +2,6 @@ class NoTargetRegionDataError(Exception):
     pass
 
 
-class GetDataFromWGEError(Exception):
-    pass
-
-
 class ParseStringToTargetRegionError(Exception):
     pass
 
@@ -19,6 +15,10 @@ class MutatorError(Exception):
 
 
 class PamNotFoundError(Exception):
+    pass
+
+
+class GuidesNotFoundError(Exception):
     pass
 
 
