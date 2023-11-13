@@ -1,5 +1,6 @@
+from unittest.mock import PropertyMock, patch
+
 from pyfakefs.fake_filesystem_unittest import TestCase
-from unittest.mock import patch, PropertyMock
 
 # fmt: off
 from adaptors.serialisers.serialise_guide_sequences import serialise_guide_sequence, write_guide_sequences_to_tsv  # NOQA

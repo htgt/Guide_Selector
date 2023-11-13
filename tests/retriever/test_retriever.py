@@ -5,8 +5,6 @@ from guide import GuideSequence
 from retriever.retriever import _retrieve_guides_for_region
 from retriever.retriever_reader import _parse_dicts_to_target_regions
 from target_region import TargetRegion
-from utils.warnings import NoGuidesRemainingWarning
-
 
 
 class RetrieverTestCase(TestCase):
@@ -75,6 +73,6 @@ class RetrieverTestCase(TestCase):
 
         # act
         actual = _retrieve_guides_for_region(self.target_region_1, self.request_options)
-        
+
         # assert
         self.assertEqual(expected, actual)

@@ -1,6 +1,7 @@
 import os
 from typing import List
 
+import pandas as pd
 from tdutils.utils.vcf_utils import Variants
 
 from abstractions.writer import Writer
@@ -12,17 +13,20 @@ class MutatorWriter(Writer):
     guides_codons_tsv_filename = 'guides_and_codons.tsv'
     variants_vcf_filename = 'variants.vcf'
     failed_guides_json_filename = 'failed_guides.json'
+    ranked_guides_tsv_filename = 'ranked_guides.tsv'
 
     def __init__(
         self,
         guides_and_codons: List[dict],
         variants: Variants,
-        failed_mutations: List[MutationBuilder],
+        failed_guides: List[MutationBuilder],
+        ranked_guides_df: pd.DataFrame,
     ) -> None:
         self._kept_guides = kept_guides
         self._discarded_guides = discarded_guides
         self._variants = variants
         self._failed_guides = failed_guides
+        self._ranked_guides_df = ranked_guides_df
 
     def write_outputs(self, output_dir: str):
         self._write_tsv_guide_and_codons_file(output_dir)
@@ -34,6 +38,8 @@ class MutatorWriter(Writer):
 
         if self._failed_guides:
             self._write_json_failed_guides_file(output_dir)
+
+        self._write_tsv_ranked_guides(output_dir)
 
     def _write_tsv_guide_and_codons_file(self, output_dir):
         tsv_path = os.path.join(output_dir, MutatorWriter.guides_codons_tsv_filename)
@@ -60,3 +66,10 @@ class MutatorWriter(Writer):
         failed_guides_path = os.path.join(output_dir, MutatorWriter.failed_guides_json_filename)
         write_json_failed_guides(failed_guides_path, self._failed_guides)
         print('Failed guides saved to', failed_guides_path)
+
+    def _write_tsv_ranked_guides(self, output_dir):
+        ranked_guides_path = os.path.join(output_dir, MutatorWriter.ranked_guides_tsv_filename)
+
+        self._ranked_guides_df.to_csv(ranked_guides_path, index_label='ranking')
+
+        print('Ranked guides saved to ', ranked_guides_path)

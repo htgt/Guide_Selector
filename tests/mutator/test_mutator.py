@@ -161,6 +161,5 @@ class MutatorTestCase(unittest.TestCase):
             self.mutator._filter_mutation_builders()
 
 
-
 if __name__ == '__main__':
     unittest.main()

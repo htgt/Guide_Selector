@@ -1,5 +1,5 @@
 import unittest
-from unittest.mock import patch, PropertyMock
+from unittest.mock import PropertyMock, patch
 
 from adaptors.serialisers.mutation_builder_serialiser import (
     convert_mutation_builders_to_df,

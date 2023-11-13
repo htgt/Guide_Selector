@@ -1,6 +1,6 @@
 import re
 from dataclasses import dataclass
-from decimal import Decimal, ROUND_HALF_UP
+from decimal import ROUND_HALF_UP, Decimal
 from typing import Optional, Tuple
 
 from base_sequence import BaseSequence
