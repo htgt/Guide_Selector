@@ -1,6 +1,6 @@
 from abstractions.reader import Reader
-from adaptors.parsers.parse_on_target_score_tsv import get_guides_on_target_scores
 from adaptors.parsers.parse_guide_tsv import read_guide_tsv_to_guide_sequences
+from adaptors.parsers.parse_on_target_score_tsv import get_guides_on_target_scores
 from utils.file_system import read_gtf_to_df
 
 

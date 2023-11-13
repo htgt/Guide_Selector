@@ -11,8 +11,5 @@
         "not_contain_TTTT+": true,
         "max_edits_to_apply": 3
     },
-    "ranking": {
-	"centrality": false,
-        "wge_percentile": true
-    }
+    "ranking_priority_order": ["off_target", "centrality", "on_target"]
 }
