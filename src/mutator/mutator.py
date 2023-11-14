@@ -82,13 +82,13 @@ class Mutator(Command):
         return variants
 
     @property
-    def best_guide(self):
+    def best_guide(self) -> GuideSequence:
         id = self._get_best_guide_id()
         for mb in self.mutation_builders:
             if mb.guide.guide_id == id:
                 return mb.guide
 
-    def _get_best_guide_id(self):
+    def _get_best_guide_id(self) -> str:
         return self.ranked_guides_df.at[0, 'guide_id']
 
     def get_variants_by_guide_id(self, id: int) -> Variants:
