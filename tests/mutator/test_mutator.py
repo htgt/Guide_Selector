@@ -1,4 +1,5 @@
 import unittest
+from unittest.mock import Mock
 
 import pandas as pd
 from tdutils.utils.vcf_utils import Variant, Variants
@@ -160,23 +161,26 @@ class MutatorTestCase(unittest.TestCase):
         with self.assertWarns(NoGuidesRemainingWarning):
             self.mutator._filter_mutation_builders()
 
-    def test_best_guide(self):
-        guide_1 = GuideSequence(guide_id='1', chromosome='1', start='1', end='20')
-        guide_2 = GuideSequence(guide_id='2', chromosome='1', start='21', end='40')
-        mutation_builders = [
-            MutationBuilder(guide=guide_1, cds=self.cds,
-                gene_name=self.gene_name, window_length=self.window_length),
-            MutationBuilder(guide=guide_2, cds=self.cds,
-                gene_name=self.gene_name, window_length=self.window_length),
-        ]
-        ranked_guides_df = pd.DataFrame([
-            {"guide_id": '2'},
-            {"guide_id": '1'},
-        ])
-        self.mutator.mutation_builders = mutation_builders
-        self.mutator.ranked_guides_df = ranked_guides_df
+    def test_mutation_builders_permitted_edits(self):
+        mutator = Mutator({
+            'ignore_positions': [-1, 1],
+            'allow_codon_loss': True,
+            'splice_mask_distance': 5,
+            'window_length': 12,
+        })
 
-        self.assertEqual(self.mutator.best_guide, guide_2)
+        guide = GuideSequence(guide_id='123', start=160, end=170, is_positive_strand=True, chromosome='chr1')
+        cds = CodingRegion(start=100, end=200, chromosome='chr1', is_positive_strand=True, exon_number=1, frame=1)
+        mutation_builder = MutationBuilder(guide=guide, cds=cds, gene_name='ACT', window_length=12)
+        mutation_builder.codons = [
+            WindowCodon('ATG', 123, 9, True),  # Not a permitted edit
+            WindowCodon('TTG', 124, 10, False),  # Permitted edit
+        ]
+        mutator.mutation_builders = [mutation_builder]
+
+        permitted_builders = mutator.mutation_builders_permitted_edits
+
+        self.assertEqual(len(permitted_builders), 1)
 
 
 if __name__ == '__main__':
