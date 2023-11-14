@@ -171,8 +171,8 @@ class MutatorTestCase(unittest.TestCase):
                 gene_name=self.gene_name, window_length=self.window_length),
         ]
         ranked_guides_df = pd.DataFrame([
-            { "guide_id": '2' },
-            { "guide_id": '1' },
+            {"guide_id": '2'},
+            {"guide_id": '1'},
         ])
         self.mutator.mutation_builders = mutation_builders
         self.mutator.ranked_guides_df = ranked_guides_df
