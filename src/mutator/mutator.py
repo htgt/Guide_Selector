@@ -82,14 +82,24 @@ class Mutator(Command):
         return variants
 
     @property
-    def best_guide_id(self):
+    def best_guide(self):
+        id = self._get_best_guide_id()
+        for mb in self.mutation_builders:
+            if mb.guide.guide_id == id:
+                return mb.guide
+
+    def _get_best_guide_id(self):
         return self.ranked_guides_df.at[0, 'guide_id']
 
-    @property
-    def best_guide(self):
-        id = self.best_guide_id
+    def get_variants_by_guide_id(self, id: int) -> Variants:
+        chrom = [self.best_guide.chromosome]
+        best_guide_mutations = Variants(chroms=chrom, variant_list=[])
 
-        return [mb.guide for mb in self.mutation_builders if mb.guide.guide_id == id][0]
+        for mb in self.mutation_builders:
+            if mb.guide.guide_id == id:
+                self._append_mb_to_variants(mb, best_guide_mutations)
+
+        return best_guide_mutations
 
     def _append_mb_to_variants(self, mb: MutationBuilder, variants: Variants) -> Variants:
         for codon in mb.codons:
@@ -148,16 +158,6 @@ class Mutator(Command):
             result += serialise_mutation_builder(guide.mutation_builder, self._config, guide.filter_applied)
 
         return result
-
-    def get_variants_by_guide_id(self, id: int) -> Variants:
-        chrom = [self.best_guide.chromosome]
-        best_guide_mutations = Variants(chroms=chrom, variant_list=[])
-
-        for mb in self.mutation_builders:
-            if mb.guide.guide_id == id:
-                self._append_mb_to_variants(mb, best_guide_mutations)
-
-        return best_guide_mutations
 
     def convert_to_dataframe(self) -> pd.DataFrame:
         mutation_builders = self.mutation_builders
