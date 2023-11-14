@@ -8,7 +8,7 @@ from ranker.rank_criteria_validator import RankCriteriaValidator
 
 class Ranker:
     def __init__(self, config: dict) -> None:
-        self._ranking_order: List[RankCriteria] = RankCriteriaValidator(config).validated_criteriaa()
+        self._ranking_order: List[RankCriteria] = RankCriteriaValidator(config).validated_criteria()
 
     def rank(self, df: pd.DataFrame):
         criteria_in_columns = [criteria for criteria in self._ranking_order if criteria.column in df.columns]
