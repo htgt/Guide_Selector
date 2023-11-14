@@ -163,6 +163,27 @@ class Mutator(Command):
                 )
         return variants
 
+    @property
+    def mutation_builders_permitted_edits(self) -> List[MutationBuilder]:
+        permitted_builders = []
+        for mb in self.mutation_builders:
+            permitted_codons = []
+            for codon in mb.codons:
+                if codon.is_edit_permitted(self._config, mb.cds.start, mb.cds.end):
+                    permitted_codons.append(codon)
+            if permitted_codons:
+                permitted_builder = MutationBuilder(
+                    guide=mb.guide,
+                    cds=mb.cds,
+                    gene_name=mb.gene_name,
+                    window_length=self._config["window_length"],
+                )
+                permitted_builder.codons = permitted_codons
+                permitted_builders.append(permitted_builder)
+            else:
+                print(mb.guide.guide_id + ' has no permitted edits.')
+        return permitted_builders
+
     def _build_mutations(self, region_data: pd.Series) -> MutationBuilder:
         guide = _fill_guide_sequence(region_data)
         coding_region = _fill_coding_region(region_data)
@@ -175,7 +196,7 @@ class Mutator(Command):
         )
 
     def _filter_mutation_builders(self):
-        filters_response = FilterManager(self._config).apply_filters(self.mutation_builders)
+        filters_response = FilterManager(self._config).apply_filters(self.mutation_builders_permitted_edits)
 
         self.mutation_builders = filters_response.guides_to_keep
 
