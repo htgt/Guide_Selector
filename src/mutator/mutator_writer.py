@@ -34,7 +34,7 @@ class MutatorWriter(Writer):
         if self._discarded_guides:
             self._write_tsv_discarded_guides_and_codons_file(output_dir)
 
-        self._write_vcf_variants_file(output_dir)
+        self._write_vcf_variants_file(output_dir, MutatorWriter.variants_vcf_filename)
 
         if self._failed_guides:
             self._write_json_failed_guides_file(output_dir)

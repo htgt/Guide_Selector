@@ -115,17 +115,8 @@ class Mutator(Command):
         variants = Variants(chroms)
 
         for mb in self.mutation_builders:
-            for codon in mb.codons:
-                if codon.is_edit_permitted(self._config, mb.cds.start, mb.cds.end):
-                    guide_id = mb.guide.guide_id
-                    variants.append(
-                        mb.cds.chromosome,
-                        codon.third_base_coord,
-                        id=guide_id,
-                        ref=codon.third_base_on_positive_strand,
-                        alt=codon.edited_third_base_on_positive_strand,
-                        info={"SGRNA": f"sgRNA_{guide_id}"},
-                    )
+            self._append_mb_to_variants(mb, variants)
+
         return variants
 
     def _fill_guide_sequence(self, row: pd.Series) -> GuideSequence:
@@ -149,6 +140,24 @@ class Mutator(Command):
             exon_number=row['exon_number'],
             frame=row['cds_frame'],
         )
+
+    def _append_mb_to_variants(self, mb: MutationBuilder, variants: Variants) -> Variants:
+        for codon in mb.codons:
+            if codon.is_edit_permitted(
+                    self._config,
+                    mb.cds.start,
+                    mb.cds.end
+            ):
+                guide_id = mb.guide.guide_id
+                variants.append(
+                    mb.cds.chromosome,
+                    codon.third_base_coord,
+                    id=guide_id,
+                    ref=codon.third_base_on_positive_strand,
+                    alt=codon.edited_third_base_on_positive_strand,
+                    info={"SGRNA": f"sgRNA_{guide_id}"},
+                )
+        return variants
 
     def _build_mutations(self, region_data: pd.Series) -> MutationBuilder:
         guide = _fill_guide_sequence(region_data)
@@ -196,6 +205,22 @@ class Mutator(Command):
             result += serialise_mutation_builder(guide.mutation_builder, self._config, guide.filter_applied)
 
         return result
+
+    def get_variants_by_guide_id(self, id: int) -> Variants:
+        chrom = [self.best_guide.chromosome]
+        best_guide_mutations = Variants(chroms=chrom, variant_list=[])
+
+        for mb in self.mutation_builders:
+            if mb.guide.guide_id == id:
+                self._append_mb_to_variants(mb, best_guide_mutations)
+
+        return best_guide_mutations
+
+    def convert_to_dataframe(self) -> pd.DataFrame:
+        mutation_builders = self.mutation_builders
+        data = convert_mutation_builders_to_df(mutation_builders, self._config)
+
+        return data
 
 
 def _get_chromosome(mb: MutationBuilder) -> str:
