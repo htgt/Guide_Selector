@@ -181,6 +181,7 @@ class MutatorTestCase(unittest.TestCase):
         permitted_builders = mutator.mutation_builders_permitted_edits
 
         self.assertEqual(len(permitted_builders), 1)
+        self.assertEqual(permitted_builders[0].codons[0].bases, 'TTG')
 
 
 if __name__ == '__main__':
