@@ -11,7 +11,7 @@ class RetrieverTestCase(TestCase):
     def setUp(self):
         self.target_region_1 = TargetRegion(id='AAA', chromosome='19', start=111, end=222)
         self.target_region_2 = TargetRegion(id='BBB', chromosome='2', start=123, end=155)
-        self.request_options = {'species_id': 'Grch38', 'assembly': 'GRCh38'}
+        self.request_options = {'wge_species_id': 'Grch38', 'assembly': 'GRCh38'}
 
     def test_parse_dicts_to_target_regions(self):
         # arrange

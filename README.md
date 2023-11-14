@@ -124,7 +124,7 @@ Command requires the Target region ID and Loci.
 
 Uses shared input arguments: output directory and config file.
 
-Configs used for retrieve command: ``species_id`` (set to ``Human`` by default) and ``assembly`` (set to ``GRCh38`` by default)
+Configs used for retrieve command: ``wge_species_id`` (set to ``Human`` by default) and ``assembly`` (set to ``GRCh38`` by default)
 
 Possible arguments for retrieve:
 
@@ -174,7 +174,7 @@ You can set various filters in the config file. Guides and edits that are kept a
 
 - **min_edits_allowed**: minimum number of edits required per guide, discards guides with fewer than this (default 3)
 - **NGG_edit_required**: if true, discards guides that don't have any edits in the GG of the PAM (default true)
-- **not_contain_TTTT+**: if true, discards guides containing 4 or more consecutive Ts (default true)
+- **omit_TTTT+**: if true, discards guides containing 4 or more consecutive Ts (default true)
 - **max_edits_to_apply**: maximum number of edits to output per guide (default 3). Edits are prioritised based on their position in the window, with those closest to 0 being preferred
 
 
