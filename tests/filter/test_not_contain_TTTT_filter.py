@@ -2,7 +2,7 @@ import unittest
 from unittest.mock import Mock
 
 from filter.filter_response import GuideDiscarded
-from filter.not_contain_TTTT_filter import NotContainTTTTFilter
+from filter.omit_TTTT_filter import OmitTTTTFilter
 
 
 def create_mutation_builder_with_bases(bases):
@@ -19,8 +19,8 @@ class TestNotContainTTTTFilter(unittest.TestCase):
         mb2 = create_mutation_builder_with_bases('CACAAACTCTTTCCCTTCCAAAAAAA')
         mb3 = create_mutation_builder_with_bases('CACAAACAA')
 
-        test_instance = NotContainTTTTFilter({})
+        test_instance = OmitTTTTFilter({})
         result = test_instance.apply([mb1, mb2, mb3])
 
         self.assertCountEqual(result.guides_to_keep, [mb2, mb3])
-        self.assertCountEqual(result.guides_to_discard, [GuideDiscarded(mb1, NotContainTTTTFilter.key)])
+        self.assertCountEqual(result.guides_to_discard, [GuideDiscarded(mb1, OmitTTTTFilter.key)])
