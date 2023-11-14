@@ -10,10 +10,6 @@ class Ranker:
     def __init__(self, config: dict) -> None:
         self._ranking_order: List[RankCriteria] = RankCriteriaValidator(config).validated_criteria()
 
-    @property
-    def best_guide_id(self):
-        return self._dataframe.at[0, 'guide_id']
-
     def rank(self, df: pd.DataFrame):
         criteria_in_columns = [criteria for criteria in self._ranking_order if criteria.column in df.columns]
 
@@ -24,4 +20,3 @@ class Ranker:
         ranked_df = ranked_df.reset_index(drop=True)
 
         return ranked_df
-
