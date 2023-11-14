@@ -1,5 +1,4 @@
 import unittest
-from unittest.mock import Mock
 
 import pandas as pd
 from tdutils.utils.vcf_utils import Variant, Variants
