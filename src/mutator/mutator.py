@@ -49,6 +49,7 @@ class Mutator(Command):
             self.variants,
             self.failed_mutations,
             self.ranked_guides_df,
+            self.get_variants_by_guide_id(self.best_guide.guide_id),
         )
 
         writer.write_outputs(output_dir)
@@ -76,17 +77,43 @@ class Mutator(Command):
         variants = Variants(chroms)
 
         for mb in self.mutation_builders:
-            for codon in mb.codons:
-                if codon.is_edit_permitted(self._config, mb.cds.start, mb.cds.end):
-                    guide_id = mb.guide.guide_id
-                    variants.append(
-                        mb.cds.chromosome,
-                        codon.third_base_coord,
-                        id=guide_id,
-                        ref=codon.third_base_on_positive_strand,
-                        alt=codon.edited_third_base_on_positive_strand,
-                        info={"SGRNA": f"sgRNA_{guide_id}"},
-                    )
+            self._append_mb_to_variants(mb, variants)
+
+        return variants
+
+    @property
+    def best_guide(self) -> GuideSequence:
+        best_guide_id = self.ranked_guides_df.at[0, 'guide_id']
+        for mb in self.mutation_builders:
+            if mb.guide.guide_id == best_guide_id:
+                return mb.guide
+
+    def get_variants_by_guide_id(self, id: str) -> Variants:
+        chrom = [self.best_guide.chromosome]
+        best_guide_mutations = Variants(chroms=chrom, variant_list=[])
+
+        for mb in self.mutation_builders:
+            if mb.guide.guide_id == id:
+                self._append_mb_to_variants(mb, best_guide_mutations)
+
+        return best_guide_mutations
+
+    def _append_mb_to_variants(self, mb: MutationBuilder, variants: Variants) -> Variants:
+        for codon in mb.codons:
+            if codon.is_edit_permitted(
+                    self._config,
+                    mb.cds.start,
+                    mb.cds.end
+            ):
+                guide_id = mb.guide.guide_id
+                variants.append(
+                    mb.cds.chromosome,
+                    codon.third_base_coord,
+                    id=guide_id,
+                    ref=codon.third_base_on_positive_strand,
+                    alt=codon.edited_third_base_on_positive_strand,
+                    info={"SGRNA": f"sgRNA_{guide_id}"},
+                )
         return variants
 
     def _build_mutations(self, region_data: pd.Series) -> MutationBuilder:
