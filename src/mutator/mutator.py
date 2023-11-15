@@ -51,6 +51,7 @@ class Mutator(Command):
             self.variants,
             self.failed_mutations,
             self.ranked_guides_df,
+            self.get_variants_by_guide_id(self.best_guide.guide_id),
         )
 
         writer.write_outputs(output_dir)
@@ -121,15 +122,12 @@ class Mutator(Command):
 
     @property
     def best_guide(self) -> GuideSequence:
-        id = self._get_best_guide_id()
+        best_guide_id = self.ranked_guides_df.at[0, 'guide_id']
         for mb in self.mutation_builders:
-            if mb.guide.guide_id == id:
+            if mb.guide.guide_id == best_guide_id:
                 return mb.guide
 
-    def _get_best_guide_id(self) -> str:
-        return self.ranked_guides_df.at[0, 'guide_id']
-
-    def get_variants_by_guide_id(self, id: int) -> Variants:
+    def get_variants_by_guide_id(self, id: str) -> Variants:
         chrom = [self.best_guide.chromosome]
         best_guide_mutations = Variants(chroms=chrom, variant_list=[])
 
@@ -203,12 +201,6 @@ class Mutator(Command):
             result += serialise_mutation_builder(guide.mutation_builder, self._config, guide.filter_applied)
 
         return result
-
-    def convert_to_dataframe(self) -> pd.DataFrame:
-        mutation_builders = self.mutation_builders
-        data = convert_mutation_builders_to_df(mutation_builders, self._config)
-
-        return data
 
 
 def _get_chromosome(mb: MutationBuilder) -> str:
