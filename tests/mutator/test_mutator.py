@@ -183,6 +183,24 @@ class MutatorTestCase(unittest.TestCase):
         self.assertEqual(len(permitted_builders), 1)
         self.assertEqual(permitted_builders[0].codons[0].bases, 'TTG')
 
+    def test_best_guide(self):
+        guide_1 = GuideSequence(guide_id='1', chromosome='1', start='1', end='20')
+        guide_2 = GuideSequence(guide_id='2', chromosome='1', start='21', end='40')
+        mutation_builders = [
+            MutationBuilder(guide=guide_1, cds=self.cds,
+                gene_name=self.gene_name, window_length=self.window_length),
+            MutationBuilder(guide=guide_2, cds=self.cds,
+                gene_name=self.gene_name, window_length=self.window_length),
+        ]
+        ranked_guides_df = pd.DataFrame([
+            {"guide_id": '2'},
+            {"guide_id": '1'},
+        ])
+        self.mutator.mutation_builders = mutation_builders
+        self.mutator.ranked_guides_df = ranked_guides_df
+
+        self.assertEqual(self.mutator.best_guide, guide_2)
+
 
 if __name__ == '__main__':
     unittest.main()
