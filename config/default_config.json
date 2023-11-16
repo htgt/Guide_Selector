@@ -2,13 +2,13 @@
     "ignore_positions": [-1, 1],
     "allow_codon_loss": true,
     "splice_mask_distance": 5,
-    "species_id": "Grch38",
+    "wge_species_id": "Grch38",
     "assembly": "GRCh38",
     "window_length": 12,
     "filters": {
         "min_edits_allowed": 3,
         "NGG_edit_required": true,
-        "not_contain_TTTT+": true,
+        "omit_TTTT+": true,
         "max_edits_to_apply": 3
     },
     "ranking_priority_order": ["target_region_id", "off_target", "centrality", "on_target"]
