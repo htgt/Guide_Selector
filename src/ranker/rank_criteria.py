@@ -17,6 +17,7 @@ class TargetRegionId(RankCriteria):
     is_ascending: bool = True
     column: str = 'target_region_id'
 
+
 class OffTargetRankCriteria(RankCriteria):
     name: str = 'off_target'
     is_ascending: bool = True
