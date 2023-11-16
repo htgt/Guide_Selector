@@ -161,6 +161,28 @@ class MutatorTestCase(unittest.TestCase):
         with self.assertWarns(NoGuidesRemainingWarning):
             self.mutator._filter_mutation_builders()
 
+    def test_mutation_builders_permitted_edits(self):
+        mutator = Mutator({
+            'ignore_positions': [-1, 1],
+            'allow_codon_loss': True,
+            'splice_mask_distance': 5,
+            'window_length': 12,
+        })
+
+        guide = GuideSequence(guide_id='123', start=160, end=170, is_positive_strand=True, chromosome='chr1')
+        cds = CodingRegion(start=100, end=200, chromosome='chr1', is_positive_strand=True, exon_number=1, frame=1)
+        mutation_builder = MutationBuilder(guide=guide, cds=cds, gene_name='ACT', window_length=12)
+        mutation_builder.codons = [
+            WindowCodon('ATG', 123, 9, True),  # Not a permitted edit
+            WindowCodon('TTG', 124, 10, False),  # Permitted edit
+        ]
+        mutator.mutation_builders = [mutation_builder]
+
+        permitted_builders = mutator.mutation_builders_permitted_edits
+
+        self.assertEqual(len(permitted_builders), 1)
+        self.assertEqual(permitted_builders[0].codons[0].bases, 'TTG')
+
     def test_best_guide(self):
         guide_1 = GuideSequence(guide_id='1', chromosome='1', start='1', end='20')
         guide_2 = GuideSequence(guide_id='2', chromosome='1', start='21', end='40')
