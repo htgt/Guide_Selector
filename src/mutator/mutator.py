@@ -49,7 +49,7 @@ class Mutator(Command):
             self.variants,
             self.failed_mutations,
             self.ranked_guides_df,
-            self.get_variants_by_guide_id(self.best_guide.guide_id),
+            self.get_variants_by_guide_ids(self.best_guide_ids),
         )
 
         writer.write_outputs(output_dir)
@@ -82,18 +82,26 @@ class Mutator(Command):
         return variants
 
     @property
-    def best_guide(self) -> GuideSequence:
-        best_guide_id = self.ranked_guides_df.at[0, 'guide_id']
-        for mb in self.mutation_builders:
-            if mb.guide.guide_id == best_guide_id:
-                return mb.guide
+    def best_guide_ids(self):
+        return self.ranked_guides_df.groupby("target_region_id")['guide_id'].first().values
 
-    def get_variants_by_guide_id(self, id: str) -> Variants:
-        chrom = [self.best_guide.chromosome]
-        best_guide_mutations = Variants(chroms=chrom, variant_list=[])
+    @property
+    def best_guides(self) -> List[GuideSequence]:
+        guides = []
+        for mb in self.mutation_builders:
+            if mb.guide.guide_id in self.best_guide_ids:
+                guides.append(mb.guide)
+        return guides
+
+    def get_variants_by_guide_ids(self, ids: List[str]) -> Variants:
+        chroms = []
+        for guide in self.best_guides:
+            chroms.append(guide.chromosome)
+
+        best_guide_mutations = Variants(chroms=chroms, variant_list=[])
 
         for mb in self.mutation_builders:
-            if mb.guide.guide_id == id:
+            if mb.guide.guide_id in ids:
                 self._append_mb_to_variants(mb, best_guide_mutations)
 
         return best_guide_mutations
