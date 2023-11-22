@@ -16,9 +16,11 @@ class MutationBuilder:
         cds: CodingRegion,
         gene_name: str,
         window_length: int,
+        edits_config: dict = {},
     ) -> None:
         self.gene_name = gene_name
         self.codons = []
+        self._edits_config = edits_config
 
         self.guide = self._build_guide_sequence(guide)
         self.cds = self._build_coding_region(cds)
@@ -27,7 +29,7 @@ class MutationBuilder:
     def __repr__(self):
         return (
             f"guide: {self.guide}, cds: {self.cds}, window: {self.window}, "
-            f"target region id: {self.guide.target_region_id}"
+            f"target region id: {self.guide.target_region.id}"
         )
 
     def _build_guide_sequence(self, guide: GuideSequence) -> GuideSequence:
@@ -43,7 +45,7 @@ class MutationBuilder:
         return window
 
     def build_window_codons(self) -> List[WindowCodon]:
-        codons = self.window.get_window_codons()
+        codons = self.window.get_window_codons(self._edits_config, self.cds.start, self.cds.end)
         self.codons = codons
 
         return codons

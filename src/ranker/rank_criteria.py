@@ -12,6 +12,7 @@ class RankCriteria(ABC):
             if name == rank_criteria_class.name:
                 return rank_criteria_class
 
+
 class TargetRegionId(RankCriteria):
     name: str = 'target_region_id'
     is_ascending: bool = True
