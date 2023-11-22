@@ -57,6 +57,7 @@ class Mutator(Command):
     def _set_mutation_builders(self, guide_data: pd.DataFrame) -> None:
         mutation_builder_objects = [self._build_mutations(row) for index, row in guide_data.iterrows()]
 
+        print(len(mutation_builder_objects))
         self.mutation_builders = mutation_builder_objects
 
     def _generate_edit_windows_for_builders(self) -> None:
@@ -109,7 +110,7 @@ class Mutator(Command):
     def _append_mb_to_variants(self, mb: MutationBuilder, variants: Variants) -> Variants:
         for codon in mb.codons:
             if codon.is_edit_permitted(
-                    self._config,
+                    self._config["edit_rules"],
                     mb.cds.start,
                     mb.cds.end
             ):
@@ -124,40 +125,21 @@ class Mutator(Command):
                 )
         return variants
 
-    @property
-    def mutation_builders_permitted_edits(self) -> List[MutationBuilder]:
-        permitted_builders = []
-        for mb in self.mutation_builders:
-            permitted_codons = []
-            for codon in mb.codons:
-                if codon.is_edit_permitted(self._config, mb.cds.start, mb.cds.end):
-                    permitted_codons.append(codon)
-            if permitted_codons:
-                permitted_builder = MutationBuilder(
-                    guide=mb.guide,
-                    cds=mb.cds,
-                    gene_name=mb.gene_name,
-                    window_length=self._config["window_length"],
-                )
-                permitted_builder.codons = permitted_codons
-                permitted_builders.append(permitted_builder)
-            else:
-                print(mb.guide.guide_id + ' has no permitted edits.')
-        return permitted_builders
-
     def _build_mutations(self, region_data: pd.Series) -> MutationBuilder:
         guide = _fill_guide_sequence(region_data)
         coding_region = _fill_coding_region(region_data)
         gene_name = region_data['gene_name']
+
         return MutationBuilder(
             guide=guide,
             cds=coding_region,
             gene_name=gene_name,
             window_length=self._config["window_length"],
+            edits_config=self._config["edit_rules"],
         )
 
     def _filter_mutation_builders(self):
-        filters_response = FilterManager(self._config).apply_filters(self.mutation_builders_permitted_edits)
+        filters_response = FilterManager(self._config).apply_filters(self.mutation_builders)
 
         self.mutation_builders = filters_response.guides_to_keep
         self.discarded_guides = filters_response.guides_to_discard
