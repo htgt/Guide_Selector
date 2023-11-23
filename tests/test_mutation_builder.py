@@ -25,15 +25,25 @@ class TestMutationBuilder(TestCase):
             WindowCodon('TAT', 67626583, 9, True),
             WindowCodon('ATT', 67626586, 6, True),
             WindowCodon('GAG', 67626589, 3, True),
-            WindowCodon('CAA', 67626592, -1, True),
+         #  WindowCodon('CAA', 67626592, -1, True), # non-permitted edit
         ]
+
+        config = {
+            'edit_rules': {
+                'ignore_positions': [-1, 1],
+                'allow_codon_loss': True,
+                'splice_mask_distance': 5,
+            }
+        }
 
         builder = MutationBuilder(
             guide=guide,
             cds=cds,
             gene_name='BRCA1',
             window_length=12,
+            edits_config=config['edit_rules'],
         )
+
         window = builder.window
         codons = builder.build_window_codons()
 
@@ -67,6 +77,7 @@ class TestGetWindow(TestCase):
             is_positive_strand=True,
             frame=0,
         )
+        
 
         # act
         result_window = get_window(guide=guide, cds=coding_region, window_length=12)

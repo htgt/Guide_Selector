@@ -34,6 +34,16 @@ class TestEditWindowCodons(unittest.TestCase):
     def setUp(self) -> None:
         self.window_length = 12
 
+        self.config = {
+            'edit_rules': {
+                'ignore_positions': [],
+                'allow_codon_loss': True,
+                'splice_mask_distance': 0,
+            }
+        }
+        self.cds_start = 1
+        self.cds_end = 25
+
     # fmt: off
     @parameterized.expand([
         ('TATATTGAGCAAGG', (2, 13), [
@@ -44,7 +54,7 @@ class TestEditWindowCodons(unittest.TestCase):
         ]),
         ('TATTGAGCAAGG', (0, 11), [
             WindowCodon('TAT', 2, 7, True),
-            WindowCodon('TGA', 5, 4, True),
+        #   WindowCodon('TGA', 5, 4, True), # non-permitted
             WindowCodon('GCA', 8, 1, True),
             WindowCodon('AGG', 11, -3, True)
         ]),
@@ -52,27 +62,35 @@ class TestEditWindowCodons(unittest.TestCase):
     def test_split_window_into_codons(self, bases, window_coords, expected_codons):
         window = EditWindow(window_coords[0], window_coords[1], self.window_length, True, '16')
 
-        result_codons = window.split_window_into_codons(bases, 0, len(bases), True)
+        result_codons = window.split_window_into_codons(
+            bases, 0, len(bases), True, self.config['edit_rules'], self.cds_start, self.cds_end
+        )
 
         self.assertEqual(list(map(vars, result_codons)), list(map(vars, expected_codons)))
-        # self.assertEqual(result_codons, expected_codons, "Incorrect split into codons")
 
 
 class TestEditWindowCodonsNegative(unittest.TestCase):
     def setUp(self) -> None:
         self.window_length = 12
+        self.config = {
+            'edit_rules': {
+                'ignore_positions': [-1, 1],
+                'allow_codon_loss': True,
+                'splice_mask_distance': 5,
+            }
+        }
 
     # fmt: off
-    @parameterized.expand([('ATCATCCAAAGG',
-                            [WindowCodon('CCT', 77696656, -1, False),
-                             WindowCodon('TTG', 77696653, 3, False),
-                             WindowCodon('GAT', 77696650, 6, False),
-                             WindowCodon('GAT', 77696647, 9, False)]),
-                           ])  # fmt: on
+    @parameterized.expand([('ATCATCCAAAGG', [
+    #   WindowCodon('CCT', 77696656, -1, False),  # non-permitted edit
+        WindowCodon('TTG', 77696653, 3, False),
+        WindowCodon('GAT', 77696650, 6, False),
+        WindowCodon('GAT', 77696647, 9, False)]),
+    ])  # fmt: on
     def test_split_window_into_codons_negative(self, bases, expected_codons):
         window = EditWindow(77696647, 77696658, self.window_length, False, 'X')
 
-        result_codons = window.split_window_into_codons(bases, 77696647, 77696658, False)
+        result_codons = window.split_window_into_codons(bases, 77696647, 77696658, False, self.config['edit_rules'], 77696637, 77696668)
 
         self.assertEqual(list(map(vars, result_codons)), list(map(vars, expected_codons)))
 

@@ -57,7 +57,6 @@ class Mutator(Command):
     def _set_mutation_builders(self, guide_data: pd.DataFrame) -> None:
         mutation_builder_objects = [self._build_mutations(row) for index, row in guide_data.iterrows()]
 
-        print(len(mutation_builder_objects))
         self.mutation_builders = mutation_builder_objects
 
     def _generate_edit_windows_for_builders(self) -> None:
