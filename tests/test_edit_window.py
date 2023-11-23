@@ -90,7 +90,9 @@ class TestEditWindowCodonsNegative(unittest.TestCase):
     def test_split_window_into_codons_negative(self, bases, expected_codons):
         window = EditWindow(77696647, 77696658, self.window_length, False, 'X')
 
-        result_codons = window.split_window_into_codons(bases, 77696647, 77696658, False, self.config['edit_rules'], 77696637, 77696668)
+        result_codons = window.split_window_into_codons(
+            bases, 77696647, 77696658, False, self.config['edit_rules'], 77696637, 77696668
+        )
 
         self.assertEqual(list(map(vars, result_codons)), list(map(vars, expected_codons)))
 
