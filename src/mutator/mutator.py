@@ -49,7 +49,7 @@ class Mutator(Command):
             self.variants,
             self.failed_mutations,
             self.ranked_guides_df,
-            self.get_variants_by_guide_ids(self.best_guide_ids),
+            self._get_variants_by_guide_ids(self.best_guide_ids),
         )
 
         writer.write_outputs(output_dir)
@@ -93,7 +93,7 @@ class Mutator(Command):
                 guides.append(mb.guide)
         return guides
 
-    def get_variants_by_guide_ids(self, ids: List[str]) -> Variants:
+    def _get_variants_by_guide_ids(self, ids: List[str]) -> Variants:
         chroms = []
         for guide in self.best_guides:
             chroms.append(guide.chromosome)
