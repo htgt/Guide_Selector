@@ -14,6 +14,9 @@ class WindowCodon:
         self._third_base_pos = third_base_pos
         self._is_positive_strand = is_positive_strand
 
+    def __repr__(self):
+        return 'bases: ' + self.bases + ' third_base_coord: ' + str(self.third_base_coord)
+
     @property
     def bases(self) -> str:
         return self._bases

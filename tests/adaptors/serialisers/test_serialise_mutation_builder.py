@@ -36,9 +36,11 @@ class MutatorBuilderSerialiserTestCase(unittest.TestCase):
         ]
 
         self.config = {
-            'ignore_positions': [-1, 1],
-            'allow_codon_loss': True,
-            'splice_mask_distance': 5,
+            'edit_rules': {
+                'ignore_positions': [-1, 1],
+                'allow_codon_loss': True,
+                'splice_mask_distance': 5,
+            }
         }
 
     def test_convert_mutation_builders_to_df(self):
