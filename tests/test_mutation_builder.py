@@ -77,7 +77,6 @@ class TestGetWindow(TestCase):
             is_positive_strand=True,
             frame=0,
         )
-        
 
         # act
         result_window = get_window(guide=guide, cds=coding_region, window_length=12)
