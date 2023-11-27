@@ -33,10 +33,10 @@ class FilterValidator:
 
         sorted_filters = {key: filters[key] for key in sorted(filters)}
 
-        sorted_filters.update({
-            'min_edits_allowed': min_filter,
-            'max_edits_to_apply': max_filter,
-        })
+        if min_filter is not None:
+            sorted_filters['min_edits_allowed'] = min_filter
+        if max_filter is not None:
+            sorted_filters['max_edits_to_apply'] = max_filter
 
         self._config_filters = sorted_filters
 
