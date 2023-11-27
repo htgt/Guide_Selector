@@ -13,5 +13,5 @@
         "omit_TTTT+": true,
         "max_edits_to_apply": 3
     },
-    "ranking_priority_order": ["target_region_id", "off_target", "centrality", "on_target"]
+    "ranking_priority_order": ["off_target", "centrality", "on_target"]
 }
