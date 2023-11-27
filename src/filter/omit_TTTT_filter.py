@@ -24,4 +24,3 @@ class OmitTTTTFilter(Filter):
                 guides_to_discard.append(GuideDiscarded(mb, OmitTTTTFilter.key))
 
         return FilterResponse(guides_to_keep=guides_to_keep, guides_to_discard=guides_to_discard)
-
