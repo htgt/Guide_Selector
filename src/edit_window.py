@@ -93,8 +93,13 @@ class EditWindow(BaseSequence):
         extended_bases = self._get_extended_window_bases(extended_coords)
 
         codons = self.split_window_into_codons(
-            extended_bases, extended_coords[0], extended_coords[1], self.is_positive_strand,
-            config, cds_start, cds_end
+            extended_bases,
+            extended_coords[0],
+            extended_coords[1],
+            self.is_positive_strand,
+            config,
+            cds_start,
+            cds_end
         )
 
         return codons

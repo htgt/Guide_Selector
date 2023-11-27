@@ -1,7 +1,7 @@
 import unittest
 
 from ranker.rank_criteria import CentralityRankCriteria, OffTargetRankCriteria, OnTargetRankCriteria  # NOQA
-from ranker.rank_criterias_validator import RankCriteriaValidator
+from ranker.rank_criteria_validator import RankCriteriaValidator
 
 
 class TestRankCriteriaValidator(unittest.TestCase):
@@ -26,7 +26,7 @@ class TestRankCriteriaValidator(unittest.TestCase):
             RankCriteriaValidator(config).validated_criteria()
 
         self.assertEqual(
-            str(error.exception), 'Invalid ranking criteria: the given rank criteria "INVALID_CRITERIA" is not valid'
+            str(error.exception), 'Invalid ranking criteria: the given rank criterion "INVALID_CRITERIA" is not valid'
         )
 
     def test_validate_ranking_criteria_when_repeated_rank_criterion(self):
@@ -36,5 +36,5 @@ class TestRankCriteriaValidator(unittest.TestCase):
             RankCriteriaValidator(config).validated_criteria()
 
         self.assertEqual(
-            str(error.exception), 'Repeated ranking criteria: the given rank criteria "off_target" is repeated'
+            str(error.exception), 'Repeated ranking criteria: the given rank criterion "off_target" is repeated'
         )

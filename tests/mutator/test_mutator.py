@@ -168,10 +168,8 @@ class MutatorTestCase(unittest.TestCase):
         guide_1 = GuideSequence(guide_id='1', chromosome='1', start='1', end='20')
         guide_2 = GuideSequence(guide_id='2', chromosome='1', start='21', end='40')
         mutation_builders = [
-            MutationBuilder(guide=guide_1, cds=self.cds,
-                gene_name=self.gene_name, window_length=self.window_length),
-            MutationBuilder(guide=guide_2, cds=self.cds,
-                gene_name=self.gene_name, window_length=self.window_length),
+            MutationBuilder(guide=guide_1, cds=self.cds, gene_name=self.gene_name, window_length=self.window_length),
+            MutationBuilder(guide=guide_2, cds=self.cds, gene_name=self.gene_name, window_length=self.window_length),
         ]
         ranked_guides_df = pd.DataFrame([
             {'target_region_id': 'tr', 'guide_id': '2'},
