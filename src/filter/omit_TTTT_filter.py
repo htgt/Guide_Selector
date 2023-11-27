@@ -17,9 +17,11 @@ class OmitTTTTFilter(Filter):
         guides_to_discard = []
 
         for mb in mbs:
-            if 'TTTT' not in mb.guide.bases:
+            pattern = 'TTTT' if mb.guide.is_positive_strand else 'AAAA'
+            if pattern not in mb.guide.bases:
                 guides_to_keep.append(mb)
             else:
                 guides_to_discard.append(GuideDiscarded(mb, OmitTTTTFilter.key))
 
         return FilterResponse(guides_to_keep=guides_to_keep, guides_to_discard=guides_to_discard)
+
