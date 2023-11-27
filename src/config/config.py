@@ -5,8 +5,14 @@ from utils.file_system import parse_json
 DEFAULT_CONFIG_FILE = Path(__file__).parent / '../../config/default_config.json'
 
 
+class Config:
+    def __init__(self, config_file: str, cli_args: dict):
+        self.config_dict = prepare_config(config_file)
+        self.args = cli_args
+
+
 def prepare_config(config_file: str) -> dict:
-    default_config = parse_json(DEFAULT_CONFIG_FILE)
+    default_config = parse_json(str(DEFAULT_CONFIG_FILE))
     if config_file:
         config = parse_json(config_file)
         for field in default_config.keys():

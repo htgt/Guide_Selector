@@ -57,7 +57,7 @@ class RankerTest(TestCase):
             Ranker(config)
 
         self.assertEqual(
-            str(error.exception), 'Invalid ranking criteria: the given rank criteria "INVALID_CRITERIA" is not valid'
+            str(error.exception), 'Invalid ranking criteria: the given rank criterion "INVALID_CRITERIA" is not valid'
         )
 
     def test_ranker_when_repeated_rank_criteria(self):
@@ -67,7 +67,7 @@ class RankerTest(TestCase):
             Ranker(config)
 
         self.assertEqual(
-            str(error.exception), 'Repeated ranking criteria: the given rank criteria "off_target" is repeated'
+            str(error.exception), 'Repeated ranking criteria: the given rank criterion "off_target" is repeated'
         )
 
 

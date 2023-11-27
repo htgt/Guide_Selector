@@ -2,7 +2,7 @@ from unittest.mock import patch
 
 from pyfakefs.fake_filesystem_unittest import TestCase
 
-from utils.config import prepare_config
+from config.config import prepare_config
 
 
 class TestPrepareConfig(TestCase):
@@ -17,7 +17,7 @@ class TestPrepareConfig(TestCase):
         '''
         self.fs.create_file('default_config.json', contents=default_contents)
 
-    @patch('utils.config.DEFAULT_CONFIG_FILE', 'default_config.json')
+    @patch('config.config.DEFAULT_CONFIG_FILE', 'default_config.json')
     def test_prepare_config_default(self):
         # arrange
         expected = {
@@ -32,7 +32,7 @@ class TestPrepareConfig(TestCase):
         # assert
         self.assertEqual(expected, actual)
 
-    @patch('utils.config.DEFAULT_CONFIG_FILE', 'default_config.json')
+    @patch('config.config.DEFAULT_CONFIG_FILE', 'default_config.json')
     def test_prepare_config_custom(self):
         # arrange
         custom_contents = '''
