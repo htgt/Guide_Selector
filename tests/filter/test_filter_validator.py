@@ -53,3 +53,13 @@ class TestFilterValidator(unittest.TestCase):
             FilterValidator({"filters": {"NO FILTER KEY": True}}).validated_filters()
 
         self.assertEqual(str(error.exception), 'Invalid filter: the given key "NO FILTER KEY" is not a filter key')
+
+    def test_sort_filters(self):
+        input_filters = {'filters': {'max_edits_to_apply': 3, 'NGG_edit_required': True, 'omit_TTTT+': True, 'min_edits_allowed': 3}}
+        
+        expected_output = {'filters': {'NGG_edit_required': True, 'omit_TTTT+': True, 'min_edits_allowed': 3, 'max_edits_to_apply': 3}}
+        
+        filter_validator = FilterValidator(input_filters)
+        sorted_filters = filter_validator._config_filters
+        
+        self.assertEqual(sorted_filters, expected_output['filters'])
