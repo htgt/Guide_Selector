@@ -15,16 +15,16 @@ class TestFilterValidator(unittest.TestCase):
         # No filters
         ({}, []),
         ({'filters': {}}, []),
-        # MinEditsNumberFilter
-        ({'filters': {'min_edits_allowed': 3}}, [MinEditsNumberFilter]),
-        # MaxEditsNumberFilter
-        ({'filters': {'max_edits_to_apply': 3}}, [MaxEditsNumberFilter]),
         # EditGGInPAMFilter
         ({'filters': {'NGG_edit_required': True}}, [EditGGInPAMFilter]),
         ({'filters': {'NGG_edit_required': False}}, []),
         # NotContainTTTTFilter
         ({'filters': {'omit_TTTT+': True}}, [OmitTTTTFilter]),
         ({'filters': {'omit_TTTT+': False}}, []),
+        # MinEditsNumberFilter
+        ({'filters': {'min_edits_allowed': 3}}, [MinEditsNumberFilter]),
+        # MaxEditsNumberFilter
+        ({'filters': {'max_edits_to_apply': 3}}, [MaxEditsNumberFilter]),
     ])  # fmt: on
     def test_validate_filters(self, filters, expected_result):
         result = FilterValidator(filters).validated_filters()
@@ -39,7 +39,6 @@ class TestFilterValidator(unittest.TestCase):
         ({'filters': {'max_edits_to_apply': 'NO VALID VALUE'}}, 'max_edits_to_apply', 'int'),
     ])  # fmt: on
     def test_validate_filters_when_no_valid_filter_value_type(self, filters, key, expected_value_type):
-
         with self.assertRaises(ValueError) as error:
             FilterValidator(filters).validated_filters()
 
