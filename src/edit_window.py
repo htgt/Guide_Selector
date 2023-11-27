@@ -46,6 +46,9 @@ class EditWindow(BaseSequence):
         start: int,
         end: int,
         is_positive_strand: bool,
+        config: dict,
+        cds_start: int,
+        cds_end: int,
     ) -> List[WindowCodon]:
         length = len(bases)
         codons = []
@@ -61,7 +64,8 @@ class EditWindow(BaseSequence):
 
             codon = WindowCodon(codon_seq, coordinate, window_position, is_positive_strand)
 
-            codons.append(codon)
+            if codon.is_edit_permitted(config, cds_start, cds_end):
+                codons.append(codon)
 
         return codons
 
@@ -84,12 +88,13 @@ class EditWindow(BaseSequence):
 
         return extended_window.get_sequence_by_coords()
 
-    def get_window_codons(self) -> List[WindowCodon]:
+    def get_window_codons(self, config: dict, cds_start: int, cds_end: int) -> List[WindowCodon]:
         extended_coords = self._get_extended_window_coordinates()
         extended_bases = self._get_extended_window_bases(extended_coords)
 
         codons = self.split_window_into_codons(
-            extended_bases, extended_coords[0], extended_coords[1], self.is_positive_strand
+            extended_bases, extended_coords[0], extended_coords[1], self.is_positive_strand,
+            config, cds_start, cds_end
         )
 
         return codons

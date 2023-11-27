@@ -13,6 +13,12 @@ class RankCriteria(ABC):
                 return rank_criteria_class
 
 
+class TargetRegionId(RankCriteria):
+    name: str = 'target_region_id'
+    is_ascending: bool = True
+    column: str = 'target_region_id'
+
+
 class OffTargetRankCriteria(RankCriteria):
     name: str = 'off_target'
     is_ascending: bool = True

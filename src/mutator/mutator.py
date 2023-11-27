@@ -49,7 +49,7 @@ class Mutator(Command):
             self.variants,
             self.failed_mutations,
             self.ranked_guides_df,
-            self.get_variants_by_guide_id(self.best_guide.guide_id),
+            self._get_variants_by_guide_ids(self.best_guide_ids),
         )
 
         writer.write_outputs(output_dir)
@@ -82,18 +82,26 @@ class Mutator(Command):
         return variants
 
     @property
-    def best_guide(self) -> GuideSequence:
-        best_guide_id = self.ranked_guides_df.at[0, 'guide_id']
-        for mb in self.mutation_builders:
-            if mb.guide.guide_id == best_guide_id:
-                return mb.guide
+    def best_guide_ids(self):
+        return self.ranked_guides_df.groupby("target_region_id")['guide_id'].first().values
 
-    def get_variants_by_guide_id(self, id: str) -> Variants:
-        chrom = [self.best_guide.chromosome]
-        best_guide_mutations = Variants(chroms=chrom, variant_list=[])
+    @property
+    def best_guides(self) -> List[GuideSequence]:
+        guides = []
+        for mb in self.mutation_builders:
+            if mb.guide.guide_id in self.best_guide_ids:
+                guides.append(mb.guide)
+        return guides
+
+    def _get_variants_by_guide_ids(self, ids: List[str]) -> Variants:
+        chroms = []
+        for guide in self.best_guides:
+            chroms.append(guide.chromosome)
+
+        best_guide_mutations = Variants(chroms=chroms, variant_list=[])
 
         for mb in self.mutation_builders:
-            if mb.guide.guide_id == id:
+            if mb.guide.guide_id in ids:
                 self._append_mb_to_variants(mb, best_guide_mutations)
 
         return best_guide_mutations
@@ -101,7 +109,7 @@ class Mutator(Command):
     def _append_mb_to_variants(self, mb: MutationBuilder, variants: Variants) -> Variants:
         for codon in mb.codons:
             if codon.is_edit_permitted(
-                    self._config,
+                    self._config["edit_rules"],
                     mb.cds.start,
                     mb.cds.end
             ):
@@ -116,40 +124,21 @@ class Mutator(Command):
                 )
         return variants
 
-    @property
-    def mutation_builders_permitted_edits(self) -> List[MutationBuilder]:
-        permitted_builders = []
-        for mb in self.mutation_builders:
-            permitted_codons = []
-            for codon in mb.codons:
-                if codon.is_edit_permitted(self._config, mb.cds.start, mb.cds.end):
-                    permitted_codons.append(codon)
-            if permitted_codons:
-                permitted_builder = MutationBuilder(
-                    guide=mb.guide,
-                    cds=mb.cds,
-                    gene_name=mb.gene_name,
-                    window_length=self._config["window_length"],
-                )
-                permitted_builder.codons = permitted_codons
-                permitted_builders.append(permitted_builder)
-            else:
-                print(mb.guide.guide_id + ' has no permitted edits.')
-        return permitted_builders
-
     def _build_mutations(self, region_data: pd.Series) -> MutationBuilder:
         guide = _fill_guide_sequence(region_data)
         coding_region = _fill_coding_region(region_data)
         gene_name = region_data['gene_name']
+
         return MutationBuilder(
             guide=guide,
             cds=coding_region,
             gene_name=gene_name,
             window_length=self._config["window_length"],
+            edits_config=self._config["edit_rules"],
         )
 
     def _filter_mutation_builders(self):
-        filters_response = FilterManager(self._config).apply_filters(self.mutation_builders_permitted_edits)
+        filters_response = FilterManager(self._config).apply_filters(self.mutation_builders)
 
         self.mutation_builders = filters_response.guides_to_keep
         self.discarded_guides = filters_response.guides_to_discard

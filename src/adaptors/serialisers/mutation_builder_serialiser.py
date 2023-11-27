@@ -52,7 +52,7 @@ def _get_codon_dict(cds_start: int, cds_end: int, codon: WindowCodon, config: di
         'ref_pos_three': codon.bases[2],
         'alt': codon.edited_bases[2],
         'lost_amino_acids': lost_amino,
-        'permitted': codon.is_edit_permitted(config, cds_start, cds_end),
+        'permitted': codon.is_edit_permitted(config["edit_rules"], cds_start, cds_end),
     }
 
 
