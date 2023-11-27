@@ -12,6 +12,7 @@ from filter.omit_TTTT_filter import OmitTTTTFilter
 class FilterValidator:
     def __init__(self, config: dict):
         self._config_filters = config.get('filters', {})
+        self._sort_filters()
 
     def validated_filters(self) -> List[Filter]:
         valid_filters = []
@@ -23,6 +24,21 @@ class FilterValidator:
                 valid_filters.append(filter_class)
 
         return valid_filters
+    
+    def _sort_filters(self) -> None:
+        filters = self._config_filters.copy()
+
+        min_filter = filters.pop('min_edits_allowed', None)
+        max_filter = filters.pop('max_edits_to_apply', None)
+
+        sorted_filters = {key: filters[key] for key in sorted(filters)}
+
+        if min_filter is not None:
+            sorted_filters['min_edits_allowed'] = min_filter
+        if max_filter is not None:
+            sorted_filters['max_edits_to_apply'] = max_filter
+
+        self._config_filters = sorted_filters
 
 
 def _get_filter(key: str, value: any) -> Filter:
