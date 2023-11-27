@@ -1,6 +1,6 @@
 import unittest
 
-from ranker.rank_criteria import CentralityRankCriteria, OffTargetRankCriteria, OnTargetRankCriteria  # NOQA
+from ranker.rank_criteria import TargetRegionId, CentralityRankCriteria, OffTargetRankCriteria, OnTargetRankCriteria  # NOQA
 from ranker.rank_criteria_validator import RankCriteriaValidator
 
 
@@ -10,14 +10,14 @@ class TestRankCriteriaValidator(unittest.TestCase):
 
         result = RankCriteriaValidator(config).validated_criteria()
 
-        self.assertEqual(result, [OffTargetRankCriteria, CentralityRankCriteria, OnTargetRankCriteria])
+        self.assertEqual(result, [TargetRegionId, OffTargetRankCriteria, CentralityRankCriteria, OnTargetRankCriteria])
 
     def test_validate_ranking_criteria_when_no_config(self):
         config = {}
 
         result = RankCriteriaValidator(config).validated_criteria()
 
-        self.assertEqual(result, [])
+        self.assertEqual(result, [TargetRegionId])
 
     def test_validate_ranking_criteria_when_invalid_ranking_criterion(self):
         config = {"ranking_priority_order": ["INVALID_CRITERIA"]}

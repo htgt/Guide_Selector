@@ -5,8 +5,9 @@ from ranker.rank_criteria import RankCriteria
 
 class RankCriteriaValidator:
     def __init__(self, config: dict):
-        self._ranking_order = config.get('ranking_priority_order', {})
+        self._ranking_order = config.get('ranking_priority_order', [])
         self._add_group(self._ranking_order)
+        print("ORDER::::", self._ranking_order)
 
     def validated_criteria(self) -> List[RankCriteria]:
         criteria = []
