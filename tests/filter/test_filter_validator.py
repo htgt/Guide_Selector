@@ -33,10 +33,10 @@ class TestFilterValidator(unittest.TestCase):
 
     # fmt: off
     @parameterized.expand([
-        ({'filters': {'max_edits_to_apply': 'NO VALID VALUE'}}, 'max_edits_to_apply', 'int'),
-        ({'filters': {'min_edits_allowed': 'NO VALID VALUE'}}, 'min_edits_allowed', 'int'),
         ({'filters': {'NGG_edit_required': 'NO VALID VALUE'}}, 'NGG_edit_required', 'bool'),
         ({'filters': {'omit_TTTT+': 'NO VALID VALUE'}}, 'omit_TTTT+', 'bool'),
+        ({'filters': {'min_edits_allowed': 'NO VALID VALUE'}}, 'min_edits_allowed', 'int'),
+        ({'filters': {'max_edits_to_apply': 'NO VALID VALUE'}}, 'max_edits_to_apply', 'int'),
     ])  # fmt: on
     def test_validate_filters_when_no_valid_filter_value_type(self, filters, key, expected_value_type):
 
