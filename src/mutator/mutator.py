@@ -10,6 +10,7 @@ from tdutils.utils.vcf_utils import Variants
 from abstractions.command import Command
 from adaptors.serialisers.mutation_builder_serialiser import convert_mutation_builders_to_df, serialise_mutation_builder  # NOQA
 from coding_region import CodingRegion
+from config.config import Config
 from filter.filter_manager import FilterManager
 from filter.filter_response import GuideDiscarded
 from guide import GuideSequence
@@ -24,13 +25,15 @@ from utils.warnings import NoGuidesRemainingWarning
 
 
 class Mutator(Command):
-    def __init__(self, config: dict) -> None:
-        self._config = config
+
+    def __init__(self, config: Config, guide_sequences: List[GuideSequence] = None) -> None:
+        super().__init__(config)
         self._guides_df: pd.DataFrame = None
         self.mutation_builders: List[MutationBuilder] = []
         self.discarded_guides: List[GuideDiscarded] = []
         self.failed_mutations = None
         self.ranked_guides_df: pd.DataFrame = None
+        self._guide_sequences: List[GuideSequence] = guide_sequences
 
     def read_inputs(self, args: dict, guide_sequences=None):
         reader = MutatorReader().read_inputs(args, guide_sequences=guide_sequences)
@@ -39,12 +42,26 @@ class Mutator(Command):
         self._guides_df = GuideDeterminer().parse_loci(reader.gtf_data, reader.guide_sequences)
 
     def run(self):
+        print('Running PAM & Protospacer guide_selector')
+        self._read_inputs()
+        self._process()
+        self._write_outputs()
+
+    def _read_inputs(self):
+        reader = MutatorReader().read_inputs(self._config.args, guide_sequences=self._guide_sequences)
+
+        # Prepare data frame for the mutator
+        self._guides_df = GuideDeterminer().parse_loci(reader.gtf_data, reader.guide_sequences)
+
+    def _process(self):
         self._set_mutation_builders(self._guides_df)
         self._generate_edit_windows_for_builders()
         self._filter_mutation_builders()
         self._rank_mutation_builders()
+        print("Length of mutation_builders list:", len(self.mutation_builders))
+        print("Length of failed_mutations list:", len(self.failed_mutations))
 
-    def write_outputs(self, output_dir: str):
+    def _write_outputs(self):
         writer = MutatorWriter(
             self._kept_mb_to_guides_and_codons(self.mutation_builders),
             self._discarded_mb_to_guides_and_codons(self.discarded_guides),
@@ -54,7 +71,7 @@ class Mutator(Command):
             self._get_variants_by_guide_ids(self.best_guide_ids),
         )
 
-        writer.write_outputs(output_dir)
+        writer.write_outputs(self._config.args['out_dir'])
 
     def _set_mutation_builders(self, guide_data: pd.DataFrame) -> None:
         mutation_builder_objects = [self._build_mutations(row) for index, row in guide_data.iterrows()]
@@ -148,7 +165,7 @@ class Mutator(Command):
     def _append_mb_to_variants(self, mb: MutationBuilder, variants: Variants) -> Variants:
         for codon in mb.codons:
             if codon.is_edit_permitted(
-                    self._config["edit_rules"],
+                    self._config.config_dict["edit_rules"],
                     mb.cds.start,
                     mb.cds.end
             ):
@@ -172,12 +189,12 @@ class Mutator(Command):
             guide=guide,
             cds=coding_region,
             gene_name=gene_name,
-            window_length=self._config["window_length"],
-            edits_config=self._config["edit_rules"],
+            window_length=self._config.config_dict["window_length"],
+            edits_config=self._config.config_dict["edit_rules"],
         )
 
     def _filter_mutation_builders(self):
-        filters_response = FilterManager(self._config).apply_filters(self.mutation_builders)
+        filters_response = FilterManager(self._config.config_dict).apply_filters(self.mutation_builders)
 
         self.mutation_builders = filters_response.guides_to_keep
 
@@ -194,21 +211,21 @@ class Mutator(Command):
             warnings.warn(NoGuidesRemainingWarning(warning_msg))
 
     def _rank_mutation_builders(self):
-        df = convert_mutation_builders_to_df(self.mutation_builders, self._config)
+        df = convert_mutation_builders_to_df(self.mutation_builders, self._config.config_dict)
 
-        self.ranked_guides_df = Ranker(self._config).rank(df)
+        self.ranked_guides_df = Ranker(self._config.config_dict).rank(df)
 
     def _kept_mb_to_guides_and_codons(self, mutation_builders: List[MutationBuilder]) -> List[dict]:
         result = []
         for mutation_builder in mutation_builders:
-            result += serialise_mutation_builder(mutation_builder, self._config)
+            result += serialise_mutation_builder(mutation_builder, self._config.config_dict)
 
         return result
 
     def _discarded_mb_to_guides_and_codons(self, discarded_guide: List[GuideDiscarded]) -> List[dict]:
         result = []
         for guide in discarded_guide:
-            result += serialise_mutation_builder(guide.mutation_builder, self._config, guide.filter_applied)
+            result += serialise_mutation_builder(guide.mutation_builder, self._config.config_dict, guide.filter_applied)
 
         return result
 
