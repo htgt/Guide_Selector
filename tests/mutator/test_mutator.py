@@ -1,4 +1,5 @@
 import unittest
+from unittest.mock import Mock
 
 import pandas as pd
 from tdutils.utils.vcf_utils import Variant, Variants
@@ -17,14 +18,15 @@ from utils.warnings import NoGuidesRemainingWarning
 
 class MutatorTestCase(unittest.TestCase):
     def setUp(self):
-        # fmt: off
-        self.mutator = Mutator({
+        config_dict = {
             'edit_rules': {
                 'ignore_positions': [-1, 1],
                 'allow_codon_loss': True,
                 'splice_mask_distance': 5,
             }
-        })  # fmt: on
+        }
+        # fmt: off
+        self.mutator = Mutator(self._getConfig(config_dict))  # fmt: on
         self.chrom = 'chr1'
         self.pos = 23
         self.third_base = 'A'
@@ -155,7 +157,7 @@ class MutatorTestCase(unittest.TestCase):
     def test_filter_mutation_builders_all_guides_filtered(self):
         mb_test = self.mutation_builder
         self.mutator.mutation_builders = [mb_test]
-        self.mutator._config = {
+        self.mutator._config.config_dict = {
             "filters": {
                 "min_edits_allowed": 123,
             }
@@ -179,6 +181,14 @@ class MutatorTestCase(unittest.TestCase):
         self.mutator.ranked_guides_df = ranked_guides_df
 
         self.assertEqual(self.mutator.best_guides, [guide_2])
+
+    def _getConfig(self, config_dict: dict) -> Mock:
+        config = Mock()
+        config.config_dict = config_dict
+        config.args = {}
+        config.command = "mutator"
+
+        return config
 
 
 if __name__ == '__main__':
