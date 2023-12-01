@@ -54,7 +54,7 @@ class TestEditWindowCodons(unittest.TestCase):
         ]),
         ('TATTGAGCAAGG', (0, 11), [
             WindowCodon('TAT', 2, 7, True),
-        #   WindowCodon('TGA', 5, 4, True), # non-permitted
+            #   WindowCodon('TGA', 5, 4, True), # non-permitted
             WindowCodon('GCA', 8, 1, True),
             WindowCodon('AGG', 11, -3, True)
         ]),
@@ -82,7 +82,7 @@ class TestEditWindowCodonsNegative(unittest.TestCase):
 
     # fmt: off
     @parameterized.expand([('ATCATCCAAAGG', [
-    #   WindowCodon('CCT', 77696656, -1, False),  # non-permitted edit
+        #   WindowCodon('CCT', 77696656, -1, False),  # non-permitted edit
         WindowCodon('TTG', 77696653, 3, False),
         WindowCodon('GAT', 77696650, 6, False),
         WindowCodon('GAT', 77696647, 9, False)]),

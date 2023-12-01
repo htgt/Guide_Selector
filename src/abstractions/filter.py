@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import List
 
+from config.config import Config
 from filter.filter_response import FilterResponse
 from mutation_builder import MutationBuilder
 
@@ -10,7 +11,7 @@ class Filter(ABC):
     value_type: type
 
     @abstractmethod
-    def __init__(self, config: dict):
+    def __init__(self, config: Config):
         pass
 
     @abstractmethod

@@ -2,6 +2,7 @@ import copy
 from typing import List
 
 from abstractions.filter import Filter
+from config.config import Config
 from filter.filter_response import FilterResponse, GuideDiscarded
 from mutation_builder import MutationBuilder
 
@@ -10,8 +11,8 @@ class MaxEditsNumberFilter(Filter):
     key: str = 'max_edits_to_apply'
     value_type: type = int
 
-    def __init__(self, config: dict):
-        self.max_edits = config['filters']['max_edits_to_apply']
+    def __init__(self, config: Config):
+        self.max_edits = config.filters['max_edits_to_apply']
 
     def apply(self, mbs: List[MutationBuilder]) -> FilterResponse:
         guides_with_codons_to_keep = []
