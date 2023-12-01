@@ -2,12 +2,13 @@ from typing import List
 
 import pandas as pd
 
+from config.config import Config
 from ranker.rank_criteria import RankCriteria
 from ranker.rank_criteria_validator import RankCriteriaValidator
 
 
 class Ranker:
-    def __init__(self, config: dict) -> None:
+    def __init__(self, config: Config) -> None:
         self._ranking_order: List[RankCriteria] = RankCriteriaValidator(config).validated_criteria()
 
     def rank(self, df: pd.DataFrame):

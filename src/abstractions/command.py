@@ -4,7 +4,6 @@ from config.config import Config
 
 
 class Command(ABC):
-
     def __init__(self, config: Config):
         self._config: Config = config
 

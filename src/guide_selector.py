@@ -5,7 +5,6 @@ from retriever.retriever import Retriever
 
 
 class GuideSelector(Command):
-
     def __init__(self, config: Config):
         super().__init__(config)
 
@@ -13,5 +12,5 @@ class GuideSelector(Command):
         retriever = Retriever(self._config)
         retriever.run()
 
-        mutator = Mutator(self._config, retriever.guide_sequences)
-        mutator.run()
+        mutator = Mutator(self._config)
+        mutator.run(retriever.guide_sequences)

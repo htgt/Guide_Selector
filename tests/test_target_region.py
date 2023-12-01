@@ -22,7 +22,7 @@ class TestParseTargetRegion(unittest.TestCase):
         ("chr1300350", ParseStringToTargetRegionError),
         ("ch2100-150", ParseStringToTargetRegionError),
         ("222-333", ParseStringToTargetRegionError),
-    ]) # fmt: on
+    ])  # fmt: on
     def test_invalid_target_region(self, input_str, exception):
         with self.assertRaises(exception):
             parse_string_to_target_region(input_str)

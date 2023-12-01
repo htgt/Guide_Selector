@@ -1,11 +1,12 @@
 from typing import List
 
+from config.config import Config
 from ranker.rank_criteria import RankCriteria
 
 
 class RankCriteriaValidator:
-    def __init__(self, config: dict):
-        self._ranking_order = config.get('ranking_priority_order', [])
+    def __init__(self, config: Config):
+        self._ranking_order = config.ranking_priority_order
         self._ranking_order.insert(0, 'target_region_id')
 
     def validated_criteria(self) -> List[RankCriteria]:
