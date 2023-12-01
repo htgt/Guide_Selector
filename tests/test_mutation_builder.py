@@ -25,7 +25,6 @@ class TestMutationBuilder(TestCase):
             WindowCodon('TAT', 67626583, 9, True),
             WindowCodon('ATT', 67626586, 6, True),
             WindowCodon('GAG', 67626589, 3, True),
-         #  WindowCodon('CAA', 67626592, -1, True), # non-permitted edit
         ]
 
         config = {

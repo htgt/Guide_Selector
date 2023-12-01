@@ -7,7 +7,7 @@ from mutation_builder import MutationBuilder
 
 
 def serialise_mutation_builder(
-    mutation_builder: MutationBuilder, config: dict, filter_applied: str = None
+    mutation_builder: MutationBuilder, edit_rules: dict, filter_applied: str = None
 ) -> List[dict]:
     serialised_mutation_builder = []
 
@@ -17,7 +17,7 @@ def serialise_mutation_builder(
     cds_end = mutation_builder.cds.end
 
     for codon in mutation_builder.codons:
-        codon_dict = _get_codon_dict(cds_start, cds_end, codon, config)
+        codon_dict = _get_codon_dict(cds_start, cds_end, codon, edit_rules)
 
         serialised_mutation_builder.append({**mb_dict, **codon_dict})
 
@@ -42,7 +42,7 @@ def _get_mutation_builder_dict(mutation_builder: MutationBuilder, filter_applied
     }
 
 
-def _get_codon_dict(cds_start: int, cds_end: int, codon: WindowCodon, config: dict) -> dict:
+def _get_codon_dict(cds_start: int, cds_end: int, codon: WindowCodon, edit_rules: dict) -> dict:
     lost_amino = ','.join(codon.amino_acids_lost_from_edit) if codon.amino_acids_lost_from_edit else 'N/A'
 
     return {
@@ -52,12 +52,12 @@ def _get_codon_dict(cds_start: int, cds_end: int, codon: WindowCodon, config: di
         'ref_pos_three': codon.bases[2],
         'alt': codon.edited_bases[2],
         'lost_amino_acids': lost_amino,
-        'permitted': codon.is_edit_permitted(config["edit_rules"], cds_start, cds_end),
+        'permitted': codon.is_edit_permitted(edit_rules, cds_start, cds_end),
     }
 
 
 # Dataframe
-def convert_mutation_builders_to_df(mutation_builders: List[MutationBuilder], config: dict) -> pd.DataFrame:
+def convert_mutation_builders_to_df(mutation_builders: List[MutationBuilder]) -> pd.DataFrame:
     if mutation_builders is None:
         raise ValueError("Mutation builders not available for dataframing.")
     data = []

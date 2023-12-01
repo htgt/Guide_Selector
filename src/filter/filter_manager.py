@@ -1,13 +1,14 @@
 from typing import List
 
 from abstractions.filter import Filter
+from config.config import Config
 from filter.filter_response import FilterResponse
 from filter.filter_validator import FilterValidator
 from mutation_builder import MutationBuilder
 
 
 class FilterManager:
-    def __init__(self, config: dict):
+    def __init__(self, config: Config):
         self._filters: List[Filter] = FilterValidator(config).validated_filters()
         self._config = config
 

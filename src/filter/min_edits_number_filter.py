@@ -1,6 +1,7 @@
 from typing import List
 
 from abstractions.filter import Filter
+from config.config import Config
 from filter.filter_response import FilterResponse, GuideDiscarded
 from mutation_builder import MutationBuilder
 
@@ -9,8 +10,8 @@ class MinEditsNumberFilter(Filter):
     key: str = 'min_edits_allowed'
     value_type: type = int
 
-    def __init__(self, config: dict):
-        self.min_edits = config['filters']['min_edits_allowed']
+    def __init__(self, config: Config):
+        self.min_edits = config.filters['min_edits_allowed']
 
     def apply(self, mbs: List[MutationBuilder]) -> FilterResponse:
         guides_to_keep = []

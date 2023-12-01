@@ -35,12 +35,10 @@ class MutatorBuilderSerialiserTestCase(unittest.TestCase):
             WindowCodon(bases='TCC', third_base_coord=122, third_base_pos=2, is_positive_strand=False),
         ]
 
-        self.config = {
-            'edit_rules': {
-                'ignore_positions': [-1, 1],
-                'allow_codon_loss': True,
-                'splice_mask_distance': 5,
-            }
+        self.edits_config = {
+            'ignore_positions': [-1, 1],
+            'allow_codon_loss': True,
+            'splice_mask_distance': 5,
         }
 
     def test_convert_mutation_builders_to_df(self):
@@ -64,7 +62,7 @@ class MutatorBuilderSerialiserTestCase(unittest.TestCase):
             'codon_details',
         ]
 
-        df = convert_mutation_builders_to_df([self.mutation_builder], self.config)
+        df = convert_mutation_builders_to_df([self.mutation_builder])
 
         self.assertEqual(list(df.columns), expected_columns)
 
@@ -104,7 +102,7 @@ class MutatorBuilderSerialiserTestCase(unittest.TestCase):
         cds_end = 200
         codon = WindowCodon(bases='TCA', third_base_coord=123, third_base_pos=1, is_positive_strand=True)
 
-        result = _get_codon_dict(cds_start, cds_end, codon, self.config)
+        result = _get_codon_dict(cds_start, cds_end, codon, self.edits_config)
 
         self.assertEqual(result, expected_codon_dict)
 
@@ -154,9 +152,7 @@ class MutatorBuilderSerialiserTestCase(unittest.TestCase):
         }]
         # fmt: on
 
-        serialised_mb = serialise_mutation_builder(self.mutation_builder, self.config, filter_applied=None)
-        print(serialised_mb)
-        print(expected_serialisation)
+        serialised_mb = serialise_mutation_builder(self.mutation_builder, self.edits_config, filter_applied=None)
 
         print(serialised_mb)
 
@@ -211,7 +207,9 @@ class MutatorBuilderSerialiserTestCase(unittest.TestCase):
         # fmt: on
 
         self.mutation_builder.guide.on_target_score = 0.86
-        serialised_mb = serialise_mutation_builder(self.mutation_builder, self.config, filter_applied='filter_name')
+        serialised_mb = serialise_mutation_builder(
+            self.mutation_builder, self.edits_config, filter_applied='filter_name'
+        )
 
         self.assertEqual(serialised_mb, expected_serialisation)
 

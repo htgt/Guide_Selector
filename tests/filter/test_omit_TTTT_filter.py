@@ -35,5 +35,4 @@ class TestNotContainTTTTFilter(unittest.TestCase):
         result = test_instance.apply([mb1, mb2, mb3])
 
         self.assertCountEqual(result.guides_to_keep, [mb1, mb3])
-        self.assertCountEqual(result.guides_to_discard,
-                              [GuideDiscarded(mb2, OmitTTTTFilter.key)])
+        self.assertCountEqual(result.guides_to_discard, [GuideDiscarded(mb2, OmitTTTTFilter.key)])

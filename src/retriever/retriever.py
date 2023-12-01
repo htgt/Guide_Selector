@@ -18,20 +18,20 @@ class Retriever(Command):
         self.guide_sequences: List[GuideSequence] = []
 
     def run(self):
-        print('Run retrieve command with config:', self._config.config_dict)
+        print('Run retrieve command with config:', self._config.to_dict())
         self._read_inputs()
         self._process()
         self._write_outputs()
 
     def _read_inputs(self):
-        reader = RetrieverReader().read_inputs(self._config.args)
+        reader = RetrieverReader(self._config).read_inputs()
 
         self._target_regions = reader.target_regions
 
     def _process(self):
         request_options = {
-            'wge_species_id': self._config.config_dict['wge_species_id'],
-            'assembly': self._config.config_dict['assembly'],
+            'wge_species_id': self._config.wge_species_id,
+            'assembly': self._config.assembly
         }
         self.guide_sequences = _get_guides_data(self._target_regions, request_options)
 
@@ -39,7 +39,7 @@ class Retriever(Command):
             raise GuidesNotFoundError('No guides found in given regions.')
 
     def _write_outputs(self):
-        RetrieverWriter(self.guide_sequences).write_outputs(self._config.args['out_dir'])
+        RetrieverWriter(self.guide_sequences).write_outputs(self._config.output_dir)
 
 
 def _get_guides_data(regions: List[TargetRegion], request_options: dict) -> List[GuideSequence]:
