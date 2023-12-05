@@ -1,4 +1,5 @@
 import unittest
+from unittest.mock import Mock
 
 import pandas as pd
 from tdutils.utils.vcf_utils import Variant, Variants
@@ -11,20 +12,17 @@ from guide import GuideSequence
 from mutation_builder import MutationBuilder
 from mutator.mutator import Mutator, _fill_coding_region, _fill_guide_sequence
 from target_region import TargetRegion
-
 from utils.warnings import NoGuidesRemainingWarning
 
 
 class MutatorTestCase(unittest.TestCase):
     def setUp(self):
-        # fmt: off
-        self.mutator = Mutator({
-            'edit_rules': {
-                'ignore_positions': [-1, 1],
-                'allow_codon_loss': True,
-                'splice_mask_distance': 5,
-            }
-        })  # fmt: on
+        edit_rules = {
+            'ignore_positions': [-1, 1],
+            'allow_codon_loss': True,
+            'splice_mask_distance': 5,
+        }
+        self.mutator = Mutator(_config(edit_rules))
         self.chrom = 'chr1'
         self.pos = 23
         self.third_base = 'A'
@@ -155,11 +153,7 @@ class MutatorTestCase(unittest.TestCase):
     def test_filter_mutation_builders_all_guides_filtered(self):
         mb_test = self.mutation_builder
         self.mutator.mutation_builders = [mb_test]
-        self.mutator._config = {
-            "filters": {
-                "min_edits_allowed": 123,
-            }
-        }
+        self.mutator._config.filters = {"min_edits_allowed": 123}
 
         with self.assertWarns(NoGuidesRemainingWarning):
             self.mutator._filter_mutation_builders()
@@ -179,6 +173,12 @@ class MutatorTestCase(unittest.TestCase):
         self.mutator.ranked_guides_df = ranked_guides_df
 
         self.assertEqual(self.mutator.best_guides, [guide_2])
+
+
+def _config(edit_rules: dict) -> Mock:
+    config = Mock()
+    config.edit_rules = edit_rules
+    return config
 
 
 if __name__ == '__main__':

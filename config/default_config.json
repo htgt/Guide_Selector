@@ -1,4 +1,12 @@
 {
+    "input_args": {
+        "out_dir": "./",
+        "on_target": "./examples/on_target_scores.tsv",
+        "region_file": "./examples/target_regions.tsv",
+        "region": "",
+        "gtf": "",
+        "tsv": ""
+    },
     "edit_rules": {
         "ignore_positions": [-1, 1],
         "allow_codon_loss": true,

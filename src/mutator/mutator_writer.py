@@ -10,12 +10,12 @@ from utils.file_system import write_json_failed_guides, write_list_dict_in_tsv, 
 
 
 class MutatorWriter(Writer):
-    guides_codons_tsv_filename = 'guides_and_codons.tsv'
-    discarded_guides_codons_tsv_filename = 'discarded_guides_and_codons.tsv'
-    variants_vcf_filename = 'variants.vcf'
+    guides_codons_tsv_filename = 'candidate_ppes.tsv'
+    discarded_guides_codons_tsv_filename = 'discarded_ppes.tsv'
+    variants_vcf_filename = 'candidate_ppes.vcf'
     failed_guides_json_filename = 'failed_guides.json'
     ranked_guides_tsv_filename = 'ranked_guides.tsv'
-    best_guide_variants = 'best_guide_variants.vcf'
+    best_guide_variants = 'optimal_guide_ppes.vcf'
 
     def __init__(
         self,

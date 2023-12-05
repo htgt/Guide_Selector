@@ -1,17 +1,19 @@
 from typing import List
 
 from abstractions.reader import Reader
+from config.config import Config
 from target_region import TargetRegion, parse_string_to_target_region
 from utils.exceptions import NoTargetRegionDataError
 from utils.file_system import read_tsv_to_list_dict
 
 
 class RetrieverReader(Reader):
-    def __init__(self):
+    def __init__(self, config: Config):
+        super().__init__(config)
         self.target_regions: List[TargetRegion] = []
 
-    def read_inputs(self, args: dict, **kwargs) -> Reader:
-        self.target_regions = _get_target_regions(region=args['region'], region_file=args['region_file'])
+    def read_inputs(self) -> Reader:
+        self.target_regions = _get_target_regions(region=self._config.region, region_file=self._config.region_file)
         return self
 
 

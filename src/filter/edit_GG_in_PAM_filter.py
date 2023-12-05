@@ -1,6 +1,7 @@
 from typing import List
 
 from abstractions.filter import Filter
+from config.config import Config
 from filter.filter_response import FilterResponse, GuideDiscarded
 from mutation_builder import MutationBuilder
 
@@ -9,7 +10,7 @@ class EditGGInPAMFilter(Filter):
     key: str = 'NGG_edit_required'
     value_type: type = bool
 
-    def __init__(self, config: dict):
+    def __init__(self, config: Config):
         pass
 
     def apply(self, mbs: List[MutationBuilder]) -> FilterResponse:
