@@ -27,6 +27,10 @@ python3 --version
 python --version
 ```
 
+### Install 
+```make install
+```
+
 
 ### Python Virtual Environment
 Requirements:
@@ -146,6 +150,8 @@ Example
 python3 src/cli.py guide_selector --region_file examples/target_regions.tsv --gtf ./example.gtf 
 ```
 
+## Developer notes
+
 ### Run with Docker
 
 Build image 
@@ -197,12 +203,6 @@ pycodestyle src tests
 
 
 ***Makefile**
-To use makefile install ``xutils``
-```sh
-sudo apt install xutils-dev
-xmkmf
-```
-
 ```sh
 make
 ``` 
