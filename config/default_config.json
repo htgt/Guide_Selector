@@ -1,6 +1,6 @@
 {
     "input_args": {
-        "out_dir": "./",
+        "out_dir": "./output",
         "on_target": "",
         "region_file": "./examples/target_regions.tsv",
         "region": "",

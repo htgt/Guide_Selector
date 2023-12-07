@@ -79,7 +79,7 @@ def _add_basic_input_args(parser: ArgumentParser) -> None:
         type=str,
         nargs='?',
         const='.',
-        help='Desired output path (Default: ./)',
+        help='Desired output path (Default: ./output)',
     )
     parser.add_argument(
         '--on_target',
