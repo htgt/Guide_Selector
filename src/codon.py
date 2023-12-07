@@ -15,7 +15,7 @@ class WindowCodon:
         self._is_positive_strand = is_positive_strand
 
     def __repr__(self):
-        return 'bases: ' + self.bases + ' third_base_coord: ' + str(self.third_base_coord)
+        return f'bases: {self.bases} third_base_coord: {str(self.third_base_coord)}'
 
     @property
     def bases(self) -> str:
@@ -85,6 +85,5 @@ class WindowCodon:
 
 def get_third_base_on_positive_strand(bases: str, is_positive_strand: bool) -> str:
     complements = {'T': 'A', 'C': 'G', 'A': 'T', 'G': 'C'}
-    if is_positive_strand:
-        return bases[2]
-    return complements[bases[2]]
+
+    return bases[2] if is_positive_strand else complements[bases[2]]

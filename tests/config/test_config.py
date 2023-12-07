@@ -25,7 +25,7 @@ class TestPrepareConfig(TestCase):
             'region_file': 'CLI_region_file',
             'region': 'CLI_region',
             'gtf': 'CLI_gtf',
-            'tsv': 'CLI_tsv'
+            'tsv': 'CLI_tsv',
         }
         input_args.conf = 'conf'
         input_args.command = 'Command'
@@ -38,12 +38,12 @@ class TestPrepareConfig(TestCase):
                     'region_file': 'CONF_region_file',
                     'region': 'CONF_region',
                     'gtf': 'CONF_gtf',
-                    'tsv': 'CONF_tsv'
+                    'tsv': 'CONF_tsv',
                 },
                 'edit_rules': 'CONF_edit_rules',
                 'wge_species_id': 'CONF_wge_species_id',
                 'assembly': 'CONF_assembly',
-                'window_length': 'CONF_window_length'
+                'window_length': 'CONF_window_length',
             }
 
             result = Config(input_args)
@@ -76,12 +76,12 @@ class TestPrepareConfig(TestCase):
                     'region_file': 'CONF_region_file',
                     'region': 'CONF_region',
                     'gtf': 'CONF_gtf',
-                    'tsv': 'CONF_tsv'
+                    'tsv': 'CONF_tsv',
                 },
                 'edit_rules': 'CONF_edit_rules',
                 'wge_species_id': 'CONF_wge_species_id',
                 'assembly': 'CONF_assembly',
-                'window_length': 'CONF_window_length'
+                'window_length': 'CONF_window_length',
             }
 
             result = Config(input_args)
@@ -111,7 +111,7 @@ class TestPrepareConfig(TestCase):
                 'edit_rules': 'CONF_edit_rules',
                 'wge_species_id': 'CONF_wge_species_id',
                 'assembly': 'CONF_assembly',
-                'window_length': 'CONF_window_length'
+                'window_length': 'CONF_window_length',
             }
 
             result = Config(input_args)
@@ -132,9 +132,7 @@ class TestPrepareConfig(TestCase):
 
     def test_config_when_no_region_nor_region_file_in_retriever_command(self):
         input_args = Mock()
-        input_args.arguments = {
-            'gtf': 'CLI_gtf'
-        }
+        input_args.arguments = {'gtf': 'CLI_gtf'}
         input_args.conf = 'conf'
         input_args.command = 'retrieve'
 
@@ -143,7 +141,7 @@ class TestPrepareConfig(TestCase):
                 'edit_rules': 'CONF_edit_rules',
                 'wge_species_id': 'CONF_wge_species_id',
                 'assembly': 'CONF_assembly',
-                'window_length': 'CONF_window_length'
+                'window_length': 'CONF_window_length',
             }
 
             with self.assertRaises(ValueError) as error:
@@ -162,7 +160,7 @@ class TestPrepareConfig(TestCase):
                 'edit_rules': 'CONF_edit_rules',
                 'wge_species_id': 'CONF_wge_species_id',
                 'assembly': 'CONF_assembly',
-                'window_length': 'CONF_window_length'
+                'window_length': 'CONF_window_length',
             }
 
             with self.assertRaises(ValueError) as error:
@@ -180,7 +178,7 @@ class TestPrepareConfig(TestCase):
                 'edit_rules': 'CONF_edit_rules',
                 'wge_species_id': 'CONF_wge_species_id',
                 'assembly': 'CONF_assembly',
-                'window_length': 'CONF_window_length'
+                'window_length': 'CONF_window_length',
             }
 
             with self.assertRaises(ValueError) as error:
@@ -190,9 +188,7 @@ class TestPrepareConfig(TestCase):
 
     def test_config_when_no_region_nor_region_file_in_guide_selector_command(self):
         input_args = Mock()
-        input_args.arguments = {
-            'gtf': 'CLI_gtf'
-        }
+        input_args.arguments = {'gtf': 'CLI_gtf'}
         input_args.conf = 'conf'
         input_args.command = 'guide_selector'
 
@@ -201,7 +197,7 @@ class TestPrepareConfig(TestCase):
                 'edit_rules': 'CONF_edit_rules',
                 'wge_species_id': 'CONF_wge_species_id',
                 'assembly': 'CONF_assembly',
-                'window_length': 'CONF_window_length'
+                'window_length': 'CONF_window_length',
             }
 
             with self.assertRaises(ValueError) as error:
@@ -220,7 +216,7 @@ class TestPrepareConfig(TestCase):
                 'edit_rules': 'CONF_edit_rules',
                 'wge_species_id': 'CONF_wge_species_id',
                 'assembly': 'CONF_assembly',
-                'window_length': 'CONF_window_length'
+                'window_length': 'CONF_window_length',
             }
 
             with self.assertRaises(ValueError) as error:

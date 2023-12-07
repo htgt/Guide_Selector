@@ -36,6 +36,7 @@ class GuideDeterminer:
         start_cond = gtf_data['Start'] <= guide.end
         end_cond = gtf_data['End'] >= guide.start
         coding_region = gtf_data[feature_cond & chrom_cond & start_cond & end_cond].copy()
+        coding_region['Frame'] = coding_region['Frame'].astype(int)
 
         if coding_region.empty:
             raise GuideDeterminerError(f'Guide {guide.guide_id} does not overlap with any coding regions')
@@ -65,7 +66,7 @@ class GuideDeterminer:
 
         frames = (0, 2, 1)
 
-        return frames[(difference + int(frames.index(int(row['Frame'])))) % 3]
+        return frames[(difference + frames.index(int(row['Frame']))) % 3]
 
     def _adjust_columns_for_output(self, coding_regions: pd.DataFrame) -> pd.DataFrame:
         coding_regions.rename(
