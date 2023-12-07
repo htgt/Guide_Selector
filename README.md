@@ -10,6 +10,11 @@ Dependencies:
 Build-essential and Python (3.8), Python-venv (3.8)
 Change python command to point to Python (3.8), ubuntu expects python3 to be a specific version for compatibility.
 
+Requirements:
+
+- Ubuntu 18.X.X 
+- Python3.8+
+
 Install python and dependencies.
 ```sh
 sudo apt-get update \
@@ -28,31 +33,86 @@ python --version
 ```
 
 ### Install 
-```make install
+```sh
+make install
 ```
 
 
-### Python Virtual Environment
-Requirements:
+## Usage
 
-- Ubuntu 18.X.X 
-- Python3.8+
-- Python-venv
+### Commands
+There are three commands available:
+- **guide_selector** - runs the full guide selector. Accepts reference gtf file and target region tsv as input, returns guides, candidate ppes, optimal guide ppes
+- **retrieve** - retrieves guides for given target region
+- **mutator** - calculates ppes for given guides
 
-Setting up Virtual Env:
+
+### Config file
+Config file is used to configure guide selector program.
+You can also specify paths to input files in the config.
+
+If config file is not specified, it automatically uses `config/default_config.json`
+
+**Do not edit or overwrite `config/default_config.json` file! Create your own config file with the same structure and pass a path as a parameter**
+
+To run a command with specific config file:
 
 ```sh
-python -m venv venv
-
-source venv/bin/activate
-
-pip install -r requirements.txt
-
-deactivate
+python3 src/cli.py guide_selector --conf config/custom_config.json
+```
+```sh
+python3 src/cli.py retrieve --conf config/custom_config.json
+```
+```sh
+python3 src/cli.py mutator --conf config/custom_config.json
 ```
 
 
-### Usage
+### Output directory
+By default, all the output files will be saved to the `/output` directory 
+
+It may be inconvenient and the next run will rewrite the outputs, so you can specify your custom
+output folder:
+
+using config file
+```json
+  "input_args": {
+      "out_dir": "./my_output",
+  }
+```
+or via CLI parameter ``--out-dir``
+```shell
+python3 src/cli.py guide_selector --out_dir ./my_output
+```
+
+### Inputs
+Inputs can be specified in config file or passed as a CLI argument
+
+### guide_selector command
+
+Accepts region (or file with regions) and gtf reference
+
+| CLI Argument  | Config `"input_args"` | Config  parameter Description                             |
+|---------------|---------------------|-----------------------------------------------------------|
+| --region      | `"region"` | String with region data, example: chr19:50398851-50399053 |
+| --region_file | `"region_file"` | Path tsv file with regions                                |
+| --gtf         | `"gtf"` | Path to reference gtf file                                
+
+### Retrieve command
+
+| Argument      | Config `"input_args"` | Description                                               |
+|---------------|---------------------|-----------------------------------------------------------|
+| --region      |  `"region"` | String with region data, example: chr19:50398851-50399053 |
+| --region_file |  `"region_file"` | Path tsv file with regions                                |
+
+### Mutator command
+
+
+| Argument | Config `"input_args"`          | Description                |
+|----------|--------------------------------|----------------------------|
+| --tsv    | `"tsv"` | Path to input tsv file     |
+| --gtf    | `"gtf"`                        | Path to reference gtf file |
+
 
 Command Line
 
@@ -152,6 +212,19 @@ python3 src/cli.py guide_selector --region_file examples/target_regions.tsv --gt
 
 
 ## Developer notes
+
+### Python Virtual Environment
+Setting up Virtual Env:
+
+```sh
+python -m venv venv
+
+source venv/bin/activate
+
+pip install -r requirements.txt
+
+deactivate
+```
 
 ### Run with Docker
 
