@@ -4,7 +4,7 @@ from unittest.mock import Mock
 import pandas as pd
 from tdutils.utils.vcf_utils import Variant, Variants
 
-from base_sequence import BaseSequence
+from base_sequence import BaseSequence, FragmentFrameIndicator
 from coding_region import CodingRegion
 from codon import WindowCodon
 from edit_window import EditWindow
@@ -130,7 +130,7 @@ class MutatorTestCase(unittest.TestCase):
         self.assertEqual(coding_region.chromosome, 'chr1')
         self.assertEqual(coding_region.is_positive_strand, True)
         self.assertEqual(coding_region.exon_number, 1)
-        self.assertEqual(coding_region.frame, 1)
+        self.assertEqual(coding_region.frame, FragmentFrameIndicator.ONE)
 
     def test_variants(self):
         # arrange

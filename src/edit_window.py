@@ -2,7 +2,7 @@ from typing import List, Optional, Tuple
 
 from Bio.Seq import Seq
 
-from base_sequence import BaseSequence
+from base_sequence import BaseSequence, FragmentFrameIndicator
 from codon import WindowCodon
 
 
@@ -17,26 +17,24 @@ class EditWindow(BaseSequence):
         frame: int = 0,
         guide_strand_is_positive: bool = True,
     ) -> None:
+        frame_indicator = FragmentFrameIndicator.get_frame_indicator(frame)
+        super().__init__(start, end, is_positive_strand, chromosome, frame_indicator)
+
         self.id = id
-        self.start = start
-        self.end = end
         self._window_length = window_length
-        self.is_positive_strand = is_positive_strand
-        self.chromosome = chromosome
-        self.frame = frame
         self.guide_strand = guide_strand_is_positive
 
     def _get_extended_window_coordinates(self) -> Tuple[int, int]:
         start = self.start
         end = self.end
 
-        if self.frame == 0:
+        if self.frame == FragmentFrameIndicator.ZERO:
             return start, end
 
         if self.is_positive_strand:
-            start = self.start - 3 + self.frame
+            start = self.start - 3 + self.frame.value
         else:
-            end = self.end + 3 - self.frame
+            end = self.end + 3 - self.frame.value
 
         return start, end
 
@@ -70,10 +68,7 @@ class EditWindow(BaseSequence):
         return codons
 
     def _get_third_base_coordinate(self, start: int, end: int, i: int, is_positive_strand: bool) -> int:
-        if is_positive_strand:
-            return start + i + 2
-        else:
-            return end - i - 2
+        return start + i + 2 if is_positive_strand else end - i - 2
 
     def _get_base_window_position(self, coordinate: int) -> int:
         return calculate_position_in_window(self.start, coordinate, self.guide_strand, self._window_length)
@@ -119,10 +114,10 @@ def calculate_position_in_window(window_start: int, coordinate: int, strand: boo
         result = window_length - PAM_PROTECTION_LENGTH - coords_diff
 
         if result <= 0:
-            result = result - 1
+            result -= 1
     else:
         result = coords_diff - PAM_PROTECTION_LENGTH
         if result >= 0:
-            result = result + 1
+            result += 1
 
     return result
