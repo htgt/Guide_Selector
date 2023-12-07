@@ -9,6 +9,13 @@ class FragmentFrameIndicator(Enum):
     TWO = 2
     ONE = 1
 
+    @staticmethod
+    def get_frame_indicator(frame_value):
+        for frame in FragmentFrameIndicator:
+            if frame.value == frame_value:
+                return frame
+        raise ValueError(f"Invalid: the frame value {frame_value} is not in number in (0, 1, 2)")
+
 
 @dataclass
 class BaseSequence:

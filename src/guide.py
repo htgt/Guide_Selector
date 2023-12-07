@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from decimal import ROUND_HALF_UP, Decimal
 from typing import Optional, Tuple
 
-from base_sequence import BaseSequence
+from base_sequence import BaseSequence, FragmentFrameIndicator
 from target_region import TargetRegion
 from utils.bio_utils import add_chr_prefix
 from utils.exceptions import PamNotFoundError
@@ -36,23 +36,17 @@ class GuideSequence(BaseSequence):
         ot_summary: dict = None,
         on_target_score: float = None,
     ) -> None:
-        self.start = start
-        self.end = end
+        frame_indicator = FragmentFrameIndicator.get_frame_indicator(frame)
+        super().__init__(start, end, is_positive_strand, add_chr_prefix(chromosome), frame_indicator)
+
         self.guide_id = guide_id
-        self.is_positive_strand = is_positive_strand
         self.target_region = target_region
-        self._chromosome = chromosome
-        self.frame = frame
         self.ot_summary = ot_summary
         self.on_target_score = on_target_score
 
     @property
     def wge_percentile(self) -> Optional[int]:
         return calculate_wge_percentile(self.ot_summary)
-
-    @property
-    def chromosome(self) -> str:
-        return add_chr_prefix(self._chromosome)
 
     @property
     def strand_symbol(self) -> str:

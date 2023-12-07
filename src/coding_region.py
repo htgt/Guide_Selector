@@ -1,4 +1,4 @@
-from base_sequence import BaseSequence
+from base_sequence import BaseSequence, FragmentFrameIndicator
 
 
 class CodingRegion(BaseSequence):
@@ -11,9 +11,7 @@ class CodingRegion(BaseSequence):
         frame: int = 0,
         exon_number: int = 0,
     ) -> None:
+        frame_indicator = FragmentFrameIndicator.get_frame_indicator(frame)
+        super().__init__(start, end, is_positive_strand, chromosome, frame_indicator)
+
         self.exon_number = exon_number
-        self.start = start
-        self.end = end
-        self.chromosome = chromosome
-        self.is_positive_strand = is_positive_strand
-        self.frame = frame

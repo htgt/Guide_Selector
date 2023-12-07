@@ -1,7 +1,7 @@
-from base_sequence import BaseSequence
+from base_sequence import BaseSequence, FragmentFrameIndicator
 
 
-def get_frame(coding_region: BaseSequence, region: BaseSequence) -> int:
+def get_frame(coding_region: BaseSequence, region: BaseSequence) -> FragmentFrameIndicator:
     if coding_region.is_positive_strand:
         difference = region.start - coding_region.start
     else:
@@ -9,4 +9,5 @@ def get_frame(coding_region: BaseSequence, region: BaseSequence) -> int:
 
     frames = (0, 2, 1)
 
-    return frames[(difference + int(frames.index(int(coding_region.frame)))) % 3]
+    frame_value = frames[(difference + frames.index(int(coding_region.frame.value))) % 3]
+    return FragmentFrameIndicator.get_frame_indicator(frame_value)
