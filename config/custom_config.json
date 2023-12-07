@@ -1,0 +1,25 @@
+{
+    "input_args": {
+        "out_dir": "./output",
+        "on_target": "",
+        "region_file": "./examples/target_regions.tsv",
+        "region": "",
+        "gtf": "./MANE.GRCh38.v1.0.ensembl_genomic.gtf",
+        "tsv": "./examples/test_guides3.tsv"
+    },
+    "edit_rules": {
+        "ignore_positions": [-1, 1],
+        "allow_codon_loss": true,
+        "splice_mask_distance": 5
+    },
+    "wge_species_id": "Grch38",
+    "assembly": "GRCh38",
+    "window_length": 12,
+    "filters": {
+        "min_edits_allowed": 3,
+        "NGG_edit_required": true,
+        "omit_TTTT+": true,
+        "max_edits_to_apply": 3
+    },
+    "ranking_priority_order": ["off_target", "centrality", "on_target"]
+}
