@@ -20,10 +20,7 @@ DOCKER_REPO ?= local
 DOCKER_PORT ?= 8081
 DOCKER_IMAGE_NAME ?= ${DOCKER_REPO}/${DOCKER_NAME}:${DOCKER_TAG}
 
-init: check-make
-	git config core.hooksPath .githooks
-	chmod +x .githooks/*
-	
+init:
 
 install:
 	@echo "Installing..."

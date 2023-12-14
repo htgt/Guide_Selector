@@ -10,12 +10,11 @@ Dependencies:
 Build-essential and Python (3.8), Python-venv (3.8)
 Change python command to point to Python (3.8), ubuntu expects python3 to be a specific version for compatibility.
 
-**manually**:
-Update the githook path to the repo folder and authorise.
-```sh
-git config core.hooksPath .githooks
-chmod +x .githooks/*
-```
+Requirements:
+
+- Ubuntu 18.4.X 
+- Python3.8+
+
 Install python and dependencies.
 ```sh
 sudo apt-get update \
@@ -24,47 +23,6 @@ sudo apt-get update \
 && sudo update-alternatives --config python
 ```
 
-***Makefile**
-```sh
-make
-``` 
-sets up the git hooks that run unittests and pycodestyle on /src and /tests on ```git push```.
-```sh
-make install
-``` 
-installs dependancies below.
-```sh
-make setup-venv
-``` 
-creates a venv at ./venv and installs requirements.txt(s)
-
-***Docker***
-Dependencies: Docker desktop or Docker engine
-
-```sh
-make install
-make run-docker-interactive
-```
-The docker image will be built according to the Dockerfile, the venv will be created and it will launch into interactive mode in the currently open terminal.
-
-To delete containers:
-```sh
-make clean-docker-containers
-```
-To delete containers and images:
-```sh
-make clean-docker
-```
-
-
-### Githooks
-There are two githooks, pre-push and prepare-commit-msg.
-The first runs tests and checks linting before push.
-The second prefixes the commit message with the ticket or first word (ended by "_"), e.g. TD-434: 
-To skip pre-push:
-```sh
-git push --no-verify
-```
 
 ### Python3
 Check Python3 (base) and Python (updated) version
@@ -74,49 +32,96 @@ python3 --version
 python --version
 ```
 
-
-### Python Virtual Environment
-Requirements:
-
-- Ubuntu 18.X.X 
-- Python3.8+
-- Python-venv
-
-Setting up Virtual Env:
-
+### Install 
 ```sh
-python -m venv venv
-
-source venv/bin/activate
-
-pip install -r requirements.txt
-
-deactivate
+make install
 ```
 
 
-### Usage
+## Usage
 
-Command Line
+### Commands
+There are three commands available:
+- **guide_selector** - runs the full guide selector. Accepts reference gtf file and target region tsv as input, returns guides, candidate ppes, optimal guide PPEs (Potential protospacer edits) 
+- **retrieve** - retrieves guides for given target region
+- **mutator** - calculates PPEs for given guides
+
+
+### Config file
+Config file is used to configure the guide selector program.
+You can also specify paths to input files in the config.
+
+If config file is not specified, it automatically uses `config/default_config.json`
+
+**Do not edit or overwrite `config/default_config.json` file! Create your own config file with the same structure and pass a path as a parameter**
+
+To run a command with specific config file:
 
 ```sh
-python3 src/cli.py --version
+python3 src/cli.py guide_selector --conf config/custom_config.json
+```
+```sh
+python3 src/cli.py retrieve --conf config/custom_config.json
+```
+```sh
+python3 src/cli.py mutator --conf config/custom_config.json
 ```
 
-Available commands:
-- --version
-- mutator
-- retrieve
-- guide_selector
 
-Shared arguments (not required):
+### Output directory
+By default, all the output files will be saved to the `/output` directory 
 
-| Argument   | Description               |
-|------------|---------------------------|
-| --conf     | Path to config file       |
-| --out_dir  | Path to output directory  |
+It may be inconvenient and the next run will rewrite the outputs, so you can specify your custom
+output folder:
 
-Shared arguments should be specified before command
+using config file
+```json
+  "input_args": {
+      "out_dir": "./my_output",
+  }
+```
+or via CLI parameter ``--out-dir``
+```shell
+python3 src/cli.py guide_selector --out_dir ./my_output
+```
+
+### Inputs
+Inputs can be specified in config file or passed as a CLI argument
+
+### guide_selector command
+
+Accepts region (or file with regions) and gtf reference
+
+| CLI Argument  | Config `"input_args"` | Config  parameter Description                             |
+|---------------|---------------------|-----------------------------------------------------------|
+| --region      | `"region"` | String with region data, example: chr19:50398851-50399053 |
+| --region_file | `"region_file"` | Path tsv file with regions                                |
+| --gtf         | `"gtf"` | Path to reference gtf file                                
+
+
+### Retrieve command
+
+| Argument      | Config `"input_args"` | Description                                               |
+|---------------|---------------------|-----------------------------------------------------------|
+| --region      |  `"region"` | String with region data, example: chr19:50398851-50399053 |
+| --region_file |  `"region_file"` | Path tsv file with regions                                |
+
+### Mutator command
+
+| Argument | Config `"input_args"`          | Description                |
+|----------|--------------------------------|----------------------------|
+| --tsv    | `"tsv"` | Path to input tsv file     |
+| --gtf    | `"gtf"`                        | Path to reference gtf file |
+
+
+## Commands in detail
+
+Shared for all commands (not required):
+
+| Argument   | Config `"input_args"`            | Description              |
+|------------|----------------------------------|--------------------------|
+| --conf     | ------                           | Path to config file      |
+| --out_dir  | `"out_dir"` | Path to output directory |
 
 ## Retrieve command
 Retrieve command gets data from WGE and writes a tsv file that can serve as an input for mutator command. 
@@ -124,24 +129,24 @@ Command requires the Target region ID and Loci.
 
 Uses shared input arguments: output directory and config file.
 
-Configs used for retrieve command: ``wge_species_id`` (set to ``Human`` by default) and ``assembly`` (set to ``GRCh38`` by default)
+**Configs** used for retrieve command: ``wge_species_id`` (set to ``Human`` by default) and ``assembly`` (set to ``GRCh38`` by default)
 
 Possible arguments for retrieve:
 
-| Argument      | Description                                               |
-|---------------|-----------------------------------------------------------|
-| --region      | String with region data, example: chr19:50398851-50399053 |
-| --region_file | Path tsv file with regions                                |
+| Argument      | Config `"input_args"` | Description                                               |
+|---------------|-----------------------|-----------------------------------------------------------|
+| --region      |        `"region"`     | String with region data, example: chr19:50398851-50399053 |
+| --region_file |      `"region_file"`  | Path tsv file with regions                                |
 
 Example:
 ```
-python3 src/cli.py --out_dir my_output retrieve --region chr19:50398851-50399053
+python3 src/cli.py  retrieve --out_dir my_output --region chr19:50398851-50399053
 ```
 
 or
 
 ```
-python3 src/cli.py --out_dir my_output retrieve --region_file examples/target_regions.tsv
+python3 src/cli.py retrieve --region_file examples/target_regions.tsv
 ```
 
 
@@ -158,14 +163,14 @@ Custom configuration can be passed to the command for any tweaks necessary. Para
 - **splice_mask_distance**: sets permitted to False for edits that are not the specified number of bases within the coding region at the start and end (default 5)
 - **filters**: see Filters section below
 
-| Argument | Description                |
-|----------|----------------------------|
-| --tsv    | Path to input tsv file     |
-| --gtf    | Path to reference gtf file |
+| Argument | Config `"input_args"` | Description                |
+|----------|-----------------------|----------------------------|
+| --tsv    | `"tsv"`               | Path to input tsv file     |
+| --gtf    | `"gtf"`               | Path to reference gtf file |
 
 Example:
 ```
-python3 src/cli.py --conf custom.conf --out_dir ./output/ mutator --gtf ./example.gtf --tsv guides.tsv 
+python3 src/cli.py mutator --conf custom.conf --gtf ./example.gtf --tsv guides.tsv 
 ```
 
 ### Filters
@@ -182,15 +187,30 @@ You can set various filters in the config file. Guides and edits that are kept a
 Runs retrieve-mutator steps together, accepts region (or file with regions) and gtf reference as arguments
 
 
-| Argument      | Description                                               |
-|---------------|-----------------------------------------------------------|
-| --region      | String with region data, example: chr19:50398851-50399053 |
-| --region_file | Path tsv file with regions                                |
-| --gtf         | Path to reference gtf file                                |
+| Argument      | Config `"input_args"` | Description                                               |
+|---------------|---------------------|-----------------------------------------------------------|
+| --region      |     `"region"`      | String with region data, example: chr19:50398851-50399053 |
+| --region_file |      `"region_file"`| Path tsv file with regions                                |
+| --gtf         | `"gtf"`             | Path to reference gtf file                                |
 
 Example
 ```
 python3 src/cli.py guide_selector --region_file examples/target_regions.tsv --gtf ./example.gtf 
+```
+
+## Developer notes
+
+### Python Virtual Environment
+Setting up Virtual Env:
+
+```sh
+python -m venv venv
+
+source venv/bin/activate
+
+pip install -r requirements.txt
+
+deactivate
 ```
 
 ### Run with Docker
@@ -210,6 +230,19 @@ Or with Makefile:
 make run-docker-interactive
 ```
 
+### Githooks
+Update the githook path to the repo folder and authorise.
+```sh
+git config core.hooksPath .githooks
+chmod +x .githooks/*
+```
+
+To skip pre-push:
+```sh
+git push --no-verify
+```
+
+
 ### Run tests
 With makefile (direct or in docker container):
 ```sh
@@ -228,4 +261,3 @@ python -m unittest -v
 ```sh
 pycodestyle src tests
 ```
-

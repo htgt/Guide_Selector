@@ -4,8 +4,8 @@
         "on_target": "",
         "region_file": "./examples/target_regions.tsv",
         "region": "",
-        "gtf": "",
-        "tsv": ""
+        "gtf": "./MANE.GRCh38.v1.0.ensembl_genomic.gtf",
+        "tsv": "./examples/test_guides3.tsv"
     },
     "edit_rules": {
         "ignore_positions": [-1, 1],

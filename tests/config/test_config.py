@@ -116,7 +116,7 @@ class TestPrepareConfig(TestCase):
 
             result = Config(input_args)
 
-            self.assertEqual(result.output_dir, './')
+            self.assertEqual(result.output_dir, './output')
             self.assertEqual(result.on_target, '')
             self.assertEqual(result.region_file, '')
             self.assertEqual(result.region, '')

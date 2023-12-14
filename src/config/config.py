@@ -13,7 +13,7 @@ class Config:
 
         self.command = input_args.command
 
-        self.output_dir = args.get('out_dir') or conf.get('input_args', {}).get('out_dir') or './'
+        self.output_dir = args.get('out_dir') or conf.get('input_args', {}).get('out_dir') or './output'
         self.on_target = args.get('on_target') or conf.get('input_args', {}).get('on_target') or ''
         self.region = args.get('region') or conf.get('input_args', {}).get('region') or ''
         self.region_file = args.get('region_file') or conf.get('input_args', {}).get('region_file') or ''
