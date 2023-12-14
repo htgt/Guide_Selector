@@ -12,7 +12,7 @@ Change python command to point to Python (3.8), ubuntu expects python3 to be a s
 
 Requirements:
 
-- Ubuntu 18.X.X 
+- Ubuntu 18.4.X 
 - Python3.8+
 
 Install python and dependencies.
