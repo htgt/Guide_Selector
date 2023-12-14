@@ -42,13 +42,13 @@ make install
 
 ### Commands
 There are three commands available:
-- **guide_selector** - runs the full guide selector. Accepts reference gtf file and target region tsv as input, returns guides, candidate ppes, optimal guide ppes
+- **guide_selector** - runs the full guide selector. Accepts reference gtf file and target region tsv as input, returns guides, candidate ppes, optimal guide PPEs (Potential protospacer edits) 
 - **retrieve** - retrieves guides for given target region
-- **mutator** - calculates ppes for given guides
+- **mutator** - calculates PPEs for given guides
 
 
 ### Config file
-Config file is used to configure guide selector program.
+Config file is used to configure the guide selector program.
 You can also specify paths to input files in the config.
 
 If config file is not specified, it automatically uses `config/default_config.json`
