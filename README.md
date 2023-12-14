@@ -98,6 +98,7 @@ Accepts region (or file with regions) and gtf reference
 | --region_file | `"region_file"` | Path tsv file with regions                                |
 | --gtf         | `"gtf"` | Path to reference gtf file                                
 
+
 ### Retrieve command
 
 | Argument      | Config `"input_args"` | Description                                               |
@@ -107,33 +108,20 @@ Accepts region (or file with regions) and gtf reference
 
 ### Mutator command
 
-
 | Argument | Config `"input_args"`          | Description                |
 |----------|--------------------------------|----------------------------|
 | --tsv    | `"tsv"` | Path to input tsv file     |
 | --gtf    | `"gtf"`                        | Path to reference gtf file |
 
 
-Command Line
+## Commands in detail
 
-```sh
-python3 src/cli.py --version
-```
+Shared for all commands (not required):
 
-Available commands:
-- --version
-- mutator
-- retrieve
-- guide_selector
-
-Shared arguments (not required):
-
-| Argument   | Description               |
-|------------|---------------------------|
-| --conf     | Path to config file       |
-| --out_dir  | Path to output directory  |
-
-Shared arguments should be specified before command
+| Argument   | Config `"input_args"`            | Description              |
+|------------|----------------------------------|--------------------------|
+| --conf     | ------                           | Path to config file      |
+| --out_dir  | `"out_dir"` | Path to output directory |
 
 ## Retrieve command
 Retrieve command gets data from WGE and writes a tsv file that can serve as an input for mutator command. 
@@ -141,24 +129,24 @@ Command requires the Target region ID and Loci.
 
 Uses shared input arguments: output directory and config file.
 
-Configs used for retrieve command: ``wge_species_id`` (set to ``Human`` by default) and ``assembly`` (set to ``GRCh38`` by default)
+**Configs** used for retrieve command: ``wge_species_id`` (set to ``Human`` by default) and ``assembly`` (set to ``GRCh38`` by default)
 
 Possible arguments for retrieve:
 
-| Argument      | Description                                               |
-|---------------|-----------------------------------------------------------|
-| --region      | String with region data, example: chr19:50398851-50399053 |
-| --region_file | Path tsv file with regions                                |
+| Argument      | Config `"input_args"` | Description                                               |
+|---------------|-----------------------|-----------------------------------------------------------|
+| --region      |        `"region"`     | String with region data, example: chr19:50398851-50399053 |
+| --region_file |      `"region_file"`  | Path tsv file with regions                                |
 
 Example:
 ```
-python3 src/cli.py --out_dir my_output retrieve --region chr19:50398851-50399053
+python3 src/cli.py  retrieve --out_dir my_output --region chr19:50398851-50399053
 ```
 
 or
 
 ```
-python3 src/cli.py --out_dir my_output retrieve --region_file examples/target_regions.tsv
+python3 src/cli.py retrieve --region_file examples/target_regions.tsv
 ```
 
 
@@ -175,14 +163,14 @@ Custom configuration can be passed to the command for any tweaks necessary. Para
 - **splice_mask_distance**: sets permitted to False for edits that are not the specified number of bases within the coding region at the start and end (default 5)
 - **filters**: see Filters section below
 
-| Argument | Description                |
-|----------|----------------------------|
-| --tsv    | Path to input tsv file     |
-| --gtf    | Path to reference gtf file |
+| Argument | Config `"input_args"` | Description                |
+|----------|-----------------------|----------------------------|
+| --tsv    | `"tsv"`               | Path to input tsv file     |
+| --gtf    | `"gtf"`               | Path to reference gtf file |
 
 Example:
 ```
-python3 src/cli.py --conf custom.conf --out_dir ./output/ mutator --gtf ./example.gtf --tsv guides.tsv 
+python3 src/cli.py mutator --conf custom.conf --gtf ./example.gtf --tsv guides.tsv 
 ```
 
 ### Filters
@@ -199,11 +187,11 @@ You can set various filters in the config file. Guides and edits that are kept a
 Runs retrieve-mutator steps together, accepts region (or file with regions) and gtf reference as arguments
 
 
-| Argument      | Description                                               |
-|---------------|-----------------------------------------------------------|
-| --region      | String with region data, example: chr19:50398851-50399053 |
-| --region_file | Path tsv file with regions                                |
-| --gtf         | Path to reference gtf file                                |
+| Argument      | Config `"input_args"` | Description                                               |
+|---------------|---------------------|-----------------------------------------------------------|
+| --region      |     `"region"`      | String with region data, example: chr19:50398851-50399053 |
+| --region_file |      `"region_file"`| Path tsv file with regions                                |
+| --gtf         | `"gtf"`             | Path to reference gtf file                                |
 
 Example
 ```
@@ -274,37 +262,3 @@ python -m unittest -v
 ```sh
 pycodestyle src tests
 ```
-
-
-***Makefile**
-```sh
-make
-``` 
-sets up the git hooks that run unittests and pycodestyle on /src and /tests on ```git push```.
-```sh
-make install
-``` 
-installs dependancies below.
-```sh
-make setup-venv
-``` 
-creates a venv at ./venv and installs requirements.txt(s)
-
-***Docker***
-Dependencies: Docker desktop or Docker engine
-
-```sh
-make install
-make run-docker-interactive
-```
-The docker image will be built according to the Dockerfile, the venv will be created and it will launch into interactive mode in the currently open terminal.
-
-To delete containers:
-```sh
-make clean-docker-containers
-```
-To delete containers and images:
-```sh
-make clean-docker
-```
-
