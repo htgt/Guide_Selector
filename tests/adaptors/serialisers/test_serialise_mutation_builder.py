@@ -2,6 +2,7 @@ import unittest
 from unittest.mock import PropertyMock, patch
 
 from adaptors.serialisers.mutation_builder_serialiser import (
+    serialise_mutation_builder,
     convert_mutation_builders_to_df,
     _get_mutation_builder_dict,
     _get_codon_dict,
@@ -30,6 +31,7 @@ class MutatorBuilderSerialiserTestCase(unittest.TestCase):
             gene_name='ACT',
             window_length=12,
         )
+
         self.mutation_builder.codons = [
             WindowCodon(bases='TCA', third_base_coord=123, third_base_pos=1, is_positive_strand=True),
             WindowCodon(bases='TCC', third_base_coord=122, third_base_pos=2, is_positive_strand=False),
@@ -50,16 +52,9 @@ class MutatorBuilderSerialiserTestCase(unittest.TestCase):
             'valid_edits',
             'on_target_score',
             'chromosome',
-            'cds_strand',
-            'gene_name',
-            'guide_strand',
             'guide_start',
             'guide_end',
-            'ot_summary',
-            'wge_percentile',
-            'on_target_score',
-            'centrality_score',
-            'codon_details',
+            'guide_strand',
         ]
 
         df = convert_mutation_builders_to_df([self.mutation_builder])

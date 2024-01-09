@@ -16,12 +16,11 @@ class EditGGInPAMFilter(Filter):
     def apply(self, mbs: List[MutationBuilder]) -> FilterResponse:
         guides_to_keep = []
         guides_to_discard = []
+
         for mb in mbs:
             codons_with_pam_edit = [codon for codon in mb.codons if codon.third_base_pos in [-2, -3]]
 
-            if len(codons_to_keep) == 0:
-                guides_to_discard.append(mb)
-            elif len(codons_to_discard) == 0:
+            if codons_with_pam_edit:
                 guides_to_keep.append(mb)
             else:
                 guides_to_discard.append(GuideDiscarded(mb, EditGGInPAMFilter.key))

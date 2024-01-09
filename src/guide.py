@@ -19,9 +19,6 @@ class SequenceFragment:
     start: int
     end: int
 
-@dataclass
-class GuideSequenceLoci(BaseSequence):
-    guide_id: int = 0
 
 class GuideSequence(BaseSequence):
     def __init__(
@@ -68,11 +65,13 @@ class GuideSequence(BaseSequence):
 
         return is_pam
 
-    def _calculate_coordinate(self, difference: int, start: int):
+    @staticmethod
+    def _calculate_coordinate(difference: int, start: int):
         return start + difference
 
     def find_pam(self, bases: str) -> SequenceFragment:
-        pattern = self._define_pam_pattern()
+        pattern = self._define_pam_pattern(self.is_positive_strand)
+
         pam_matches = re.finditer(pattern, bases)
         pam = None
 

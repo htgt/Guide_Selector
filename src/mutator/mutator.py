@@ -1,7 +1,6 @@
 import warnings
 from typing import List
 
-from pprint import pprint
 import pandas as pd
 from tdutils.utils.vcf_utils import Variants
 
@@ -79,43 +78,6 @@ class Mutator(Command):
         self.failed_mutations = failed_mutations
 
     @property
-    def guides_and_codons(self) -> List[dict]:
-        rows = []
-
-        for mb in self.mutation_builders:
-            base = {
-                'guide_id': mb.guide.guide_id,
-                'chromosome': mb.cds.chromosome,
-                'cds_strand': _get_char_for_bool(mb.cds.is_positive_strand),
-                'gene_name': mb.gene_name,
-                'guide_strand': _get_char_for_bool(mb.guide.is_positive_strand),
-                'guide_start': mb.guide.start,
-                'guide_end': mb.guide.end,
-                'ot_summary': mb.guide.ot_summary,
-                'target_region_id': mb.guide.target_region_id,
-                'wge_percentile': mb.guide.wge_percentile,
-            }
-
-            for codon in mb.codons:
-                row = base
-                lost_amino = ','.join(codon.amino_acids_lost_from_edit) if codon.amino_acids_lost_from_edit else 'N/A'
-
-                row.update(
-                    {
-                        'window_pos': codon.third_base_pos,
-                        'pos': codon.third_base_coord,
-                        'ref_codon': codon.bases,
-                        'ref_pos_three': codon.bases[2],
-                        'alt': codon.edited_bases[2],
-                        'lost_amino_acids': lost_amino,
-                        'permitted': codon.is_edit_permitted(self._config),
-                    }
-                )
-
-                rows.append(copy.deepcopy(row))
-        return rows
-
-    @property
     def variants(self) -> Variants:
         chroms = map(_get_chromosome, self.mutation_builders)
         chroms = list(set(chroms))
@@ -184,13 +146,6 @@ class Mutator(Command):
 
     def _filter_mutation_builders(self):
         filters_response = FilterManager(self._config).apply_filters(self.mutation_builders)
-
-        self.mutation_builders = filters_response.guides_to_keep
-
-        for filter_class in filters_to_activate:
-            filter_manager.load_filter(filter_class)
-
-        filters_response = filter_manager.apply_filters(self.mutation_builders)
 
         self.mutation_builders = filters_response.guides_to_keep
         self.discarded_guides = filters_response.guides_to_discard

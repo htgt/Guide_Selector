@@ -17,15 +17,14 @@ class InputArguments:
 
         self._add_subparsers(parser)
 
-        self._add_mutator_command_parser(subparsers)
-        self._add_window_command_parser(subparsers)
-        self._add_wge_command_parser(subparsers)
+        self.set_args(vars(parser.parse_args()))
 
     def _add_subparsers(self, parser) -> None:
         subparsers = parser.add_subparsers(dest='command')
 
         self._add_mutator_command_parser(subparsers)
         self._add_retrieve_command_parser(subparsers)
+        self._add_guide_selector_command_parser(subparsers)
 
     @staticmethod
     def _add_mutator_command_parser(subparsers: _SubParsersAction) -> None:

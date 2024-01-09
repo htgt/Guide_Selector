@@ -99,7 +99,7 @@ class MutatorTestCase(unittest.TestCase):
             'target_region_end': 200,
         })  # fmt: on
 
-        guide_sequence = self.mutator._fill_guide_sequence(row)
+        guide_sequence = _fill_guide_sequence(row)
 
         self.assertIsInstance(guide_sequence, GuideSequence)
         self.assertEqual(guide_sequence.start, 160)

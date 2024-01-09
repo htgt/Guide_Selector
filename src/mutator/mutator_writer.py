@@ -19,16 +19,19 @@ class MutatorWriter(Writer):
 
     def __init__(
         self,
-        guides_and_codons: List[dict],
+        kept_guides: List[dict],
+        discarded_guides: List[dict],
         variants: Variants,
         failed_guides: List[MutationBuilder],
         ranked_guides_df: pd.DataFrame,
+        best_guide_variants: Variants,
     ) -> None:
         self._kept_guides = kept_guides
         self._discarded_guides = discarded_guides
         self._variants = variants
         self._failed_guides = failed_guides
         self._ranked_guides_df = ranked_guides_df
+        self._best_guide_variants = best_guide_variants
 
     def write_outputs(self, output_dir: str):
         self._write_tsv_guide_and_codons_file(output_dir)
@@ -42,6 +45,7 @@ class MutatorWriter(Writer):
             self._write_json_failed_guides_file(output_dir)
 
         self._write_tsv_ranked_guides(output_dir)
+        self._write_vcf_variants_file(output_dir, MutatorWriter.best_guide_variants, self._best_guide_variants)
 
     def _write_tsv_guide_and_codons_file(self, output_dir):
         tsv_path = os.path.join(output_dir, MutatorWriter.guides_codons_tsv_filename)
@@ -56,11 +60,11 @@ class MutatorWriter(Writer):
         write_list_dict_in_tsv(tsv_path, self._discarded_guides)
         print('Output saved to', tsv_path)
 
-    def _write_vcf_variants_file(self, output_dir, variants: Variants = None):
+    def _write_vcf_variants_file(self, output_dir, file_name: str, variants: Variants = None):
         if not variants:
             variants = self._variants
 
-        vcf_path = os.path.join(output_dir, MutatorWriter.variants_vcf_filename)
+        vcf_path = os.path.join(output_dir, file_name)
         write_variants_to_vcf(vcf_path, variants)
         print('Output saved to', vcf_path)
 
