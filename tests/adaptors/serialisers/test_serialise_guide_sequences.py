@@ -3,7 +3,7 @@ from unittest.mock import PropertyMock, patch
 from pyfakefs.fake_filesystem_unittest import TestCase
 
 # fmt: off
-from adaptors.serialisers.guide_sequences_serialiser import serialise_guide_sequence, write_guide_sequences_to_tsv  
+from adaptors.serialisers.guide_sequences_serialiser import serialise_guide_sequence, write_guide_sequences_to_tsv  # NOQA
 # fmt: on
 from guide import GuideSequence
 from target_region import TargetRegion
