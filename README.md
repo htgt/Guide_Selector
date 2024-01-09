@@ -198,7 +198,6 @@ Example
 python3 src/cli.py guide_selector --region_file examples/target_regions.tsv --gtf ./example.gtf 
 ```
 
-
 ## Developer notes
 
 ### Python Virtual Environment
