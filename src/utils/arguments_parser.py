@@ -1,10 +1,12 @@
 from argparse import ArgumentParser, _SubParsersAction
+from typing import Optional
 
 
 class InputArguments:
     def __init__(self) -> None:
         self.arguments = {}
         self.command = ''
+        self.version = _get_version()
 
         self.parse_arguments()
 
@@ -65,7 +67,7 @@ def _add_basic_input_args(parser: ArgumentParser) -> None:
     parser.add_argument(
         '--version',
         action='version',
-        version='%(prog)s 0.0.1',
+        version=f'GuideSelector {_get_version()}',
     )
     parser.add_argument(
         '--conf',
@@ -85,3 +87,11 @@ def _add_basic_input_args(parser: ArgumentParser) -> None:
         type=str,
         help='Path of on-target scores guides',
     )
+
+
+def _get_version() -> Optional[str]:
+    try:
+        with open("version", "r") as file:
+            return file.read().strip()
+    except FileNotFoundError:
+        return None
