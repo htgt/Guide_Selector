@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from utils.arguments_parser import InputArguments
+from utils.arguments_parser import InputArguments, _get_version
 from utils.file_system import parse_json
 
 DEFAULT_CONFIG_FILE = Path(__file__).parent / '../../config/default_config.json'
@@ -12,6 +12,8 @@ class Config:
         conf = prepare_config(args.get('conf'))
 
         self.command = input_args.command
+
+        self.version_stamp = f'GuideSelector-{input_args.version}'
 
         self.output_dir = args.get('out_dir') or conf.get('input_args', {}).get('out_dir') or './output'
         self.on_target = args.get('on_target') or conf.get('input_args', {}).get('on_target') or ''

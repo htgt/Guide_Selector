@@ -57,6 +57,7 @@ class Mutator(Command):
             self.failed_mutations,
             self.ranked_guides_df,
             self._get_variants_by_guide_ids(self.best_guide_ids),
+            self._config.version_stamp
         )
 
         writer.write_outputs(self._config.output_dir)

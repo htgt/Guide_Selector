@@ -39,7 +39,7 @@ class Retriever(Command):
             raise GuidesNotFoundError('No guides found in given regions.')
 
     def _write_outputs(self):
-        RetrieverWriter(self.guide_sequences).write_outputs(self._config.output_dir)
+        RetrieverWriter(self.guide_sequences, self._config.version_stamp).write_outputs(self._config.output_dir)
 
 
 def _get_guides_data(regions: List[TargetRegion], request_options: dict) -> List[GuideSequence]:
